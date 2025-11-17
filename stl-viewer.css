@@ -1,0 +1,133 @@
+/* STL Viewer Component Styling */
+
+.stl-viewer-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.stl-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(245, 245, 245, 0.95);
+    z-index: 10;
+}
+
+.stl-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: stl-spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes stl-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.stl-loading-text {
+    color: #667eea;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.stl-error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.stl-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    z-index: 5;
+}
+
+.stl-control-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+}
+
+.stl-control-btn:hover {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.stl-control-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.stl-viewer-hint {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.stl-viewer-container:hover .stl-viewer-hint {
+    opacity: 1;
+}
+
+/* Product card integration */
+.product-card .stl-viewer-container {
+    height: 250px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.product-card canvas {
+    cursor: grab;
+}
+
+.product-card canvas:active {
+    cursor: grabbing;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stl-control-btn {
+        font-size: 0.75rem;
+        padding: 5px 10px;
+    }
+    
+    .stl-viewer-hint {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+}
