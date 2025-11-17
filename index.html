@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechBoks - Tech & 3D</title>
+    <title>TechBoks - 3D Printede Tech Produkter</title>
     <style>
         * {
             margin: 0;
@@ -22,6 +22,9 @@
             color: white;
             padding: 1rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         nav {
@@ -38,204 +41,303 @@
             font-weight: bold;
         }
 
-        .cart-btn {
-            background: rgba(255,255,255,0.2);
-            border: 2px solid white;
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
             color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
         }
 
-        .cart-btn:hover {
-            background: white;
-            color: #667eea;
+        .nav-links a:hover {
+            opacity: 0.8;
         }
 
-        .hero {
+        .hero-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 6rem 2rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><path d="M10 10h80v80H10z" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></svg>');
+            opacity: 0.3;
         }
 
-        .hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .container {
-            max-width: 1200px;
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 3rem 2rem;
         }
 
-        .products-grid {
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-section p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .vision-section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .vision-section h2 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 1.5rem;
+        }
+
+        .vision-section p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+        }
+
+        .features {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
+            margin-top: 3rem;
         }
 
-        .product-card {
+        .feature {
+            padding: 2rem;
             background: white;
             border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .product-card:hover {
+        .feature:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
         }
 
-        .product-image {
-            width: 100%;
-            height: 250px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .feature-icon {
             font-size: 3rem;
+            margin-bottom: 1rem;
         }
 
-        .product-info {
-            padding: 1.5rem;
-        }
-
-        .product-title {
-            font-size: 1.2rem;
+        .feature h3 {
+            font-size: 1.3rem;
             margin-bottom: 0.5rem;
             color: #333;
         }
 
-        .product-description {
+        .feature p {
             color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .product-price {
-            font-size: 1.5rem;
-            color: #667eea;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        .add-to-cart {
-            width: 100%;
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 5px;
-            cursor: pointer;
             font-size: 1rem;
-            font-weight: bold;
-            transition: background 0.3s;
         }
 
-        .add-to-cart:hover {
-            background: #5568d3;
+        .categories-section {
+            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+            padding: 4rem 0;
+            margin-top: 4rem;
         }
 
-        .cart-modal {
-            display: none;
-            position: fixed;
+        .categories-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .categories-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 3rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .category-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-image::after {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.1);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
         }
 
-        .cart-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
+        .category-card:hover .category-image::after {
+            transform: translateX(100%);
+        }
+
+        .category-info {
             padding: 2rem;
-            border-radius: 10px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
         }
 
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #eee;
-        }
-
-        .close-cart {
-            background: none;
-            border: none;
+        .category-title {
             font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .cart-total {
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 2px solid #667eea;
-            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
             font-weight: bold;
-            text-align: right;
         }
 
-        .checkout-btn {
-            width: 100%;
+        .category-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .category-badge {
+            display: inline-block;
             background: #667eea;
             color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: bold;
-            margin-top: 1rem;
-            transition: background 0.3s;
         }
 
-        .checkout-btn:hover {
-            background: #5568d3;
+        .coming-soon {
+            opacity: 0.7;
+            position: relative;
         }
 
-        .empty-cart {
-            text-align: center;
-            color: #666;
-            padding: 2rem;
+        .coming-soon-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #ff9800;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 1;
         }
 
         footer {
             background: #333;
             color: white;
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
             margin-top: 4rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .vision-section h2,
+            .categories-section h2 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
@@ -243,160 +345,142 @@
     <header>
         <nav>
             <div class="logo">TechBoks.dk</div>
-            <button class="cart-btn" onclick="toggleCart()">🛒 Kurv (<span id="cart-count">0</span>)</button>
+            <div class="nav-links">
+                <a href="#vision">Vision</a>
+                <a href="#kategorier">Kategorier</a>
+                <a href="#om">Om Os</a>
+            </div>
         </nav>
     </header>
 
-    <div class="hero">
-        <h1>Mustang Mach-E Gadgets</h1>
-        <p>3D produkter designet i høj kvalitet</p>
-    </div>
-
-    <div class="container">
-        <h2>Mine Produkter</h2>
-        <div class="products-grid" id="products"></div>
-    </div>
-
-    <div class="cart-modal" id="cart-modal">
-        <div class="cart-content">
-            <div class="cart-header">
-                <h2>Din Kurv</h2>
-                <button class="close-cart" onclick="toggleCart()">✕</button>
-            </div>
-            <div id="cart-items"></div>
-            <div class="cart-total">
-                Total: <span id="cart-total">0</span> kr
-            </div>
-            <button class="checkout-btn" onclick="checkout()">Gå til betaling</button>
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-icon">🚀</div>
+            <h1>Velkommen til TechBoks</h1>
+            <p>3D printede tech-produkter i høj kvalitet - designet med omhu og passion</p>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdes.</p>
-    </footer>
+    <div class="vision-section" id="vision">
+        <h2>Vores Vision</h2>
+        <p>
+            Hos TechBoks tror vi på kraften i personligt design og innovation. Vi skaber unikke, 
+            3D-printede produkter der kombinerer funktionalitet med æstetik. Fra bilgadgets til 
+            smart home accessories - alt sammen designet og produceret med største omhu.
+        </p>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🎨</div>
+                <h3>Unikt Design</h3>
+                <p>Hver produkt er omhyggeligt designet til at skille sig ud</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Høj Kvalitet</h3>
+                <p>Vi bruger kun de bedste materialer og printmetoder</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💚</div>
+                <h3>Bæredygtigt</h3>
+                <p>Miljøvenlig produktion med fokus på bæredygtighed</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔧</div>
+                <h3>Tilpasset</h3>
+                <p>Mulighed for personalisering af mange produkter</p>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        const products = [
-            {
-                id: 1,
-                name: "Personlig Nøglering",
-                description: "Tilpasset nøglering med dit navn eller initialer",
-                price: 49,
-                emoji: "🔑"
-            },
-            {
-                id: 2,
-                name: "Telefon Holder",
-                description: "Praktisk holder til dit skrivebord",
-                price: 89,
-                emoji: "📱"
-            },
-            {
-                id: 3,
-                name: "Plante Urtepotte",
-                description: "Moderne design til dine små planter",
-                price: 79,
-                emoji: "🌱"
-            },
-            {
-                id: 4,
-                name: "Kabel Organizer",
-                description: "Hold styr på dine kabler",
-                price: 59,
-                emoji: "🔌"
-            },
-            {
-                id: 5,
-                name: "Bordlampefod",
-                description: "Elegant fod til din lampe",
-                price: 129,
-                emoji: "💡"
-            },
-            {
-                id: 6,
-                name: "Krus Holder",
-                description: "Praktisk holder til din yndlingskrus",
-                price: 69,
-                emoji: "☕"
-            }
-        ];
+    <div class="categories-section" id="kategorier">
+        <div class="categories-container">
+            <h2>Vores Produkt Kategorier</h2>
+            <div class="categories-grid">
+                <a href="mustang-mach-e.html" class="category-card">
+                    <div class="category-image">🚗</div>
+                    <div class="category-info">
+                        <h3 class="category-title">Mustang Mach-E Gadgets</h3>
+                        <p class="category-description">
+                            Specialdesignede accessories og praktiske gadgets til din Ford Mustang Mach-E
+                        </p>
+                        <span class="category-badge">6 produkter</span>
+                    </div>
+                </a>
 
-        let cart = [];
-
-        function displayProducts() {
-            const grid = document.getElementById('products');
-            grid.innerHTML = products.map(product => `
-                <div class="product-card">
-                    <div class="product-image">${product.emoji}</div>
-                    <div class="product-info">
-                        <h3 class="product-title">${product.name}</h3>
-                        <p class="product-description">${product.description}</p>
-                        <div class="product-price">${product.price} kr</div>
-                        <button class="add-to-cart" onclick="addToCart(${product.id})">
-                            Tilføj til kurv
-                        </button>
+                <div class="category-card coming-soon">
+                    <div class="coming-soon-badge">Kommer Snart</div>
+                    <div class="category-image">🏠</div>
+                    <div class="category-info">
+                        <h3 class="category-title">Smart Home</h3>
+                        <p class="category-description">
+                            Smarte løsninger til dit hjem - fra holdere til organizers
+                        </p>
+                        <span class="category-badge">Snart tilgængelig</span>
                     </div>
                 </div>
-            `).join('');
-        }
 
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const existingItem = cart.find(item => item.id === productId);
-            
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                cart.push({...product, quantity: 1});
-            }
-            
-            updateCart();
-        }
-
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            updateCart();
-        }
-
-        function updateCart() {
-            const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cart-count').textContent = cartCount;
-            
-            const cartItems = document.getElementById('cart-items');
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<div class="empty-cart">Din kurv er tom</div>';
-            } else {
-                cartItems.innerHTML = cart.map(item => `
-                    <div class="cart-item">
-                        <div>
-                            <strong>${item.name}</strong><br>
-                            ${item.price} kr × ${item.quantity}
-                        </div>
-                        <button onclick="removeFromCart(${item.id})" style="background: #ff4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">
-                            Fjern
-                        </button>
+                <div class="category-card coming-soon">
+                    <div class="coming-soon-badge">Kommer Snart</div>
+                    <div class="category-image">🎮</div>
+                    <div class="category-info">
+                        <h3 class="category-title">Gaming Accessories</h3>
+                        <p class="category-description">
+                            Perfekte tilbehør til gamere - headset holdere, kabel management og mere
+                        </p>
+                        <span class="category-badge">Snart tilgængelig</span>
                     </div>
-                `).join('');
-            }
-            
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('cart-total').textContent = total;
-        }
+                </div>
 
-        function toggleCart() {
-            const modal = document.getElementById('cart-modal');
-            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
-        }
+                <div class="category-card coming-soon">
+                    <div class="coming-soon-badge">Kommer Snart</div>
+                    <div class="category-image">💼</div>
+                    <div class="category-info">
+                        <h3 class="category-title">Kontor & Produktivitet</h3>
+                        <p class="category-description">
+                            Praktiske løsninger til dit skrivebord og kontor
+                        </p>
+                        <span class="category-badge">Snart tilgængelig</span>
+                    </div>
+                </div>
 
-        function checkout() {
-            if (cart.length === 0) {
-                alert('Din kurv er tom!');
-                return;
-            }
-            alert('Tak for din ordre! Dette er en demo-shop. I en rigtig shop ville du nu blive omdirigeret til betalingssiden.');
-        }
+                <div class="category-card coming-soon">
+                    <div class="coming-soon-badge">Kommer Snart</div>
+                    <div class="category-image">🎁</div>
+                    <div class="category-info">
+                        <h3 class="category-title">Personlige Gaver</h3>
+                        <p class="category-description">
+                            Unikke og personaliserede gaver til alle lejligheder
+                        </p>
+                        <span class="category-badge">Snart tilgængelig</span>
+                    </div>
+                </div>
 
-        displayProducts();
-    </script>
+                <div class="category-card coming-soon">
+                    <div class="coming-soon-badge">Kommer Snart</div>
+                    <div class="category-image">🔩</div>
+                    <div class="category-info">
+                        <h3 class="category-title">Værktøj & Opbevaring</h3>
+                        <p class="category-description">
+                            Smart opbevaring og organisering af værktøj og småting
+                        </p>
+                        <span class="category-badge">Snart tilgængelig</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="om">
+        <p><strong>TechBoks.dk</strong></p>
+        <p>3D printede tech-produkter i høj kvalitet</p>
+        <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdes.</p>
+        <div class="footer-links">
+            <a href="#">Kontakt</a>
+            <a href="#">Handelsbetingelser</a>
+            <a href="#">Privatlivspolitik</a>
+            <a href="#">Returpolitik</a>
+        </div>
+    </footer>
 </body>
 </html>
