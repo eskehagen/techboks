@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechBoks - Mustang Mach-E Gadgets</title>
+    <link rel="stylesheet" href="stl-viewer.css">
     <style>
         * {
             margin: 0;
@@ -131,6 +132,20 @@
             align-items: center;
             justify-content: center;
             font-size: 3rem;
+            position: relative;
+        }
+
+        .product-3d-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            z-index: 2;
         }
 
         .product-info {
@@ -316,6 +331,12 @@
         <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdes.</p>
     </footer>
 
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- STL Viewer Component -->
+    <script src="stl-viewer-component.js"></script>
+
     <script>
         const products = [
             {
@@ -323,52 +344,63 @@
                 name: "Personlig Nøglering",
                 description: "Tilpasset nøglering med dit navn eller initialer",
                 price: 49,
-                emoji: "🔑"
+                emoji: "🔑",
+                stlPath: "models/product-1.stl"
             },
             {
                 id: 2,
                 name: "Telefon Holder",
                 description: "Praktisk holder til dit skrivebord",
                 price: 89,
-                emoji: "📱"
+                emoji: "📱",
+                stlPath: "models/product-2.stl"
             },
             {
                 id: 3,
                 name: "Plante Urtepotte",
                 description: "Moderne design til dine små planter",
                 price: 79,
-                emoji: "🌱"
+                emoji: "🌱",
+                stlPath: "models/product-3.stl"
             },
             {
                 id: 4,
                 name: "Kabel Organizer",
                 description: "Hold styr på dine kabler",
                 price: 59,
-                emoji: "🔌"
+                emoji: "🔌",
+                stlPath: "models/product-4.stl"
             },
             {
                 id: 5,
                 name: "Bordlampefod",
                 description: "Elegant fod til din lampe",
                 price: 129,
-                emoji: "💡"
+                emoji: "💡",
+                stlPath: "models/product-5.stl"
             },
             {
                 id: 6,
                 name: "Krus Holder",
                 description: "Praktisk holder til din yndlingskrus",
                 price: 69,
-                emoji: "☕"
+                emoji: "☕",
+                stlPath: "models/product-6.stl"
             }
         ];
 
         let cart = [];
+        let viewers = [];
 
         function displayProducts() {
             const grid = document.getElementById('products');
             grid.innerHTML = products.map(product => `
                 <div class="product-card">
-                    <div class="product-image">${product.emoji}</div>
+                    <div class="product-image">
+                        <span class="product-3d-badge">🎨 3D Model</span>
+                        <div id="viewer-${product.id}" class="stl-viewer-container"></div>
+                        <div class="stl-viewer-hint">💡 Træk for at rotere • Scroll for zoom</div>
+                    </div>
                     <div class="product-info">
                         <h3 class="product-title">${product.name}</h3>
                         <p class="product-description">${product.description}</p>
@@ -379,6 +411,29 @@
                     </div>
                 </div>
             `).join('');
+
+            // Initialize 3D viewers for each product
+            setTimeout(() => {
+                products.forEach(product => {
+                    const container = document.getElementById(`viewer-${product.id}`);
+                    if (container) {
+                        try {
+                            const viewer = new STLViewer({
+                                container: container,
+                                stlPath: product.stlPath,
+                                autoRotate: true,
+                                color: '#667eea',
+                                height: '250px'
+                            });
+                            viewers.push(viewer);
+                        } catch (error) {
+                            console.error(`Failed to initialize viewer for product ${product.id}:`, error);
+                            // Fallback to emoji
+                            container.innerHTML = `<div style="font-size: 3rem; display: flex; align-items: center; justify-content: center; height: 100%;">${product.emoji}</div>`;
+                        }
+                    }
+                });
+            }, 100);
         }
 
         function addToCart(productId) {
@@ -437,7 +492,13 @@
             alert('Tak for din ordre! Dette er en demo-shop. I en rigtig shop ville du nu blive omdirigeret til betalingssiden.');
         }
 
+        // Initialize products
         displayProducts();
+
+        // Clean up viewers when page is unloaded
+        window.addEventListener('beforeunload', () => {
+            viewers.forEach(viewer => viewer.destroy());
+        });
     </script>
 </body>
 </html>
