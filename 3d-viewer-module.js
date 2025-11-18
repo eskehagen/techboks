@@ -22,7 +22,7 @@ export class Model3DViewer {
         
         // Check if THREE is available
         if (typeof THREE === 'undefined') {
-            console.error('THREE.js ikke fundet. Sørg for at inkludere Three.js biblioteket før dette modul.');
+            console.error('THREE.js blev ikke fundet. Sørg for at inkludere Three.js biblioteket før dette modul.');
             return;
         }
         
