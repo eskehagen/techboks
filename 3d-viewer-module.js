@@ -1,5 +1,5 @@
 // 3d-viewer-module.js
-// Modulær 3D viewer til .3mf filer med fuld farve-support
+// Modulær 3D viewer til STL filer med Three.js
 
 export class Model3DViewer {
     constructor(containerId, modelPath, options = {}) {
@@ -9,6 +9,7 @@ export class Model3DViewer {
             backgroundColor: options.backgroundColor || 0xf5f5f5,
             cameraDistance: options.cameraDistance || 150,
             autoRotate: options.autoRotate !== undefined ? options.autoRotate : true,
+            modelColor: options.modelColor || 0x667eea,
             showLoadingIndicator: options.showLoadingIndicator !== undefined ? options.showLoadingIndicator : true,
             ...options
         };
@@ -17,18 +18,11 @@ export class Model3DViewer {
         this.camera = null;
         this.renderer = null;
         this.model = null;
-        this.controls = null;
         this.animationId = null;
         
         // Check if THREE is available
         if (typeof THREE === 'undefined') {
             console.error('THREE.js ikke fundet. Sørg for at inkludere Three.js biblioteket før dette modul.');
-            return;
-        }
-        
-        // Check if JSZip is available
-        if (typeof JSZip === 'undefined') {
-            console.error('JSZip ikke fundet. Sørg for at inkludere JSZip biblioteket før dette modul.');
             return;
         }
         
@@ -49,7 +43,8 @@ export class Model3DViewer {
         // Camera
         const aspect = container.clientWidth / container.clientHeight;
         this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 2000);
-        this.camera.position.set(0, 50, this.options.cameraDistance);
+        this.camera.position.set(0, 0, this.options.cameraDistance);
+        this.camera.lookAt(0, 0, 0); // Look at center
 
         // Renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -57,19 +52,23 @@ export class Model3DViewer {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         container.appendChild(this.renderer.domElement);
 
-        // Lighting
+        // Lighting - better positioned for centered model
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
         this.scene.add(ambientLight);
 
         const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight1.position.set(1, 1, 1);
+        directionalLight1.position.set(100, 100, 100);
         this.scene.add(directionalLight1);
 
         const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.4);
-        directionalLight2.position.set(-1, -1, -1);
+        directionalLight2.position.set(-100, -100, -100);
         this.scene.add(directionalLight2);
+        
+        const directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.3);
+        directionalLight3.position.set(0, -100, 0);
+        this.scene.add(directionalLight3);
 
-        // Simple orbit controls (mouse drag to rotate)
+        // Setup controls
         this.setupControls();
 
         // Load model
@@ -165,240 +164,228 @@ export class Model3DViewer {
         const loadingDiv = container.querySelector('.loading-indicator');
 
         try {
-            console.log('Loading 3MF file:', this.modelPath);
+            console.log('🔄 Loading STL file:', this.modelPath);
             
-            // Load 3MF file
+            // Load STL file
             const response = await fetch(this.modelPath);
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
             }
             
             const arrayBuffer = await response.arrayBuffer();
-            console.log('3MF file loaded, size:', arrayBuffer.byteLength, 'bytes');
+            console.log('✅ STL file loaded, size:', arrayBuffer.byteLength, 'bytes');
             
-            // Parse 3MF file using JSZip
-            const zip = new JSZip();
-            const zipData = await zip.loadAsync(arrayBuffer);
-            console.log('ZIP parsed, files:', Object.keys(zipData.files));
+            // Parse STL
+            const geometry = this.parseSTL(arrayBuffer);
+            console.log('✅ STL parsed, vertices:', geometry.attributes.position.count);
             
-            // Parse the 3D model from 3MF
-            const model3D = await this.parse3MF(zipData);
+            // Compute geometry properties FIRST
+            geometry.computeBoundingBox();
+            geometry.computeBoundingSphere();
+            geometry.computeVertexNormals();
             
-            this.model = model3D;
-            this.scene.add(this.model);
-
-            // Center and scale model
-            const box = new THREE.Box3().setFromObject(this.model);
-            const center = box.getCenter(new THREE.Vector3());
-            const size = box.getSize(new THREE.Vector3());
+            // Create material
+            const material = new THREE.MeshPhongMaterial({
+                color: this.options.modelColor,
+                specular: 0x111111,
+                shininess: 200,
+                side: THREE.DoubleSide
+            });
             
-            console.log('Model size:', size);
-            console.log('Model center:', center);
+            // Create mesh
+            this.model = new THREE.Mesh(geometry, material);
             
-            // Center model
-            this.model.position.sub(center);
+            // Get bounding box info
+            const boundingBox = geometry.boundingBox;
+            const center = new THREE.Vector3();
+            boundingBox.getCenter(center);
             
-            // Scale to fit
+            const size = new THREE.Vector3();
+            boundingBox.getSize(size);
+            
+            console.log('📐 Model original size:', size);
+            console.log('📍 Model original center:', center);
+            
+            // CENTER THE MODEL AT ORIGIN (0,0,0)
+            // Method 1: Translate geometry vertices
+            geometry.translate(-center.x, -center.y, -center.z);
+            
+            // Recompute after translation
+            geometry.computeBoundingBox();
+            geometry.computeBoundingSphere();
+            
+            // Now model position is at origin
+            this.model.position.set(0, 0, 0);
+            
+            // SCALE MODEL TO FIT NICELY
             const maxDim = Math.max(size.x, size.y, size.z);
-            const scale = 100 / maxDim;
-            this.model.scale.multiplyScalar(scale);
+            const targetSize = 100; // Target size in scene units
+            const scale = targetSize / maxDim;
+            this.model.scale.setScalar(scale);
+            
+            console.log('📏 Applied scale:', scale);
+            console.log('📍 Final position:', this.model.position);
+            
+            // Add to scene
+            this.scene.add(this.model);
+            
+            // Adjust camera to fit model perfectly
+            this.fitCameraToModel();
 
             if (loadingDiv) {
                 loadingDiv.style.display = 'none';
             }
 
-            console.log('3MF model loaded successfully with colors!');
+            console.log('✅ STL model loaded and centered successfully!');
 
         } catch (error) {
-            console.error('Fejl ved indlæsning af 3D model:', error);
+            console.error('❌ Fejl ved indlæsning af STL model:', error);
             if (loadingDiv) {
-                loadingDiv.innerHTML = '<div style="color: #e74c3c; padding: 20px; text-align: center;"><strong>Kunne ikke indlæse 3D model</strong><br><small>' + error.message + '</small></div>';
+                loadingDiv.innerHTML = '<div style="color: #e74c3c; padding: 20px; text-align: center;"><strong>❌ Kunne ikke indlæse 3D model</strong><br><small>' + error.message + '</small></div>';
             }
         }
     }
 
-    async parse3MF(zip) {
-        // Read 3D/3dmodel.model file from the 3MF archive
-        const modelFile = zip.file('3D/3dmodel.model');
-        if (!modelFile) {
-            throw new Error('3dmodel.model ikke fundet i 3MF filen');
-        }
-
-        const xmlText = await modelFile.async('string');
-        console.log('XML loaded, length:', xmlText.length);
+    fitCameraToModel() {
+        if (!this.model) return;
         
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-
-        // Check for parsing errors
-        const parserError = xmlDoc.querySelector('parsererror');
-        if (parserError) {
-            throw new Error('XML parsing error: ' + parserError.textContent);
-        }
-
-        // Parse resources (materials/colors)
-        const materials = this.parse3MFMaterials(xmlDoc);
-        console.log('Materials parsed:', Object.keys(materials).length);
-
-        // Parse mesh objects
-        const objects = xmlDoc.getElementsByTagName('object');
-        console.log('Objects found:', objects.length);
+        // Get the bounding sphere for best camera positioning
+        const boundingSphere = this.model.geometry.boundingSphere;
+        const radius = boundingSphere.radius * this.model.scale.x; // Account for scale
         
-        const group = new THREE.Group();
-
-        for (let obj of objects) {
-            if (obj.getAttribute('type') === 'model') {
-                const mesh = this.parse3MFMesh(obj, materials);
-                if (mesh) {
-                    group.add(mesh);
-                }
-            }
-        }
-
-        if (group.children.length === 0) {
-            throw new Error('Ingen mesh objekter fundet i 3MF filen');
-        }
-
-        return group;
+        // Calculate ideal camera distance
+        const fov = this.camera.fov * (Math.PI / 180);
+        const distance = Math.abs(radius / Math.sin(fov / 2)) * 1.2; // 1.2 = padding factor
+        
+        console.log('📷 Camera distance calculated:', distance);
+        
+        // Position camera
+        this.camera.position.set(0, radius * 0.5, distance);
+        this.camera.lookAt(0, 0, 0);
+        
+        console.log('📷 Camera positioned at:', this.camera.position);
     }
 
-    parse3MFMaterials(xmlDoc) {
-        const materials = {};
-        const baseMaterials = xmlDoc.getElementsByTagName('basematerials');
+    parseSTL(arrayBuffer) {
+        const view = new DataView(arrayBuffer);
+        const isASCII = this.isASCIISTL(arrayBuffer);
         
-        console.log('Base materials groups found:', baseMaterials.length);
+        console.log('📄 STL format:', isASCII ? 'ASCII' : 'Binary');
         
-        if (baseMaterials.length > 0) {
-            const baseMaterialGroup = baseMaterials[0];
-            const bases = baseMaterialGroup.getElementsByTagName('base');
-            
-            console.log('Base materials found:', bases.length);
-            
-            for (let i = 0; i < bases.length; i++) {
-                const base = bases[i];
-                const name = base.getAttribute('name');
-                const displayColor = base.getAttribute('displaycolor');
-                
-                console.log(`Material ${i}: name="${name}", color="${displayColor}"`);
-                
-                if (displayColor) {
-                    // Convert #RRGGBBAA or #RRGGBB to Three.js color
-                    const colorHex = displayColor.substring(0, 7); // Remove alpha if present
-                    materials[i] = new THREE.MeshStandardMaterial({
-                        color: colorHex,
-                        roughness: 0.5,
-                        metalness: 0.1
-                    });
-                }
-            }
-        }
-
-        // Default material if none specified
-        if (Object.keys(materials).length === 0) {
-            console.log('No materials found, using default');
-            materials[0] = new THREE.MeshStandardMaterial({
-                color: 0x667eea,
-                roughness: 0.5,
-                metalness: 0.1
-            });
-        }
-
-        return materials;
-    }
-
-    parse3MFMesh(objElement, materials) {
-        const meshElement = objElement.getElementsByTagName('mesh')[0];
-        if (!meshElement) {
-            console.warn('No mesh element found in object');
-            return null;
-        }
-
-        const vertices = [];
-        const triangles = [];
-
-        // Parse vertices
-        const verticesElement = meshElement.getElementsByTagName('vertices')[0];
-        const vertexElements = verticesElement.getElementsByTagName('vertex');
-        
-        console.log('Vertices found:', vertexElements.length);
-        
-        for (let v of vertexElements) {
-            const x = parseFloat(v.getAttribute('x'));
-            const y = parseFloat(v.getAttribute('y'));
-            const z = parseFloat(v.getAttribute('z'));
-            vertices.push(new THREE.Vector3(x, y, z));
-        }
-
-        // Parse triangles
-        const trianglesElement = meshElement.getElementsByTagName('triangles')[0];
-        const triangleElements = trianglesElement.getElementsByTagName('triangle');
-        
-        console.log('Triangles found:', triangleElements.length);
-        
-        for (let t of triangleElements) {
-            const v1 = parseInt(t.getAttribute('v1'));
-            const v2 = parseInt(t.getAttribute('v2'));
-            const v3 = parseInt(t.getAttribute('v3'));
-            
-            // Get material/color for this triangle
-            const pid = t.getAttribute('pid') || t.getAttribute('p1') || '0';
-            const materialIndex = parseInt(pid);
-            
-            triangles.push({ v1, v2, v3, materialIndex });
-        }
-
-        // Check if we need multiple materials (multi-color model)
-        const uniqueMaterials = [...new Set(triangles.map(t => t.materialIndex))];
-        console.log('Unique materials used:', uniqueMaterials);
-        
-        if (uniqueMaterials.length === 1) {
-            // Single material mesh
-            const geometry = new THREE.BufferGeometry();
-            const positions = [];
-            
-            for (let tri of triangles) {
-                positions.push(
-                    vertices[tri.v1].x, vertices[tri.v1].y, vertices[tri.v1].z,
-                    vertices[tri.v2].x, vertices[tri.v2].y, vertices[tri.v2].z,
-                    vertices[tri.v3].x, vertices[tri.v3].y, vertices[tri.v3].z
-                );
-            }
-            
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            geometry.computeVertexNormals();
-            
-            const material = materials[uniqueMaterials[0]] || materials[0];
-            return new THREE.Mesh(geometry, material);
-            
+        if (isASCII) {
+            return this.parseASCIISTL(arrayBuffer);
         } else {
-            // Multi-material mesh - create separate mesh for each color
-            const group = new THREE.Group();
+            return this.parseBinarySTL(view);
+        }
+    }
+
+    isASCIISTL(arrayBuffer) {
+        const view = new Uint8Array(arrayBuffer);
+        const text = String.fromCharCode.apply(null, view.slice(0, 80));
+        return text.toLowerCase().indexOf('solid') === 0;
+    }
+
+    parseBinarySTL(view) {
+        // Binary STL format:
+        // 80 bytes header
+        // 4 bytes number of triangles
+        // For each triangle:
+        //   - 12 bytes normal (3x float32)
+        //   - 36 bytes vertices (3x 3x float32)
+        //   - 2 bytes attribute byte count (unused)
+        
+        const faces = view.getUint32(80, true); // little-endian
+        console.log('🔺 Triangles:', faces);
+        
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        const normals = [];
+        
+        for (let i = 0; i < faces; i++) {
+            const offset = 84 + i * 50;
             
-            for (let matIndex of uniqueMaterials) {
-                const geometry = new THREE.BufferGeometry();
-                const positions = [];
-                
-                const filteredTriangles = triangles.filter(t => t.materialIndex === matIndex);
-                console.log(`Material ${matIndex}: ${filteredTriangles.length} triangles`);
-                
-                for (let tri of filteredTriangles) {
-                    positions.push(
-                        vertices[tri.v1].x, vertices[tri.v1].y, vertices[tri.v1].z,
-                        vertices[tri.v2].x, vertices[tri.v2].y, vertices[tri.v2].z,
-                        vertices[tri.v3].x, vertices[tri.v3].y, vertices[tri.v3].z
-                    );
-                }
-                
-                geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-                geometry.computeVertexNormals();
-                
-                const material = materials[matIndex] || materials[0];
-                const mesh = new THREE.Mesh(geometry, material);
-                group.add(mesh);
+            // Read normal
+            const nx = view.getFloat32(offset, true);
+            const ny = view.getFloat32(offset + 4, true);
+            const nz = view.getFloat32(offset + 8, true);
+            
+            // Read 3 vertices
+            for (let j = 0; j < 3; j++) {
+                const vOffset = offset + 12 + j * 12;
+                vertices.push(
+                    view.getFloat32(vOffset, true),
+                    view.getFloat32(vOffset + 4, true),
+                    view.getFloat32(vOffset + 8, true)
+                );
+                normals.push(nx, ny, nz);
+            }
+        }
+        
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+        
+        return geometry;
+    }
+
+    parseASCIISTL(arrayBuffer) {
+        // ASCII STL format:
+        // solid name
+        //   facet normal nx ny nz
+        //     outer loop
+        //       vertex x y z
+        //       vertex x y z
+        //       vertex x y z
+        //     endloop
+        //   endfacet
+        // endsolid
+        
+        const text = new TextDecoder().decode(arrayBuffer);
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        const normals = [];
+        
+        // Regex patterns
+        const vertexPattern = /vertex\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)/g;
+        const normalPattern = /normal\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)/g;
+        
+        // Parse normals
+        let match;
+        const normalMatches = [];
+        while ((match = normalPattern.exec(text)) !== null) {
+            normalMatches.push([
+                parseFloat(match[1]),
+                parseFloat(match[3]),
+                parseFloat(match[5])
+            ]);
+        }
+        
+        console.log('🔺 Faces:', normalMatches.length);
+        
+        // Parse vertices
+        let faceIndex = 0;
+        let vertexCount = 0;
+        while ((match = vertexPattern.exec(text)) !== null) {
+            vertices.push(
+                parseFloat(match[1]),
+                parseFloat(match[3]),
+                parseFloat(match[5])
+            );
+            
+            // Apply normal for this face
+            if (normalMatches[faceIndex]) {
+                normals.push(...normalMatches[faceIndex]);
             }
             
-            return group;
+            vertexCount++;
+            if (vertexCount % 3 === 0) {
+                faceIndex++;
+            }
         }
+        
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+        
+        return geometry;
     }
 
     animate() {
@@ -438,6 +425,12 @@ export class Model3DViewer {
         }
         if (this.model) {
             this.scene.remove(this.model);
+            if (this.model.geometry) {
+                this.model.geometry.dispose();
+            }
+            if (this.model.material) {
+                this.model.material.dispose();
+            }
         }
     }
 }

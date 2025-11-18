@@ -341,11 +341,6 @@
                     </div>
                 </div>
                 <div class="viewer-label">🖱️ Interaktiv 3D model - Træk for at rotere</div>
-                <div class="viewer-controls">
-                    <span>🖱️ Træk med mus</span>
-                    <span>🔍 Scroll for zoom</span>
-                    <span>📱 Touch på mobil</span>
-                </div>
             </div>
 
             <!-- Product Info -->
@@ -386,13 +381,11 @@
     </div>
     
     <!-- Load dependencies in correct order -->
-    <!-- 1. JSZip first (needed to read .3mf files) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     
-    <!-- 2. Three.js second -->
+        <!-- Load Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
-    <!-- 3. Our 3D viewer module last -->
+    <!-- Our 3D viewer module -->
     <script type="module">
         // Import 3D Viewer Module
         import { Model3DViewer } from './3d-viewer-module.js';
@@ -419,15 +412,15 @@
             try {
                 console.log('Initializing 3D viewer...');
                 console.log('THREE available:', typeof THREE !== 'undefined');
-                console.log('JSZip available:', typeof JSZip !== 'undefined');
                 
                 viewer3d = new Model3DViewer(
                     'viewer3d-container',
-                    '3d-models/product-1.3mf',
+                    '3d-models/product-1.stl',
                     {
                         backgroundColor: 0xf5f5f5,
                         cameraDistance: 120,
                         autoRotate: true,
+                        modelColor: 0x667eea,
                         showLoadingIndicator: true
                     }
                 );
