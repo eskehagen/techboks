@@ -396,19 +396,17 @@
             const grid = document.getElementById('products');
             grid.innerHTML = products.map(product => `
                 <div class="product-card">
-                    <div class="product-image">
-                        <span class="product-3d-badge">🎨 3D Model</span>
-                        <div id="viewer-${product.id}" class="stl-viewer-container"></div>
-                        <div class="stl-viewer-hint">💡 Træk for at rotere • Scroll for zoom</div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">${product.name}</h3>
-                        <p class="product-description">${product.description}</p>
-                        <div class="product-price">${product.price} kr</div>
-                        <button class="add-to-cart" onclick="addToCart(${product.id})">
-                            Tilføj til kurv
-                        </button>
-                    </div>
+                    <a href="produkt-${product.id}.html" style="color:inherit;text-decoration:none;">
+                        <div class="product-image" style="padding:0;">
+                            <img src="produktbilleder/product-${product.id}.jpg" alt="${product.name}" style="width:100%;height:250px;object-fit:cover;"/>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">${product.name}</h3>
+                            <p class="product-description">${product.description}</p>
+                            <div class="product-price">${product.price} kr</div>
+                        </div>
+                    </a>
+                    <button class="add-to-cart" onclick="addToCart(${product.id})">Tilføj til kurv</button>
                 </div>
             `).join('');
 

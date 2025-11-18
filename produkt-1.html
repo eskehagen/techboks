@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personlig Nøglering – Mustang Mach-E Gadget</title>
+    <link rel="stylesheet" href="stl-viewer.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            background: #f7f8fa;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .product-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding: 2rem;
+            align-items: flex-start;
+        }
+        .product-images {
+            flex: 1 1 300px;
+            max-width: 340px;
+        }
+        .product-images img {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+        }
+        .viewer3d {
+            margin-top: 1rem;
+            height: 320px;
+        }
+        .details {
+            flex: 2 1 480px;
+        }
+        .details h1 {
+            margin-top: 0;
+            font-size: 2.2rem;
+            color: #667eea;
+        }
+        .price {
+            font-size: 1.5rem;
+            color: #764ba2;
+            font-weight: bold;
+            margin: 1.2rem 0 0.6rem 0;
+        }
+        .desc {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        .add-to-cart-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.9rem 2.2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+        }
+        .add-to-cart-btn:hover {
+            background: #5568d3;
+        }
+        .back-link {
+            display: inline-block;
+            margin: 0.7rem 0 0 0;
+            color: #667eea;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 800px) {
+            .product-gallery {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <nav style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;">
+            <a href="index.html" style="color:white;font-size:1.3rem;text-decoration:none;font-weight:bold;">TechBoks.dk</a>
+            <a href="mustang-mach-e.html" class="back-link" style="color:white;font-weight:500;">&#8592; Tilbage til Mustang Mach-E produkter</a>
+        </nav>
+    </div>
+    <div class="container">
+        <div class="product-gallery">
+            <div class="product-images">
+                <img src="produktbilleder/produkt-1.jpg" alt="Personlig Nøglering foto 1">
+                <img src="produktbilleder/produkt-1-2.jpg" alt="Personlig Nøglering foto 2">
+                <div class="viewer3d" id="viewer3d"></div>
+                <div style="font-size:0.95rem;color:#888;text-align:center;margin:0.5rem 0 0 0;">
+                    3D-model – Træk for at rotere, zoom med scroll
+                </div>
+            </div>
+            <div class="details">
+                <h1>Personlig Nøglering</h1>
+                <div class="price">49 kr</div>
+                <div class="desc">
+                    Få en personlig nøglering 3D-printet i høj kvalitet – perfekt som gave eller til dig selv! 
+                    Du kan vælge navn eller initialer. Printes i holdbart plast med flot finish.
+                    <ul>
+                        <li>Materiale: PLA-bio-plast</li>
+                        <li>Vælg selv tekst/navn (skriv ved bestilling)</li>
+                        <li>Flere farver mulige</li>
+                        <li>Designet til Mustang Mach-E fans, men vi kan lave til ALLE biler!</li>
+                    </ul>
+                </div>
+                <button class="add-to-cart-btn" onclick="alert('Tilføjet til kurv (demo)')">
+                    Tilføj til kurv
+                </button>
+                <br>
+                <a href="mustang-mach-e.html" class="back-link">&#8592; Tilbage til produktoversigten</a>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- STL Viewer logik (direkte i denne fil for enkelthed) -->
+    <script>
+        // Forudsætter stl-viewer-komponent, eller brug en inline minimal loader
+        function loadSTL(containerId, url, color) {
+            let width = document.getElementById(containerId).offsetWidth;
+            let height = 320;
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, width/height, 0.1, 1000);
+            camera.position.set(0,0,130);
+
+            const renderer = new THREE.WebGLRenderer({antialias:true});
+            renderer.setSize(width, height);
+            document.getElementById(containerId).appendChild(renderer.domElement);
+
+            const controls = {rotationY:0, rotationX:0, dragging:false,lastX:0,lastY:0};
+            let model;
+
+            const light1 = new THREE.DirectionalLight(0xffffff, 1);
+            light1.position.set(1,1,2);
+            scene.add(light1);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+
+            // Drag/flyt rotation support
+            renderer.domElement.addEventListener('mousedown', (e)=>{
+                controls.dragging = true; controls.lastX = e.clientX; controls.lastY = e.clientY;
+            });
+            renderer.domElement.addEventListener('mousemove', (e)=>{
+                if(controls.dragging && model){
+                    controls.rotationY += (e.clientX - controls.lastX)*0.01;
+                    controls.rotationX += (e.clientY - controls.lastY)*0.01;
+                    controls.lastX = e.clientX; controls.lastY = e.clientY;
+                }
+            });
+            renderer.domElement.addEventListener('mouseup', ()=>{ controls.dragging = false; });
+            renderer.domElement.addEventListener('wheel', (e)=>{
+                camera.position.z += e.deltaY * 0.1;
+                camera.position.z = Math.max(30, Math.min(300, camera.position.z));
+            });
+
+            // STL Loader
+            fetch(url).then(r=>r.arrayBuffer()).then(data=>{
+                const geo = parseSTL(data);
+                const mat = new THREE.MeshPhongMaterial({color: color||"#667eea", specular:0x222222, shininess:180});
+                model = new THREE.Mesh(geo, mat);
+
+                // Center & scale
+                geo.computeBoundingBox();
+                const center = new THREE.Vector3();
+                geo.boundingBox.getCenter(center);
+                model.position.sub(center);
+
+                const size = new THREE.Vector3();
+                geo.boundingBox.getSize(size);
+                let scale = 100/Math.max(size.x,size.y,size.z);
+                model.scale.setScalar(scale);
+
+                scene.add(model);
+            });
+
+            // STL Parsing helper
+            function parseSTL(data){
+                // kun binær
+                const view = new DataView(data);
+                const faces = view.getUint32(80, true);
+                const geo = new THREE.BufferGeometry();
+                const vertices = [],normals=[];
+                for (let i=0;i<faces;i++){
+                    let o=84+i*50;
+                    let nx=view.getFloat32(o,true), ny=view.getFloat32(o+4,true), nz=view.getFloat32(o+8,true);
+                    for (let j=0;j<3;j++){
+                        let vOff = o+12+j*12;
+                        vertices.push(view.getFloat32(vOff,true),view.getFloat32(vOff+4,true),view.getFloat32(vOff+8,true));
+                        normals.push(nx,ny,nz);
+                    }
+                }
+                geo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+                geo.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+                return geo;
+            }
+
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                if(model && !controls.dragging) model.rotation.y += 0.012;
+                if(model){
+                    model.rotation.x = controls.rotationX;
+                    model.rotation.y += controls.dragging?0:controls.rotationY;
+                }
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+        // Kald viewer
+        loadSTL('viewer3d', '3d-models/product-1.stl', '#667eea');
+    </script>
+</body>
+</html>
