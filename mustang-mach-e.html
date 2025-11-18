@@ -298,14 +298,14 @@
             <a href="index.html" class="logo">TechBoks.dk</a>
             <div class="nav-right">
                 <a href="index.html" class="back-btn">← Tilbage til forsiden</a>
-                <button class="cart-btn" onclick="toggleCart()">🛒 Kurv (<span id="cart-count">0</span>)</button>
+                <!-- <button class="cart-btn" onclick="toggleCart()">🛒 Kurv (<span id="cart-count">0</span>)</button> -->
             </div>
         </nav>
     </header>
 
     <div class="hero">
         <h1>Mustang Mach-E Gadgets</h1>
-        <p>3D produkter designet i høj kvalitet til din Mustang Mach-E</p>
+        <p>3D printede produkter i høj kvalitet til din Mustang Mach-E</p>
     </div>
 
     <div class="container">
@@ -313,7 +313,7 @@
         <div class="products-grid" id="products"></div>
     </div>
 
-    <div class="cart-modal" id="cart-modal">
+    <!-- <div class="cart-modal" id="cart-modal">
         <div class="cart-content">
             <div class="cart-header">
                 <h2>Din Kurv</h2>
@@ -325,7 +325,7 @@
             </div>
             <button class="checkout-btn" onclick="checkout()">Gå til betaling</button>
         </div>
-    </div>
+    </div> -->
 
     <footer>
         <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdes.</p>
@@ -341,49 +341,45 @@
         const products = [
             {
                 id: 1,
-                name: "Center Console Box",
+                name: "Center Konsol Boks",
                 description: "Organiser din midterkonsol under armlænet",
                 price: 90,
-                stlPath: "3d-models/product-1.stl"
             },
             {
                 id: 2,
-                name: "Front Box",
-                description: "Udnyt pladsen foran frontskærmen",
+                name: "Front Boks",
+                description: "Udnyt pladsen oppe foran frontskærmen",
                 price: 90,
-                stlPath: "3d-models/product-2.stl"
             },
             {
                 id: 3,
-                name: "Plante Urtepotte",
-                description: "Moderne design til dine små planter",
-                price: 79,
-                emoji: "🌱",
-                stlPath: "3d-models/product-3.stl"
+                name: "Vinter Cover",
+                description: "Beskyt din Mustang Mach-E's ladeport mod sne, is og skidt.",
+                price: 90,
             },
             {
                 id: 4,
-                name: "Kabel Organizer",
-                description: "Hold styr på dine kabler",
-                price: 59,
-                emoji: "🔌",
-                stlPath: "3d-models/product-4.stl"
+                name: "Kabel Ophæng",
+                description: "Ophæng til ladekabel",
+                price: 90,
             },
             {
                 id: 5,
-                name: "Bordlampefod",
-                description: "Elegant fod til din lampe",
-                price: 129,
-                emoji: "💡",
-                stlPath: "3d-models/product-5.stl"
+                name: "Kabel Ophæng (Large)",
+                description: "Ophæng til langt ladekabel",
+                price: 110,
             },
             {
                 id: 6,
-                name: "Krus Holder",
-                description: "Praktisk holder til din yndlingskrus",
-                price: 69,
-                emoji: "☕",
-                stlPath: "3d-models/product-6.stl"
+                name: "Anhængertræk Prop",
+                description: "Prop til anhængertræk med Mustang logo",
+                price: 40,
+            },
+            {
+                id: 6,
+                name: "Anhængertræk Prop",
+                description: "Prop til anhængertræk med Mustang logo",
+                price: 40,
             }
         ];
 
@@ -394,101 +390,76 @@
             const grid = document.getElementById('products');
             grid.innerHTML = products.map(product => `
                 <div class="product-card">
-                    <a href="product-${product.id}.html" style="color:inherit;text-decoration:none;">
+                    <a href="product_sites/product-${product.id}.html" style="color:inherit;text-decoration:none;">
                         <div class="product-image" style="padding:0;">
-                            <img src="images/product-${product.id}.jpg" alt="${product.name}" style="width:100%;height:250px;object-fit:cover;"/>
+                            <img src="images/product${product.id}.jpg" alt="${product.name}" style="width:100%;height:250px;object-fit:cover;"/>
                         </div>
                         <div class="product-info">
                             <h3 class="product-title">${product.name}</h3>
                             <p class="product-description">${product.description}</p>
                             <div class="product-price">${product.price} kr</div>
-                            <button class="add-to-cart" onclick="addToCart(${product.id})">
-                            Tilføj til kurv
                         </button>
                         </div>
                     </a>
                 </div>
             `).join('');
-
-            // Initialize 3D viewers for each product
-            setTimeout(() => {
-                products.forEach(product => {
-                    const container = document.getElementById(`viewer-${product.id}`);
-                    if (container) {
-                        try {
-                            const viewer = new STLViewer({
-                                container: container,
-                                stlPath: product.stlPath,
-                                autoRotate: true,
-                                color: '#667eea',
-                                height: '250px'
-                            });
-                            viewers.push(viewer);
-                        } catch (error) {
-                            console.error(`Failed to initialize viewer for product ${product.id}:`, error);
-                            // Fallback to emoji
-                            container.innerHTML = `<div style="font-size: 3rem; display: flex; align-items: center; justify-content: center; height: 100%;">${product.emoji}</div>`;
-                        }
-                    }
-                });
-            }, 100);
         }
 
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const existingItem = cart.find(item => item.id === productId);
+        // function addToCart(productId) {
+        //     const product = products.find(p => p.id === productId);
+        //     const existingItem = cart.find(item => item.id === productId);
             
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                cart.push({...product, quantity: 1});
-            }
+        //     if (existingItem) {
+        //         existingItem.quantity++;
+        //     } else {
+        //         cart.push({...product, quantity: 1});
+        //     }
             
-            updateCart();
-        }
+        //     updateCart();
+        // }
 
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            updateCart();
-        }
+        // function removeFromCart(productId) {
+        //     cart = cart.filter(item => item.id !== productId);
+        //     updateCart();
+        // }
 
-        function updateCart() {
-            const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cart-count').textContent = cartCount;
+        // function updateCart() {
+        //     const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        //     document.getElementById('cart-count').textContent = cartCount;
             
-            const cartItems = document.getElementById('cart-items');
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<div class="empty-cart">Din kurv er tom</div>';
-            } else {
-                cartItems.innerHTML = cart.map(item => `
-                    <div class="cart-item">
-                        <div>
-                            <strong>${item.name}</strong><br>
-                            ${item.price} kr × ${item.quantity}
-                        </div>
-                        <button onclick="removeFromCart(${item.id})" style="background: #ff4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">
-                            Fjern
-                        </button>
-                    </div>
-                `).join('');
-            }
+        //     const cartItems = document.getElementById('cart-items');
+        //     if (cart.length === 0) {
+        //         cartItems.innerHTML = '<div class="empty-cart">Din kurv er tom</div>';
+        //     } else {
+        //         cartItems.innerHTML = cart.map(item => `
+        //             <div class="cart-item">
+        //                 <div>
+        //                     <strong>${item.name}</strong><br>
+        //                     ${item.price} kr × ${item.quantity}
+        //                 </div>
+        //                 <button onclick="removeFromCart(${item.id})" style="background: #ff4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">
+        //                     Fjern
+        //                 </button>
+        //             </div>
+        //         `).join('');
+        //     }
             
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('cart-total').textContent = total;
-        }
+        //     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        //     document.getElementById('cart-total').textContent = total;
+        // }
 
-        function toggleCart() {
-            const modal = document.getElementById('cart-modal');
-            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
-        }
+        // function toggleCart() {
+        //     const modal = document.getElementById('cart-modal');
+        //     modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        // }
 
-        function checkout() {
-            if (cart.length === 0) {
-                alert('Din kurv er tom!');
-                return;
-            }
-            alert('Tak for din ordre! Dette er en demo-shop. I en rigtig shop ville du nu blive omdirigeret til betalingssiden.');
-        }
+        // function checkout() {
+        //     if (cart.length === 0) {
+        //         alert('Din kurv er tom!');
+        //         return;
+        //     }
+        //     alert('Tak for din ordre! Dette er en demo-shop. I en rigtig shop ville du nu blive omdirigeret til betalingssiden.');
+        // }
 
         // Initialize products
         displayProducts();

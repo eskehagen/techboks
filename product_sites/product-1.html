@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Center Console Box – Mustang Mach-E Gadget</title>
+    <title>Center Konsol Boks – Mustang Mach-E Gadget</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -329,7 +329,7 @@
             <!-- Media Section (Images + 3D Viewer) -->
             <div class="product-media">
                 <div class="main-image-container" onclick="openGallery(0)">
-                    <img id="mainImage" class="main-image" src="images/centerConsol1.jpg" alt="Center Console Box">
+                    <img id="mainImage" class="main-image" src="../images/centerConsol1.jpg" alt="Center Console Box">
                     <div class="zoom-hint">🔍 Klik for flere billeder</div>
                 </div>
                 
@@ -345,7 +345,7 @@
 
             <!-- Product Info -->
             <div class="product-info">
-                <h1>Center Console Box</h1>
+                <h1>Center Konsol Boks</h1>
                 <div class="price">90 kr</div>
                 <div class="description">
                     <p>
@@ -359,10 +359,6 @@
                         <li><strong>Anvendelse:</strong> Placeres i midterkonsollen under armlænet</li>
                     </ul>
                 </div>
-                <button class="add-to-cart-btn" onclick="addToCart()">
-                    🛒 Tilføj til kurv
-                </button>
-                <br>
                 <a href="mustang-mach-e.html" class="back-to-list">&#8592; Se alle produkter</a>
             </div>
         </div>
@@ -387,13 +383,13 @@
     <!-- Our 3D viewer module -->
     <script type="module">
         // Import 3D Viewer Module
-        import { Model3DViewer } from './3d-viewer-module.js';
+        import { Model3DViewer } from '../3d-viewer-module.js';
 
         // Image Gallery Configuration
         const productImages = [
-            'images/centerConsol1.jpg',
-            'images/centerConsol2.jpg',
-            'images/centerConsol3.jpg',
+            '../images/centerConsol1.jpg',
+            '../images/centerConsol2.jpg',
+            '../images/centerConsol3.jpg',
         ];
 
         let currentImageIndex = 0;
@@ -414,7 +410,7 @@
                 
                 viewer3d = new Model3DViewer(
                     'viewer3d-container',
-                    '3d-models/product-1.stl',
+                    '../3d-models/centerboks.stl',
                     {
                         backgroundColor: 0xf5f5f5,
                         cameraDistance: 120,
