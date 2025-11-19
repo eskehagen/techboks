@@ -235,6 +235,42 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
 
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            background: #4caf50;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .error-message {
+            background: #f44336;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
         .info-section {
             max-width: 800px;
             margin: 4rem auto;
@@ -333,16 +369,29 @@
 
             <div class="contact-card">
                 <div class="contact-icon">📍</div>
-                <h3>Afhentning</h3>
-                <p>Afhent din ordre</p>
-                <p>Aarhus Nord, Danmark</p>
+                <h3>Levering</h3>
+                <p>Ordre kan sendes eller</p>
+                <p>afhentes i Aarhus N</p>
             </div>
         </div>
     </section>
 
     <section class="contact-form-section">
         <h2>Send mig en besked</h2>
-        <form class="contact-form" action="#" method="POST">
+        <div class="success-message" id="successMessage">
+            ✓ Tak for din besked! Jeg vender tilbage hurtigst muligt.
+        </div>
+        <div class="error-message" id="errorMessage">
+            ✗ Der opstod en fejl. Prøv venligst igen eller kontakt mig direkte via email.
+        </div>
+        <form class="contact-form" id="contactForm" action="https://formsubmit.co/eskehagen@gmail.com" method="POST">
+            <!-- FormSubmit configuration -->
+            <input type="hidden" name="_subject" value="Ny besked fra TechBoks.dk">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_template" value="table">
+            <input type="text" name="_honey" style="display:none">
+            <input type="hidden" name="_next" value="https://techboks.dk/kontakt.html?success=true">
+            
             <div class="form-group">
                 <label for="name">Navn</label>
                 <input type="text" id="name" name="name" required>
@@ -368,7 +417,7 @@
                 <textarea id="message" name="message" required></textarea>
             </div>
 
-            <button type="submit" class="submit-btn">Send Besked</button>
+            <button type="submit" class="submit-btn" id="submitBtn">Send Besked</button>
         </form>
     </section>
 
@@ -387,5 +436,35 @@
         <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdt.</p>
         <p><a href="kontakt.html">Kontakt</a> | <a href="index.html">Tilbage til Forsiden</a></p>
     </footer>
+
+    <script>
+        // Check if form was submitted successfully
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.classList.add('show');
+            
+            // Scroll to success message
+            successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Remove success parameter from URL without reloading
+            window.history.replaceState({}, document.title, 'kontakt.html');
+            
+            // Hide message after 10 seconds
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 10000);
+        }
+
+        // Add form submission handling
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        form.addEventListener('submit', function(e) {
+            // Disable button to prevent double submission
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sender...';
+        });
+    </script>
 </body>
 </html>
