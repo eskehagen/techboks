@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handelsbetingelser - TechBoks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><path d="M10 10h80v80H10z" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .terms-list {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .terms-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .terms-list li {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            position: relative;
+            color: #555;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .terms-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .terms-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .term-item {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .term-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.15);
+        }
+
+        .term-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .term-item h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .term-item p {
+            color: #555;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .contact-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .contact-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-box p {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-box a {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            border-bottom: 2px solid white;
+            transition: opacity 0.3s;
+        }
+
+        .contact-box a:hover {
+            opacity: 0.8;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        footer a:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .terms-list {
+                padding: 1.5rem;
+            }
+
+            .term-item {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">TechBoks</div>
+            <div class="nav-links">
+                <a href="index.html">Forside</a>
+                <a href="kontakt.html">Kontakt</a>
+                <a href="handelsbetingelser.html">Handelsbetingelser</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>Handelsbetingelser</h1>
+            <p>Læs om vilkår for køb og levering hos TechBoks</p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2>Betingelser for handel</h2>
+        <div class="terms-list">
+            <h3 style="color: #667eea; margin-bottom: 1.5rem; font-size: 1.4rem;">Generelle betingelser</h3>
+            <ul>
+                <li>Alle produkter er 3D printede og fremstilles efter behov og bestilling.</li>
+                <li>Ved bestilling accepterer du disse handelsbetingelser.</li>
+                <li>Priser er angivet i danske kroner (DKK) inklusiv moms, men eksklusiv fragt medmindre andet er angivet.</li>
+                <li>TechBoks forbeholder sig ret til prisændringer og ændringer i produktspecifikationer uden forudgående varsel.</li>
+            </ul>
+
+            <h3 style="color: #667eea; margin: 2rem 0 1.5rem 0; font-size: 1.4rem;">Bestilling og bekræftelse</h3>
+            <ul>
+                <li>Bestillinger skal bekræftes skriftligt via email eller besked.</li>
+                <li>En ordre er først bindende når der modtages en ordrebekræftelse fra TechBoks.</li>
+            </ul>
+
+            <h3 style="color: #667eea; margin: 2rem 0 1.5rem 0; font-size: 1.4rem;">Betaling</h3>
+            <ul>
+                <li>Betaling kan ske via MobilePay eller bankoverførsel.</li>
+                <li>Betaling skal være modtaget før ordren sendes eller kan afhentes.</li>
+                <li>Ved manglende betaling forbeholdes retten til at annullere ordren og beregne et gebyr for allerede påbegyndt produktion.</li>
+            </ul>
+
+            <h3 style="color: #667eea; margin: 2rem 0 1.5rem 0; font-size: 1.4rem;">Levering</h3>
+            <ul>
+                <li>Der tilstræbes 7-10 dages leveringstid. Leveringstiden kan variere afhængigt af produktets kompleksitet og lagerstatus.</li>
+                <li>Leveringstider er vejledende og ikke garanterede. Forsinkelser giver ikke ret til annullering eller erstatning.</li>
+                <li>Det er både muligt at afhente produkter personligt efter aftale, eller få dem sendt med posten. Fragtomkostninger tilkommer ved forsendelse.</li>
+                <li>Risikoen for produktet overgår til køber ved levering/afhentning. Ved forsendelse sker det når produktet afleveres til transportøren.</li>
+                <li>Køber er ansvarlig for at angive korrekt leveringsadresse. Ekstra omkostninger ved fejlagtige adresser afholdes af køber.</li>
+            </ul>
+
+            <h3 style="color: #667eea; margin: 2rem 0 1.5rem 0; font-size: 1.4rem;">Fortrydelsesret og returnering</h3>
+            <ul>
+                <li>Da produkterne er specialfremstillede, er fortrydelsesretten som udgangspunkt frafaldet jf. forbrugeraftalelovens § 18, stk. 2, nr. 3.</li>
+                <li>Der ydes ingen returret på specialdesignede eller personaliserede produkter, medmindre produktet er defekt ved modtagelse.</li>
+                <li>Ved modtagelse af defekte eller fejlagtige produkter kontakt TechBoks straks. Der vil blive fundet en løsning i form af ombytning eller refusion.</li>
+            </ul>
+
+            <h3 style="color: #667eea; margin: 2rem 0 1.5rem 0; font-size: 1.4rem;">Reklamation og garanti</h3>
+            <ul>
+                <li>Ved reklamationer bedes køber kontakte TechBoks inden for 14 dage efter modtagelse af produktet.</li>
+                <li>Der gives 2 års reklamationsret på produktfejl og mangler jf. købeloven.</li>
+                <li>Reklamationsretten dækker ikke skader opstået ved forkert brug, almindeligt slid, uheld eller ændringer foretaget af køber.</li>
+                <li>Ved berettiget reklamation vil produktet blive repareret, ombytet eller pengene refunderet efter TechBoks' vurdering.</li>
+                <li>Returnering ved reklamation skal ske i holdbar emballage og forsvarlig indpakning. Returomkostninger afholdes af køber, men refunderes ved berettiget reklamation.</li>
+            </ul>
+
+            <h3 style="color: #667eea; margin: 2rem 0 1.5rem 0; font-size: 1.4rem;">Produktansvar og ansvarsfraskrivelse</h3>
+            <ul>
+                <li>Produkterne er fremstillet med omhu, men 3D-printede produkter kan have mindre variationer i finish og præcision.</li>
+                <li>TechBoks er ikke ansvarlig for indirekte tab, driftstab eller følgeskader ved brug af produkterne.</li>
+                <li>Produkter skal bruges efter hensigten. TechBoks påtager sig intet ansvar for skader ved forkert anvendelse.</li>
+                <li>TechBoks er ikke ansvarlig for forsinkelser eller manglende levering som følge af force majeure, herunder strejke, lockout, brand, krig, naturkatastrofer eller lignende.</li>
+            </ul>
+
+            <h3 style="color: #667eea; margin: 2rem 0 1.5rem 0; font-size: 1.4rem;">Persondata og GDPR</h3>
+            <ul>
+                <li>Dine personoplysninger behandles fortroligt og kun til brug for ordrens gennemførelse.</li>
+                <li>Kun nødvendige oplysninger (navn, adresse, email, telefon) opbevares og deles dem ikke med tredjeparter.</li>
+                <li>Køber har ret til indsigt, rettelse og sletning af dine personoplysninger. Kontakt TechBoks for udøvelse af disse rettigheder.</li>
+            </ul>
+
+            <h3 style="color: #667eea; margin: 2rem 0 1.5rem 0; font-size: 1.4rem;">Immaterielle rettigheder</h3>
+            <ul>
+                <li>Alle produktdesigns, billeder og beskrivelser på hjemmesiden er beskyttet af ophavsret og må ikke kopieres eller anvendes uden tilladelse.</li>
+                <li>Køb af et produkt giver ikke ret til at kopiere, reproducere eller videresælge designet.</li>
+            </ul>
+
+            <h3 style="color: #667eea; margin: 2rem 0 1.5rem 0; font-size: 1.4rem;">Tvistløsning</h3>
+            <ul>
+                <li>Eventuelle tvister søges løst i mindelighed. Kan der ikke opnås enighed, kan sagen indbringes for Konkurrence- og Forbrugerstyrelsens Center for Klageløsning (www.forbrug.dk).</li>
+                <li>Dansk ret finder anvendelse på alle handler.</li>
+            </ul>
+        </div>
+
+        <div class="contact-box">
+            <h3>Har du spørgsmål?</h3>
+            <p>Kontakt mig gerne hvis du har spørgsmål til handelsbetingelserne</p>
+            <a href="kontakt.html">Gå til kontakt →</a>
+        </div>
+    </section>
+
+    <footer>
+        <p><strong>TechBoks.dk</strong></p>
+        <p>3D printede produkter i høj kvalitet</p>
+        <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdt.</p>
+        <p><a href="kontakt.html">Kontakt</a> | <a href="handelsbetingelser.html">Handelsbetingelser</a> | <a href="index.html">Forside</a></p>
+    </footer>
+</body>
+</html>
