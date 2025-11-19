@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ladekabel Ophæng Large – Mustang Mach-E Gadget</title>
+    <title>Front Boks Mobil-mount – Mustang Mach-E Gadget</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -319,8 +319,8 @@
 <body>
     <div class="header">
         <nav>
-            <a href="index.html" class="logo">TechBoks.dk</a>
-            <a href="mustang-mach-e.html" class="back-link">&#8592; Tilbage til Mustang Mach-E produkter</a>
+            <a href="../index.html" class="logo">TechBoks.dk</a>
+            <a href="../mustang-mach-e.html" class="back-link">&#8592; Tilbage til Mustang Mach-E produkter</a>
         </nav>
     </div>
 
@@ -329,7 +329,7 @@
             <!-- Media Section (Images + 3D Viewer) -->
             <div class="product-media">
                 <div class="main-image-container" onclick="openGallery(0)">
-                    <img id="mainImage" class="main-image" src="../images/ladekabel_large1.jpg" alt="Ladekabel Ophæng">
+                    <img id="mainImage" class="main-image" src="../images/frontBoxPhone.jpg" alt="Front Boks Mobil Mount">
                     <div class="zoom-hint">🔍 Klik for flere billeder</div>
                 </div>
                 
@@ -345,21 +345,26 @@
 
             <!-- Product Info -->
             <div class="product-info">
-                <h1>Ladekabel Ophæng (Large)</h1>
-                <div class="price">150 kr</div>
+                <h1>Front Boks Mobil-mount</h1>
+                <div class="price">40 kr</div>
                 <div class="description">
                     <p>
-                        Hæng dit ladekabel pænt op med dette specialdesignede ophæng til Mustang Mach-E.
-                        <br> Denne model er til lange ladekabler (op til 20 meter).
-                        <br> Kablet hænger sikkert, mens ladestikket klikkes fast i ophænget.
+                        Dette er en add-on til Fron Boksen. Et mount til at montere en mobilholder, så du kan placere telefonen sikkert under kørsel.
+                        <br> Jeg bruger selv en MagSafe oplader/holder til min mobil. 
+                        <br> Perfekt placeret i forhold til rattet. Nem tilgængelig under kørsel.
+                        <br> *<a href="frontboks.html" style="color: #667eea; text-decoration: underline;">Front Boks</a> skal købes separat.
+                        <br> *OBS! Mobilholder medfølger ikke.
                     </p>
                     <ul>
-                        <li><strong>Materiale:</strong> PETG (vejrbestandig)</li>
-                        <li><strong>Farver:</strong> Vælg selv farve af logo</li>
-                        <li><strong>Anvendelse:</strong> Ophæng på væggen og monter ladekablet</li>
+                        <li><strong>Materiale:</strong> PETG</li>
+                        <li><strong>Kompatibilitet:</strong> Diverse mobilholdere kan monteres</li>
+                        <li><strong>Montering:</strong> Placeret på Front Boksen</li>
                     </ul>
+                    <p style="margin-top: 1rem; font-style: italic; color: #666;">
+                        <strong>OBS:</strong> Kræver MagSafe-kompatibel telefon eller magnetisk cover. Front boks sælges separat.
+                    </p>
                 </div>
-                <a href="mustang-mach-e.html" class="back-to-list">&#8592; Se alle produkter</a>
+                <a href="../mustang-mach-e.html" class="back-to-list">&#8592; Se alle produkter</a>
             </div>
         </div>
     </div>
@@ -387,10 +392,9 @@
 
         // Image Gallery Configuration
         const productImages = [
-            '../images/ladekabel_large1.jpg',
-            '../images/ladekabel_large2.jpg',
-            '../images/ladekabel_large3.jpg',
-            '../images/ladekabel_rod.jpg',
+            '../images/frontBoxPhone.jpg',
+            '../images/frontBoxMagsafe3.jpg',
+            '../images/frontBoxMagsafe2.jpg',
         ];
 
         let currentImageIndex = 0;
@@ -411,7 +415,7 @@
                 
                 viewer3d = new Model3DViewer(
                     'viewer3d-container',
-                    '../3d-models/product-4.stl',
+                    '../3d-models/frontboksmobilmount.stl',
                     {
                         backgroundColor: 0xf5f5f5,
                         cameraDistance: 120,
@@ -504,4 +508,4 @@
     </script>
 
 </body>
-</html>>
+</html>

@@ -327,8 +327,13 @@
         </div>
     </div> -->
 
-    <footer>
-        <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdes.</p>
+    <footer id="om">
+        <p><strong>TechBoks.dk</strong></p>
+        <p>3D printede produkter i høj kvalitet</p>
+        <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdt.</p>
+        <div class="footer-links">
+            <a href="kontakt.html">Kontakt</a>
+        </div>
     </footer>
 
     <!-- Three.js Library -->
@@ -340,47 +345,111 @@
     <script>
         const products = [
             {
-                id: 1,
+                id: 'centerboks',
                 name: "Center Konsol Boks",
                 description: "Organiser din midterkonsol under armlænet",
                 price: 90,
+                image: 'centerConsol1.jpg'
             },
             {
-                id: 2,
+                id: 'frontboks',
                 name: "Front Boks",
                 description: "Udnyt pladsen oppe foran frontskærmen",
                 price: 90,
+                image: 'frontBox1.jpg'
             },
             {
-                id: 3,
+                id: 'vinterdeksel',
                 name: "Vinter Cover",
                 description: "Beskyt din Mustang Mach-E's ladeport mod sne, is og skidt.",
                 price: 90,
+                image: 'vinterCover1.jpg'
             },
             {
-                id: 4,
-                name: "Kabel Ophæng",
-                description: "Ophæng til ladekabel",
+                id: '6pack',
+                name: "Mustang 6-pack til Dåser",
+                description: "Unik 6-pack holder til dåser - ta' dine drikkevarer med på farten",
+                price: 150,
+                image: 'case6pack4.jpg'
+            },
+            {
+                id: 'kabelophang',
+                name: "Ladekabel Ophæng (Std)",
+                description: "Ophæng almindeligt ladekabel til hesten",
                 price: 90,
+                image: 'ladekabel_hvid.jpg',
             },
             {
-                id: 5,
-                name: "Kabel Ophæng (Large)",
-                description: "Ophæng til langt ladekabel",
-                price: 110,
+                id: 'kabelophanglarge',
+                name: "Ladekabel Ophæng (Large)",
+                description: "Ophæng langt ladekabel til hesten",
+                price: 150,
+                image: 'ladekabel_large1.jpg'
             },
             {
-                id: 6,
+                id: 'anhangerprop',
                 name: "Anhængertræk Prop",
-                description: "Prop til anhængertræk med Mustang logo",
+                description: "Beskyt og pynt dit anhængertræk med denne Mustang prop",
                 price: 40,
+                image: 'anhangerProp.jpg'
             },
             {
-                id: 6,
-                name: "Anhængertræk Prop",
-                description: "Prop til anhængertræk med Mustang logo",
+                id: 'hattehyldeclips',
+                name: "Hattehylde Clips",
+                description: "Praktiske clips til at fastgøre hattehylden sikkert. Pris for 2 stk.",
                 price: 40,
-            }
+                image: 'hattehyldeClips1.jpg'
+            },
+            {
+                id: 'skraldespand',
+                name: "Skraldespand til Sidedør",
+                description: "Smart skraldespand der monteres i sidedøren - hold bilen ren og ryddelig",
+                price: 70,
+                image: 'trashBin1.jpg'
+            },
+            {
+                id: 'nakkestottekrog',
+                name: "Nakkestøtte Krog",
+                description: "Praktisk krog til nakkestøtten - perfekt til tasker, bøjler og indkøbsposer",
+                price: 40,
+                image: 'nakkestotteKrog3.jpg'
+            },
+            {
+                id: 'bagagerumkrog',
+                name: "Bagagerum Krog",
+                description: "Praktisk krog til bagagerummet - perfekt til at hænge paraplyen eller fastgøre ting. Pris for 2 stk.",
+                price: 60,
+                image: 'bagagerumkrog.jpg'
+            },
+            {
+                id: 'frontboksmobilmount',
+                name: "Front Boks Mobil-mount",
+                description: "Smart mount til en mobilholder til front boksen",
+                price: 40,
+                image: 'frontBoxPhone.jpg'
+            },
+            {
+                id: 'skillerum',
+                name: "Skillerum til Bagagerum",
+                description: "Organiser bagagerummet med praktiske skillerum - hold tingene på plads",
+                price: 60,
+                image: 'floorHolder1.jpg'
+            },
+            {
+                id: 'hattehyldekrog',
+                name: "Hattehylde Ophængskrog (Reservedel)",
+                description: "Ophængskrog til hattehylden - hvis din originale er knækket",
+                price: 80,
+                image: 'hattehyldeMount.jpg'
+            },
+            {
+                id: 'gulvmattetemplate',
+                name: "Gulvmåtte Template",
+                description: "Skabelon til at børste Mustang Logo på dine gulvmåtter",
+                price: 70,
+                image: 'gulvmattetemplate.jpg'
+            },
+            
         ];
 
         let cart = [];
@@ -390,9 +459,9 @@
             const grid = document.getElementById('products');
             grid.innerHTML = products.map(product => `
                 <div class="product-card">
-                    <a href="product_sites/product-${product.id}.html" style="color:inherit;text-decoration:none;">
+                    <a href="product_sites/${product.id}.html" style="color:inherit;text-decoration:none;">
                         <div class="product-image" style="padding:0;">
-                            <img src="images/product${product.id}.jpg" alt="${product.name}" style="width:100%;height:250px;object-fit:cover;"/>
+                            <img src="images/${product.image}" alt="${product.name}" style="width:100%;height:250px;object-fit:cover;"/>
                         </div>
                         <div class="product-info">
                             <h3 class="product-title">${product.name}</h3>
@@ -469,5 +538,6 @@
             viewers.forEach(viewer => viewer.destroy());
         });
     </script>
+
 </body>
 </html>

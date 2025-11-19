@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ladekabel Ophæng – Mustang Mach-E Gadget</title>
+    <title>Hattehylde Clips – Mustang Mach-E Gadget</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -319,8 +319,8 @@
 <body>
     <div class="header">
         <nav>
-            <a href="index.html" class="logo">TechBoks.dk</a>
-            <a href="mustang-mach-e.html" class="back-link">&#8592; Tilbage til Mustang Mach-E produkter</a>
+            <a href="../index.html" class="logo">TechBoks.dk</a>
+            <a href="../mustang-mach-e.html" class="back-link">&#8592; Tilbage til Mustang Mach-E produkter</a>
         </nav>
     </div>
 
@@ -329,7 +329,7 @@
             <!-- Media Section (Images + 3D Viewer) -->
             <div class="product-media">
                 <div class="main-image-container" onclick="openGallery(0)">
-                    <img id="mainImage" class="main-image" src="../images/ladekabel_hvid.jpg" alt="Ladekabel Ophæng">
+                    <img id="mainImage" class="main-image" src="../images/hattehyldeClips1.jpg" alt="Hattehylde Clips">
                     <div class="zoom-hint">🔍 Klik for flere billeder</div>
                 </div>
                 
@@ -345,22 +345,19 @@
 
             <!-- Product Info -->
             <div class="product-info">
-                <h1>Ladekabel Ophæng (Standard)</h1>
-                <div class="price">90 kr</div>
+                <h1>Hattehylde Clips</h1>
+                <div class="price">40 kr</div>
                 <div class="description">
                     <p>
-                        Hæng dit ladekabel pænt op med dette specialdesignede ophæng til Mustang Mach-E.
-                        <br> Denne model er til standard ladekabler (op til 10 meter).
-                        <br> Kablet hænger sikkert, mens ladestikket klikkes fast i ophænget.
-                        <br> Skruehullerne er specialtilpasset Zaptec Go Ladeboks.
+                        Er du også træt af en hattehylde, der altid falder ned når du åbner bagagerummet.
+                        <br> Her er løsningen! Clipsene sikrer, at hattehylden ikke løsner sig fra bilens ophæng.
                     </p>
                     <ul>
-                        <li><strong>Materiale:</strong> PETG (vejrbestandig)</li>
-                        <li><strong>Farver:</strong> Vælg selv farve af logo</li>
-                        <li><strong>Anvendelse:</strong> Ophæng på væggen og monter ladekablet</li>
+                        <li><strong>Materiale:</strong> PETG (varmebestandig og holdbar)</li>
+                        <li><strong>Indhold:</strong> 2 stk clips til montering af en hattehylde</li>
                     </ul>
                 </div>
-                <a href="mustang-mach-e.html" class="back-to-list">&#8592; Se alle produkter</a>
+                <a href="../mustang-mach-e.html" class="back-to-list">&#8592; Se alle produkter</a>
             </div>
         </div>
     </div>
@@ -388,10 +385,8 @@
 
         // Image Gallery Configuration
         const productImages = [
-            '../images/ladekabel_hvid.jpg',
-            '../images/ladekabel_std1.jpg',
-            '../images/ladekabel_std2.jpg',
-            '../images/ladekabel_rod.jpg',
+            '../images/hattehyldeClips1.jpg',
+            '../images/hattehyldeClips2.jpg',
         ];
 
         let currentImageIndex = 0;
@@ -412,7 +407,7 @@
                 
                 viewer3d = new Model3DViewer(
                     'viewer3d-container',
-                    '../3d-models/product-4.stl',
+                    '../3d-models/hattehyldeclips.stl',
                     {
                         backgroundColor: 0xf5f5f5,
                         cameraDistance: 120,

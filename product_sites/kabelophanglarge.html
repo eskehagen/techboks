@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anhængertræk Prop – Mustang Mach-E Gadget</title>
+    <title>Ladekabel Ophæng Large – Mustang Mach-E Gadget</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -329,7 +329,7 @@
             <!-- Media Section (Images + 3D Viewer) -->
             <div class="product-media">
                 <div class="main-image-container" onclick="openGallery(0)">
-                    <img id="mainImage" class="main-image" src="../images/anhangerProp.jpg" alt="Anhængertræk prop">
+                    <img id="mainImage" class="main-image" src="../images/ladekabel_large1.jpg" alt="Ladekabel Ophæng">
                     <div class="zoom-hint">🔍 Klik for flere billeder</div>
                 </div>
                 
@@ -345,17 +345,18 @@
 
             <!-- Product Info -->
             <div class="product-info">
-                <h1>Anhængertræk Prop</h1>
-                <div class="price">40 kr</div>
+                <h1>Ladekabel Ophæng (Large)</h1>
+                <div class="price">150 kr</div>
                 <div class="description">
                     <p>
-                        Stilfuldt og praktisk anhængertræk prop designet specielt til Mustang Mach-E. 
-                        Beskytter trækkrogen mod snavs og vejr, mens det tilføjer et unikt præg med et flot Mustang logo.
+                        Hæng dit ladekabel pænt op med dette specialdesignede ophæng til Mustang Mach-E.
+                        <br> Denne model er til lange ladekabler (op til 20 meter).
+                        <br> Kablet hænger sikkert, mens ladestikket klikkes fast i ophænget.
                     </p>
                     <ul>
-                        <li><strong>Materiale:</strong> PETG (vejrbestandig og holdbart)</li>
+                        <li><strong>Materiale:</strong> PETG (vejrbestandig)</li>
                         <li><strong>Farver:</strong> Vælg selv farve af logo</li>
-                        <li><strong>Anvendelse:</strong> Monteres på trækkrogen</li>
+                        <li><strong>Anvendelse:</strong> Ophæng på væggen og monter ladekablet</li>
                     </ul>
                 </div>
                 <a href="mustang-mach-e.html" class="back-to-list">&#8592; Se alle produkter</a>
@@ -386,7 +387,10 @@
 
         // Image Gallery Configuration
         const productImages = [
-            '../images/anhangerProp.jpg',
+            '../images/ladekabel_large1.jpg',
+            '../images/ladekabel_large2.jpg',
+            '../images/ladekabel_large3.jpg',
+            '../images/ladekabel_rod.jpg',
         ];
 
         let currentImageIndex = 0;
@@ -407,7 +411,7 @@
                 
                 viewer3d = new Model3DViewer(
                     'viewer3d-container',
-                    '../3d-models/product-5.stl',
+                    '../3d-models/kabelophanglarge.stl',
                     {
                         backgroundColor: 0xf5f5f5,
                         cameraDistance: 120,
@@ -500,4 +504,4 @@
     </script>
 
 </body>
-</html>
+</html>>
