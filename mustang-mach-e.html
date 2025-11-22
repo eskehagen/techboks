@@ -184,10 +184,10 @@
         }
 
         footer {
-            background: #2c3e50;
+            background: #333;
             color: white;
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
             margin-top: 4rem;
         }
 
@@ -195,14 +195,23 @@
             margin-bottom: 0.5rem;
         }
 
-        footer a {
-            color: #667eea;
+        .footer-links {
+            margin-top: 1rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
             text-decoration: none;
+            opacity: 0.8;
             transition: opacity 0.3s;
         }
 
-        footer a:hover {
-            opacity: 0.8;
+        .footer-links a:hover {
+            opacity: 1;
         }
 
         .social-icons {
@@ -236,14 +245,17 @@
         }
 
         @media (max-width: 768px) {
-            .nav-right {
-                flex-direction: column;
-                gap: 0.5rem;
+            .hero-section h1 {
+                font-size: 2rem;
             }
 
-            .back-btn, .cart-btn {
-                font-size: 0.9rem;
-                padding: 0.4rem 1rem;
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .vision-section h2,
+            .categories-section h2 {
+                font-size: 2rem;
             }
         }
     </style>
@@ -255,7 +267,6 @@
             <div class="nav-links">
                 <a href="index.html">Forside</a>
                 <a href="kontakt.html">Kontakt</a>
-                <a href="handelsbetingelser.html">Handelsbetingelser</a>
             </div>
         </nav>
     </header>
@@ -265,8 +276,7 @@
         <p>3D printede produkter i høj kvalitet til din Mustang Mach-E</p>
     </div>
 
-    <div class="container">
-        <h2>Alle Produkter</h2>
+    <div class="container">        
         <div class="products-grid" id="products"></div>
     </div>
 
@@ -287,7 +297,7 @@
         </div>
         <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdt.</p>
         <div class="footer-links">
-            <p><a href="kontakt.html">Kontakt</a> | <a href="index.html">Forside</a> | <a href="handelsbetingelser.html">Handelsbetingelser</a></p>
+            <p><a href="kontakt.html">Kontakt</a> | <a href="handelsbetingelser.html">Handelsbetingelser</a></p>
         </div>
     </footer>
 

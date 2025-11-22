@@ -293,10 +293,10 @@
         }
 
         footer {
-            background: #2c3e50;
+            background: #333;
             color: white;
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
             margin-top: 4rem;
         }
 
@@ -304,14 +304,23 @@
             margin-bottom: 0.5rem;
         }
 
-        footer a {
-            color: #667eea;
+        .footer-links {
+            margin-top: 1rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
             text-decoration: none;
+            opacity: 0.8;
             transition: opacity 0.3s;
         }
 
-        footer a:hover {
-            opacity: 0.8;
+        .footer-links a:hover {
+            opacity: 1;
         }
 
         .social-icons {
@@ -353,13 +362,9 @@
                 font-size: 1rem;
             }
 
-            .contact-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-links {
-                gap: 1rem;
-                flex-wrap: wrap;
+            .vision-section h2,
+            .categories-section h2 {
+                font-size: 2rem;
             }
         }
     </style>
@@ -370,7 +375,6 @@
             <div class="logo">TechBoks</div>
             <div class="nav-links">
                 <a href="index.html">Forside</a>
-                <a href="handelsbetingelser.html">Handelsbetingelser</a>
             </div>
         </nav>
     </header>
@@ -486,7 +490,7 @@
             </a>
         </div>
         <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdt.</p>
-        <p><a href="kontakt.html">Kontakt</a> | <a href="index.html">Forside</a> | <a href="handelsbetingelser.html">Handelsbetingelser</a></p>
+        <p><a href="kontakt.html">Kontakt</a> | <a href="handelsbetingelser.html">Handelsbetingelser</a></p>
     </footer>
 
     <script>
