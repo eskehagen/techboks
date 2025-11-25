@@ -412,7 +412,7 @@
                         <p class="category-description">
                             Specialdesignede accessories og praktiske gadgets til din Ford Mustang Mach-E
                         </p>
-                        <span class="category-badge">6 produkter</span>
+                        <span class="category-badge" id="mustang-product-count">Indlæser...</span>
                     </div>
                 </a>
 
@@ -502,5 +502,25 @@
             <a href="handelsbetingelser.html">Handelsbetingelser</a>
         </div>
     </footer>
+
+    <script>
+        // Dynamically fetch and display product count for Mustang Mach-E category
+        fetch('mustang-mach-e.html')
+            .then(response => response.text())
+            .then(html => {
+                // Extract the products array from the HTML
+                const match = html.match(/const products = \[([\s\S]*?)\];/);
+                if (match) {
+                    // Count the number of product objects by counting opening braces after array start
+                    const productsString = match[1];
+                    const productCount = (productsString.match(/\{[^}]*id:/g) || []).length;
+                    document.getElementById('mustang-product-count').textContent = productCount + ' produkter';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading product count:', error);
+                document.getElementById('mustang-product-count').textContent = 'Flere produkter';
+            });
+    </script>
 </body>
 </html>
