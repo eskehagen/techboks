@@ -387,6 +387,10 @@
             <div class="nav-links">
                 <a href="#om">Om</a>
                 <a href="kontakt.html">Kontakt</a>
+                <div style="position: relative;">
+                    <a href="cart.html">🛒 Kurv</a>
+                    <span id="cart-count-badge" style="position: absolute; top: -8px; right: -12px; background: #ff6b6b; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; display: none;">0</span>
+                </div>
             </div>
         </nav>
     </header>
@@ -491,7 +495,13 @@
         </div>
     </footer>
 
+    <script src="cart.js"></script>
     <script>
+        // Update cart badge on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            cart.updateCartBadge();
+        });
+
         // Dynamically fetch and display product count for Mustang Mach-E category
         fetch('mustang-mach-e.html')
             .then(response => response.text())

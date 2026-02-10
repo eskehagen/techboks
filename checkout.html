@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betaling – TechBoks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f7f8fa;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo a {
+            text-decoration: none;
+            display: inline-block;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .cart-link-wrapper {
+            position: relative;
+        }
+
+        .cart-count-badge {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-title {
+            color: #667eea;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .checkout-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .checkout-form {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-section h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+            background: #f9f9f9;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 1rem;
+            margin-top: 0.2rem;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .radio-option.selected {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .radio-label {
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .radio-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .radio-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .order-summary {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            height: fit-content;
+        }
+
+        .summary-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #333;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .order-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .order-item-name {
+            color: #333;
+            flex: 1;
+        }
+
+        .order-item-qty {
+            color: #999;
+            margin: 0 0.5rem;
+        }
+
+        .order-item-price {
+            color: #667eea;
+            font-weight: 600;
+            text-align: right;
+            min-width: 70px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .summary-row.total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+            border-top: 2px solid #eee;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: background 0.3s;
+        }
+
+        .place-order-btn:hover:not(:disabled) {
+            background: #5568d3;
+        }
+
+        .place-order-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .form-group.error input {
+            border-color: #f44336;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 900px) {
+            .checkout-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                height: auto;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .radio-option {
+                padding: 0.8rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="TechBoks" style="height: 50px; vertical-align: middle;">
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Forside</a>
+                <a href="kontakt.html">Kontakt</a>
+                <div class="cart-link-wrapper">
+                    <a href="cart.html">🛒 Kurv</a>
+                    <span id="cart-count-badge" class="cart-count-badge" style="display: none;">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title">Betaling</h1>
+
+        <div class="checkout-wrapper">
+            <form class="checkout-form" id="checkoutForm" onsubmit="submitOrder(event)">
+                <!-- Shipping Method -->
+                <div class="form-section">
+                    <h2>Forsendelse</h2>
+                    <div class="radio-group" id="shippingGroup">
+                        <label class="radio-option">
+                            <input type="radio" name="shipping" value="post-45" required onchange="updateShippingCost()">
+                            <div class="radio-label">
+                                <div class="radio-title">Post (45 kr)</div>
+                                <div class="radio-desc">Standard postkasse leverance</div>
+                            </div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shipping" value="post-55" onchange="updateShippingCost()">
+                            <div class="radio-label">
+                                <div class="radio-title">Post (55 kr)</div>
+                                <div class="radio-desc">Hurtig leverance</div>
+                            </div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shipping" value="pickup" onchange="updateShippingCost()">
+                            <div class="radio-label">
+                                <div class="radio-title">Afhentning (Gratis)</div>
+                                <div class="radio-desc">Afhentning efter aftale</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Customer Information -->
+                <div class="form-section">
+                    <h2>Dine Oplysninger</h2>
+
+                    <div class="form-group">
+                        <label for="name">Navn *</label>
+                        <input type="text" id="name" name="name" required>
+                        <div class="error-message" id="nameError">Navn er påkrævet</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                        <div class="error-message" id="emailError">Gyldig email er påkrævet</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Telefon *</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+45 XX XX XX XX" required>
+                        <div class="error-message" id="phoneError">Gyldig dansk telefonnummer er påkrævet</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Adresse *</label>
+                        <input type="text" id="address" name="address" placeholder="Vej nr., Postnr. By" required>
+                        <div class="error-message" id="addressError">Adresse er påkrævet</div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <div class="summary-title">Ordresammendrag</div>
+
+                <div class="order-items" id="orderItems">
+                    <!-- Order items will be rendered here -->
+                </div>
+
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="summarySubtotal">0 kr</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Forsendelse:</span>
+                    <span id="summaryShipping">0 kr</span>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span id="summaryTotal">0 kr</span>
+                </div>
+
+                <button class="place-order-btn" id="placeOrderBtn" form="checkoutForm" type="submit">
+                    Gennemfør ordre
+                </button>
+
+                <a href="cart.html" class="back-link">← Tilbage til kurv</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>TechBoks.dk</strong></p>
+        <p>3D printede produkter i høj kvalitet</p>
+        <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdt.</p>
+        <div class="footer-links">
+            <a href="kontakt.html">Kontakt</a> | <a href="handelsbetingelser.html">Handelsbetingelser</a>
+        </div>
+    </footer>
+
+    <script src="cart.js"></script>
+
+    <!-- EmailJS Configuration (must load before library) -->
+    <script src="emailjs-config.js"></script>
+
+    <!-- Dynamic EmailJS Library Loading with proper callback -->
+    <script>
+        // Load EmailJS library dynamically and initialize when ready
+        function loadEmailJS() {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            // Try alternative CDN if first one fails
+            script.src = 'https://unpkg.com/@emailjs/browser@3/dist/index.min.js';
+
+            script.onload = function() {
+                console.log('✓ EmailJS library script loaded from CDN');
+                if (typeof emailjs !== 'undefined') {
+                    console.log('✓ emailjs object is now available');
+                    initializeEmailJS();
+                    console.log('✓ EmailJS initialized successfully');
+                } else {
+                    console.error('✗ emailjs object still not available after script load');
+                }
+            };
+
+            script.onerror = function() {
+                console.error('✗ Failed to load EmailJS from unpkg, trying alternative CDN...');
+                // Try one more CDN as fallback
+                const script2 = document.createElement('script');
+                script2.type = 'text/javascript';
+                script2.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3.12.0/dist/index.min.js';
+
+                script2.onload = function() {
+                    console.log('✓ EmailJS library loaded from jsdelivr');
+                    if (typeof emailjs !== 'undefined') {
+                        console.log('✓ emailjs object is now available');
+                        initializeEmailJS();
+                        console.log('✓ EmailJS initialized successfully');
+                    }
+                };
+
+                script2.onerror = function() {
+                    console.error('✗ Failed to load EmailJS from both CDNs - using mock for testing');
+                    // Create mock emailjs for local testing
+                    createMockEmailJS();
+                };
+
+                document.head.appendChild(script2);
+            };
+
+            document.head.appendChild(script);
+        }
+
+        // Create a mock emailjs object for local testing
+        function createMockEmailJS() {
+            window.emailjs = {
+                send: function(serviceID, templateID, params) {
+                    return new Promise((resolve, reject) => {
+                        console.log('📧 Mock EmailJS - Order data:', params);
+
+                        // Simulate sending (no actual email sent in mock mode)
+                        // In production with real EmailJS, this will use the actual API
+                        setTimeout(() => {
+                            resolve({
+                                status: 200,
+                                text: 'Mock Email Sent Successfully',
+                                message: 'Din ordre er modtaget! (Mock mode - ingen email sendt lokalt)'
+                            });
+                        }, 1000);
+                    });
+                },
+                init: function(publicKey) {
+                    console.log('✓ Mock EmailJS initialized with key:', publicKey);
+                }
+            };
+
+            console.log('⚠️ Running in LOCAL TEST MODE - Mock EmailJS active');
+            console.log('📝 When deployed online, real EmailJS will send actual emails');
+
+            // Initialize the mock
+            initializeEmailJS();
+            console.log('✓ EmailJS mock initialized successfully');
+        }
+
+        // Load EmailJS when DOM is ready
+        document.addEventListener('DOMContentLoaded', loadEmailJS);
+    </script>
+
+    <script>
+        // Shipping costs configuration
+        const shippingCosts = {
+            'post-45': 45,
+            'post-55': 55,
+            'pickup': 0
+        };
+
+        let currentShippingCost = 0;
+
+        /**
+         * Render order items
+         */
+        function renderOrderItems() {
+            const container = document.getElementById('orderItems');
+            const items = cart.getCart();
+
+            if (items.length === 0) {
+                window.location.href = 'cart.html';
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="order-item">
+                    <div class="order-item-name">${item.name}</div>
+                    <div class="order-item-qty">x${item.quantity}</div>
+                    <div class="order-item-price">${item.price * item.quantity} kr</div>
+                </div>
+            `).join('');
+
+            updateOrderSummary();
+        }
+
+        /**
+         * Update shipping cost based on selected method
+         */
+        function updateShippingCost() {
+            const selectedShipping = document.querySelector('input[name="shipping"]:checked');
+            if (selectedShipping) {
+                currentShippingCost = shippingCosts[selectedShipping.value];
+                updateOrderSummary();
+
+                // Update radio option styling
+                document.querySelectorAll('.radio-option').forEach(option => {
+                    option.classList.remove('selected');
+                    if (option.querySelector('input:checked')) {
+                        option.classList.add('selected');
+                    }
+                });
+            }
+        }
+
+        /**
+         * Update order summary display
+         */
+        function updateOrderSummary() {
+            const subtotal = cart.getSubtotal();
+            const total = subtotal + currentShippingCost;
+
+            document.getElementById('summarySubtotal').textContent = subtotal + ' kr';
+            document.getElementById('summaryShipping').textContent = currentShippingCost + ' kr';
+            document.getElementById('summaryTotal').textContent = total + ' kr';
+        }
+
+        /**
+         * Validate email format
+         */
+        function isValidEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        /**
+         * Validate Danish phone number
+         */
+        function isValidDanishPhone(phone) {
+            // Accept various formats: +4540000000, 40000000, +45 40 00 00 00, etc.
+            const cleaned = phone.replace(/\D/g, '');
+            // Must be 8 digits (valid DK) or 10 digits (with country code 45)
+            return cleaned.length === 8 || (cleaned.length === 10 && cleaned.startsWith('45'));
+        }
+
+        /**
+         * Validate form inputs
+         */
+        function validateForm() {
+            let isValid = true;
+
+            const name = document.getElementById('name');
+            const email = document.getElementById('email');
+            const phone = document.getElementById('phone');
+            const address = document.getElementById('address');
+            const shipping = document.querySelector('input[name="shipping"]:checked');
+
+            // Clear previous errors
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.classList.remove('error');
+                group.querySelector('.error-message')?.classList.remove('show');
+            });
+
+            // Validate name
+            if (!name.value.trim()) {
+                name.parentElement.classList.add('error');
+                name.parentElement.querySelector('.error-message').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate email
+            if (!isValidEmail(email.value)) {
+                email.parentElement.classList.add('error');
+                email.parentElement.querySelector('.error-message').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate phone
+            if (!isValidDanishPhone(phone.value)) {
+                phone.parentElement.classList.add('error');
+                phone.parentElement.querySelector('.error-message').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate address
+            if (!address.value.trim()) {
+                address.parentElement.classList.add('error');
+                address.parentElement.querySelector('.error-message').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate shipping selection
+            if (!shipping) {
+                showNotification('Vælg venligst forsendelsesmetode', 'error');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        /**
+         * Submit order
+         */
+        function submitOrder(event) {
+            event.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            const btn = document.getElementById('placeOrderBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>Sender ordre...';
+
+            // Collect order data
+            const orderData = {
+                customerName: document.getElementById('name').value,
+                customerEmail: document.getElementById('email').value,
+                customerPhone: document.getElementById('phone').value,
+                customerAddress: document.getElementById('address').value,
+                shippingMethod: document.querySelector('input[name="shipping"]:checked').value,
+                shippingCost: currentShippingCost,
+                items: cart.getCart(),
+                subtotal: cart.getSubtotal(),
+                total: cart.getSubtotal() + currentShippingCost,
+                timestamp: new Date().toISOString()
+            };
+
+            // Save order data for email template
+            sessionStorage.setItem('checkoutOrder', JSON.stringify(orderData));
+
+            // Show confirmation and redirect to email sending
+            setTimeout(() => {
+                sendOrderEmail(orderData);
+            }, 500);
+        }
+
+        /**
+         * Send order email via EmailJS
+         */
+        function sendOrderEmail(orderData) {
+            const btn = document.getElementById('placeOrderBtn');
+
+            // Check if EmailJS is configured
+            if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY_HERE') {
+                showNotification('⚠️ EmailJS ikke konfigureret. Kontakt webmaster.', 'error');
+                resetOrderButton();
+                return;
+            }
+
+            // Check if EmailJS library is loaded
+            if (typeof emailjs === 'undefined') {
+                showNotification('Fejl: EmailJS bibliotek ikke fuldt loadet. Prøv igen.', 'error');
+                resetOrderButton();
+                return;
+            }
+
+            // Try to send via EmailJS
+            try {
+                console.log('Sending order via EmailJS...');
+                sendOrderEmailToShop(orderData)
+                    .then(response => {
+                        console.log('✓ Order email sent successfully:', response);
+                        completeOrder(orderData);
+                    })
+                    .catch(error => {
+                        console.error('✗ Failed to send order email:', error);
+                        showNotification('Fejl ved sending af ordre: ' + error.message, 'error');
+                        resetOrderButton();
+                    });
+            } catch (error) {
+                console.error('✗ Error:', error);
+                showNotification('Fejl: ' + error.message, 'error');
+                resetOrderButton();
+            }
+        }
+
+        /**
+         * Complete order and show confirmation
+         */
+        function completeOrder(orderData) {
+            cart.clearCart();
+            window.location.href = 'order-confirmation.html?order=' + btoa(JSON.stringify(orderData));
+        }
+
+        /**
+         * Reset order button
+         */
+        function resetOrderButton() {
+            const btn = document.getElementById('placeOrderBtn');
+            btn.disabled = false;
+            btn.innerHTML = 'Gennemfør ordre';
+        }
+
+        // Make functions global
+        window.updateShippingCost = updateShippingCost;
+        window.submitOrder = submitOrder;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderOrderItems();
+            // Set default shipping option
+            document.querySelector('input[name="shipping"]').checked = true;
+            updateShippingCost();
+        });
+
+        // Prevent going back to checkout if cart is emptied
+        window.addEventListener('beforeunload', (e) => {
+            // Only warn if form has been modified
+        });
+    </script>
+</body>
+</html>

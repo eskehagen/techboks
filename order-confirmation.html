@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordre Bekræftelse – TechBoks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f7f8fa;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo a {
+            text-decoration: none;
+            display: inline-block;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .confirmation-box {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: scaleIn 0.6s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .confirmation-title {
+            font-size: 2rem;
+            color: #4caf50;
+            margin-bottom: 0.5rem;
+        }
+
+        .confirmation-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .order-details {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .detail-value {
+            color: #666;
+        }
+
+        .order-items {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .items-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-qty {
+            color: #999;
+            margin: 0 1rem;
+        }
+
+        .item-price {
+            color: #667eea;
+            font-weight: 600;
+            text-align: right;
+            min-width: 80px;
+        }
+
+        .email-notice {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            text-align: left;
+            font-size: 0.95rem;
+            color: #1565c0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .confirmation-box {
+                padding: 1.5rem;
+            }
+
+            .confirmation-title {
+                font-size: 1.5rem;
+            }
+
+            .detail-row {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="TechBoks" style="height: 50px; vertical-align: middle;">
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Forside</a>
+                <a href="kontakt.html">Kontakt</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="confirmation-box">
+            <div class="success-icon">✅</div>
+            <h1 class="confirmation-title">Ordre Bekræftet!</h1>
+            <p class="confirmation-subtitle">Din ordre er modtaget og behandles snart</p>
+
+            <div class="email-notice">
+                📧 En bekræftelsesmail er sendt til din email-adresse. Kontrollér venligst din inbox og spam-folder.
+            </div>
+
+            <div class="order-details">
+                <div class="detail-row">
+                    <span class="detail-label">Navn:</span>
+                    <span class="detail-value" id="displayName">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value" id="displayEmail">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Telefon:</span>
+                    <span class="detail-value" id="displayPhone">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Adresse:</span>
+                    <span class="detail-value" id="displayAddress">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Forsendelse:</span>
+                    <span class="detail-value" id="displayShipping">-</span>
+                </div>
+            </div>
+
+            <div class="order-items">
+                <div class="items-title">Orderede Produkter:</div>
+                <div id="orderItemsList">
+                    <!-- Items will be rendered here -->
+                </div>
+                <div class="detail-row" style="margin-top: 1rem; border-top: 2px solid #ddd; padding-top: 1rem;">
+                    <span class="detail-label">Subtotal:</span>
+                    <span class="detail-value" id="displaySubtotal">0 kr</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Forsendelse:</span>
+                    <span class="detail-value" id="displayShippingCost">0 kr</span>
+                </div>
+                <div class="detail-row" style="font-size: 1.2rem; font-weight: bold; color: #667eea;">
+                    <span class="detail-label">Total:</span>
+                    <span class="detail-value" id="displayTotal">0 kr</span>
+                </div>
+            </div>
+
+            <p style="color: #666; margin-bottom: 1.5rem;">
+                Vi kontakter dig snart angående produktionen og leveringstidspunkt.
+            </p>
+
+            <div class="action-buttons">
+                <a href="mustang-mach-e.html" class="btn btn-primary">← Fortsæt shopping</a>
+                <a href="index.html" class="btn btn-secondary">Til forsiden</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>TechBoks.dk</strong></p>
+        <p>3D printede produkter i høj kvalitet</p>
+        <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdt.</p>
+        <div class="footer-links">
+            <a href="kontakt.html">Kontakt</a> | <a href="handelsbetingelser.html">Handelsbetingelser</a>
+        </div>
+    </footer>
+
+    <script>
+        /**
+         * Decode and display order information
+         */
+        function displayOrderInfo() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const orderData = JSON.parse(atob(params.get('order') || ''));
+
+                // Display customer info
+                document.getElementById('displayName').textContent = orderData.customerName;
+                document.getElementById('displayEmail').textContent = orderData.customerEmail;
+                document.getElementById('displayPhone').textContent = orderData.customerPhone;
+                document.getElementById('displayAddress').textContent = orderData.customerAddress;
+
+                const shippingText = orderData.shippingMethod === 'pickup' ?
+                    'Afhentning' :
+                    'Post (' + orderData.shippingCost + ' kr)';
+                document.getElementById('displayShipping').textContent = shippingText;
+
+                // Display items
+                const itemsList = document.getElementById('orderItemsList');
+                itemsList.innerHTML = orderData.items.map(item => `
+                    <div class="order-item">
+                        <div class="item-info">${item.name}</div>
+                        <div class="item-qty">×${item.quantity}</div>
+                        <div class="item-price">${item.price * item.quantity} kr</div>
+                    </div>
+                `).join('');
+
+                // Display totals
+                document.getElementById('displaySubtotal').textContent = orderData.subtotal + ' kr';
+                document.getElementById('displayShippingCost').textContent = orderData.shippingCost + ' kr';
+                document.getElementById('displayTotal').textContent = orderData.total + ' kr';
+
+            } catch (error) {
+                console.error('Fejl ved læsning af ordreinformation:', error);
+                // Show generic message if data is missing
+                document.querySelector('.confirmation-subtitle').textContent =
+                    'Tak for din ordre! Du bør modtage en bekræftelsesmail snart.';
+            }
+        }
+
+        // Display order info when page loads
+        document.addEventListener('DOMContentLoaded', displayOrderInfo);
+    </script>
+</body>
+</html>

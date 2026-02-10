@@ -326,7 +326,13 @@
             <a href="../index.html" class="logo">
                 <img src="../images/logo.png" alt="TechBoks" style="height: 50px; vertical-align: middle;">
             </a>
-            <a href="../mustang-mach-e.html" class="back-link">&#8592; Tilbage til Mustang Mach-E produkter</a>
+            <div class="nav-right">
+                <a href="../mustang-mach-e.html" class="back-link">&#8592; Tilbage til Mustang Mach-E produkter</a>
+                <a href="../cart.html" class="cart-link">
+                    🛒 Kurv
+                    <span class="cart-count-badge" id="cartBadge" style="display: none;">0</span>
+                </a>
+            </div>
         </nav>
     </div>
 
@@ -365,6 +371,14 @@
                         <li><strong>Farver:</strong> Vælg selv farve af logo</li>
                         <li><strong>Anvendelse:</strong> Ophæng på væggen og monter ladekablet</li>
                     </ul>
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center; margin: 1.5rem 0; margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; border: 1px solid #ddd; border-radius: 6px; background: white;">
+                        <button type="button" onclick="decreaseQuantity()" style="background: none; border: none; width: 30px; height: 30px; cursor: pointer; font-weight: bold; color: #667eea;">−</button>
+                        <input type="number" id="quantity-input" value="1" min="1" max="10" style="border: none; width: 50px; text-align: center; font-weight: bold; font-size: 1rem;">
+                        <button type="button" onclick="increaseQuantity()" style="background: none; border: none; width: 30px; height: 30px; cursor: pointer; font-weight: bold; color: #667eea;">+</button>
+                    </div>
+                    <button class="add-to-cart-btn" id="addToCartBtn" onclick="addToCart()">Tilføj til kurv</button>
                 </div>
                 <a href="../mustang-mach-e.html" class="back-to-list">&#8592; Se alle produkter</a>
             </div>
@@ -409,6 +423,8 @@
         window.changeImage = changeImage;
         window.setImage = setImage;
         window.addToCart = addToCart;
+        window.increaseQuantity = increaseQuantity;
+        window.decreaseQuantity = decreaseQuantity;
 
         // Initialize 3D Viewer
         function init3DViewer() {
@@ -486,16 +502,55 @@
             }
         });
 
+        // Quantity control functions
+        function getQuantity() {
+            return parseInt(document.getElementById('quantity-input').value) || 1;
+        }
+
+        function increaseQuantity() {
+            const input = document.getElementById('quantity-input');
+            const current = parseInt(input.value) || 1;
+            if (current < 10) {
+                input.value = current + 1;
+            }
+        }
+
+        function decreaseQuantity() {
+            const input = document.getElementById('quantity-input');
+            const current = parseInt(input.value) || 1;
+            if (current > 1) {
+                input.value = current - 1;
+            }
+        }
+
         // Add to cart function
         function addToCart() {
-            alert('Produkt tilføjet til kurv! (Dette er en demo)');
+            const quantity = getQuantity();
+            const product = {
+                id: 'kabelophang',
+                name: 'Ladekabel Ophæng (Std)',
+                price: 90,
+                image: '../images/ladekabel_hvid.jpg',
+                quantity: quantity
+            };
+
+            if (window.cart && typeof window.cart.addToCart === 'function') {
+                window.cart.addToCart(product);
+            } else {
+                alert('Kurv-system er ikke indlæst. Prøv igen senere.');
+            }
         }
 
         // Initialize everything when DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM ready, initializing...');
             initGallery();
-            
+
+            // Update cart badge if cart module is loaded
+            if (window.cart && typeof window.cart.updateCartBadge === 'function') {
+                window.cart.updateCartBadge();
+            }
+
             // Wait a bit for libraries to be fully loaded
             setTimeout(() => {
                 init3DViewer();
@@ -509,6 +564,9 @@
             }
         });
     </script>
+
+    <!-- Cart Module -->
+    <script src="../cart.js"></script>
 
 </body>
 </html>

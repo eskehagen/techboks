@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechBoks - Mustang Mach-E Gadgets</title>
-    <link rel="stylesheet" href="stl-viewer.css">
     <style>
         * {
             margin: 0;
@@ -276,6 +275,10 @@
             <div class="nav-links">
                 <a href="index.html">Forside</a>
                 <a href="kontakt.html">Kontakt</a>
+                <div style="position: relative;">
+                    <a href="cart.html">🛒 Kurv</a>
+                    <span id="cart-count-badge" style="position: absolute; top: -8px; right: -12px; background: #ff6b6b; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; display: none;">0</span>
+                </div>
             </div>
         </nav>
     </header>
@@ -312,11 +315,16 @@
 
     <!-- Three.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    
-    <!-- STL Viewer Component -->
-    <script src="stl-viewer-component.js"></script>
+
+    <!-- Cart Script -->
+    <script src="cart.js"></script>
 
     <script>
+        // Update cart badge on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            cart.updateCartBadge();
+        });
+
         const products = [
             {
                 id: 'centerboks',
@@ -426,7 +434,6 @@
             
         ];
 
-        let cart = [];
         let viewers = [];
 
         function displayProducts() {
@@ -441,7 +448,6 @@
                             <h3 class="product-title">${product.name}</h3>
                             <p class="product-description">${product.description}</p>
                             <div class="product-price">${product.price} kr</div>
-                        </button>
                         </div>
                     </a>
                 </div>
