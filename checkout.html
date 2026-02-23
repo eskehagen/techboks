@@ -546,8 +546,8 @@
         }
     </script>
 
-    <!-- EmailJS Library (from CDN) - with fallback to mock for local testing -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/index.min.js" onerror="loadMockEmailJS()"></script>
+    <!-- EmailJS Library (from unpkg CDN - try multiple sources) -->
+    <script src="https://unpkg.com/@emailjs/browser@4/dist/index.min.js" onerror="loadMockEmailJS()"></script>
 
     <!-- EmailJS Configuration (must load after library) -->
     <script src="emailjs-config.js"></script>
