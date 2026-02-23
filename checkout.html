@@ -519,90 +519,51 @@
 
     <script src="cart.js"></script>
 
-    <!-- EmailJS Configuration (must load before library) -->
-    <script src="emailjs-config.js"></script>
-
-    <!-- Dynamic EmailJS Library Loading with proper callback -->
+    <!-- EmailJS Fallback Mock (define BEFORE script tag) -->
     <script>
-        // Load EmailJS library dynamically and initialize when ready
-        function loadEmailJS() {
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            // Try alternative CDN if first one fails
-            script.src = 'https://unpkg.com/@emailjs/browser@3/dist/index.min.js';
-
-            script.onload = function() {
-                console.log('✓ EmailJS library script loaded from CDN');
-                if (typeof emailjs !== 'undefined') {
-                    console.log('✓ emailjs object is now available');
-                    initializeEmailJS();
-                    console.log('✓ EmailJS initialized successfully');
-                } else {
-                    console.error('✗ emailjs object still not available after script load');
-                }
-            };
-
-            script.onerror = function() {
-                console.error('✗ Failed to load EmailJS from unpkg, trying alternative CDN...');
-                // Try one more CDN as fallback
-                const script2 = document.createElement('script');
-                script2.type = 'text/javascript';
-                script2.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3.12.0/dist/index.min.js';
-
-                script2.onload = function() {
-                    console.log('✓ EmailJS library loaded from jsdelivr');
-                    if (typeof emailjs !== 'undefined') {
-                        console.log('✓ emailjs object is now available');
-                        initializeEmailJS();
-                        console.log('✓ EmailJS initialized successfully');
-                    }
-                };
-
-                script2.onerror = function() {
-                    console.error('✗ Failed to load EmailJS from both CDNs - using mock for testing');
-                    // Create mock emailjs for local testing
-                    createMockEmailJS();
-                };
-
-                document.head.appendChild(script2);
-            };
-
-            document.head.appendChild(script);
-        }
-
-        // Create a mock emailjs object for local testing
-        function createMockEmailJS() {
+        // Create mock EmailJS for local testing when CDN fails
+        function loadMockEmailJS() {
+            console.log('⚠️ CDN not available - using mock EmailJS for local testing');
+            
             window.emailjs = {
                 send: function(serviceID, templateID, params) {
                     return new Promise((resolve, reject) => {
-                        console.log('📧 Mock EmailJS - Order data:', params);
-
-                        // Simulate sending (no actual email sent in mock mode)
-                        // In production with real EmailJS, this will use the actual API
+                        console.log('📧 MOCK MODE - Order details:', params);
                         setTimeout(() => {
                             resolve({
                                 status: 200,
-                                text: 'Mock Email Sent Successfully',
-                                message: 'Din ordre er modtaget! (Mock mode - ingen email sendt lokalt)'
+                                text: 'Mock Email - Local Testing Mode'
                             });
                         }, 1000);
                     });
                 },
                 init: function(publicKey) {
-                    console.log('✓ Mock EmailJS initialized with key:', publicKey);
+                    console.log('✓ Mock EmailJS initialized (local test mode)');
                 }
             };
-
-            console.log('⚠️ Running in LOCAL TEST MODE - Mock EmailJS active');
-            console.log('📝 When deployed online, real EmailJS will send actual emails');
-
-            // Initialize the mock
-            initializeEmailJS();
-            console.log('✓ EmailJS mock initialized successfully');
+            
+            console.log('ℹ️ Mock EmailJS setup complete - will initialize when config loads');
         }
+    </script>
 
-        // Load EmailJS when DOM is ready
-        document.addEventListener('DOMContentLoaded', loadEmailJS);
+    <!-- EmailJS Library (from CDN) - with fallback to mock for local testing -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/index.min.js" onerror="loadMockEmailJS()"></script>
+
+    <!-- EmailJS Configuration (must load after library) -->
+    <script src="emailjs-config.js"></script>
+
+    <!-- Initialize EmailJS on page load -->
+    <script>
+        // Initialize EmailJS when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if emailjs is available (either real or mock)
+            if (typeof emailjs !== 'undefined' && typeof initializeEmailJS !== 'undefined') {
+                console.log('✓ EmailJS ready - initializing...');
+                initializeEmailJS();
+            } else {
+                console.warn('⚠️ EmailJS or init function not available');
+            }
+        });
     </script>
 
     <script>

@@ -15,8 +15,8 @@
 
 // Replace these with your actual EmailJS credentials
 const EMAILJS_SERVICE_ID = 'service_0i00ugn';      // service_xxxxx
-const EMAILJS_TEMPLATE_ID = 'template_e8lx22e';   // template_xxxxx
-const EMAILJS_PUBLIC_KEY = 'GFpk4dyr0duLMEobN';     // pk_xxxxx
+const EMAILJS_TEMPLATE_ID = 'template_f1si9av';   // template_xxxxx
+const EMAILJS_PUBLIC_KEY = 'pk4dyr0duLMEobN';     // pk_xxxxx
 
 // Email that will receive orders
 const SHOP_EMAIL = 'eskehagen@gmail.com';
