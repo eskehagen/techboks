@@ -722,18 +722,19 @@
         }
 
         /**
-         * Send order email via Google Apps Script using sendBeacon (no CORS issues)
+         * Send order email via Google Apps Script using sendBeacon with FormData
          */
         function sendOrderEmail(orderData) {
             const btn = document.getElementById('placeOrderBtn');
 
-            // Use sendBeacon to avoid CORS issues
-            const blob = new Blob([JSON.stringify(orderData)], { type: 'application/json' });
+            // Convert to FormData to avoid CORS issues
+            const formData = new FormData();
+            formData.append('data', JSON.stringify(orderData));
 
-            const success = navigator.sendBeacon(GOOGLE_APPS_SCRIPT_URL, blob);
+            const success = navigator.sendBeacon(GOOGLE_APPS_SCRIPT_URL, formData);
 
             if (success) {
-                console.log('✓ Ordre sendt til Google Apps Script via sendBeacon');
+                console.log('✓ Ordre sendt til Google Apps Script');
                 // sendBeacon doesn't wait for response, so complete order immediately
                 setTimeout(() => {
                     completeOrder(orderData);
