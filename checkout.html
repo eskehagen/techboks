@@ -365,6 +365,28 @@
             100% { transform: rotate(360deg); }
         }
 
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
         @media (max-width: 900px) {
             .checkout-wrapper {
                 grid-template-columns: 1fr;
@@ -519,51 +541,10 @@
 
     <script src="cart.js"></script>
 
-    <!-- EmailJS Fallback Mock (define BEFORE script tag) -->
+    <!-- Google Apps Script Configuration -->
     <script>
-        // Create mock EmailJS for local testing when CDN fails
-        function loadMockEmailJS() {
-            console.log('⚠️ CDN not available - using mock EmailJS for local testing');
-            
-            window.emailjs = {
-                send: function(serviceID, templateID, params) {
-                    return new Promise((resolve, reject) => {
-                        console.log('📧 MOCK MODE - Order details:', params);
-                        setTimeout(() => {
-                            resolve({
-                                status: 200,
-                                text: 'Mock Email - Local Testing Mode'
-                            });
-                        }, 1000);
-                    });
-                },
-                init: function(publicKey) {
-                    console.log('✓ Mock EmailJS initialized (local test mode)');
-                }
-            };
-            
-            console.log('ℹ️ Mock EmailJS setup complete - will initialize when config loads');
-        }
-    </script>
-
-    <!-- EmailJS Library v4 (official) -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.3.0/dist/index.min.js" onerror="loadMockEmailJS()"></script>
-
-    <!-- EmailJS Configuration (must load after library) -->
-    <script src="emailjs-config.js"></script>
-
-    <!-- Initialize EmailJS on page load -->
-    <script>
-        // Initialize EmailJS when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if emailjs is available (either real or mock)
-            if (typeof emailjs !== 'undefined' && typeof initializeEmailJS !== 'undefined') {
-                console.log('✓ EmailJS ready - initializing...');
-                initializeEmailJS();
-            } else {
-                console.warn('⚠️ EmailJS or init function not available');
-            }
-        });
+        // Google Apps Script Web App URL
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBnx_c1qeW6Ttpmd_J1N4qqfvKR89HhKAvwVkDRp5x3lcYqIDUWHCz1vRF-eq_eWFb/exec';
     </script>
 
     <script>
@@ -741,43 +722,43 @@
         }
 
         /**
-         * Send order email via EmailJS
+         * Send order email via Google Apps Script
          */
         function sendOrderEmail(orderData) {
             const btn = document.getElementById('placeOrderBtn');
 
-            // Check if EmailJS is configured
-            if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY_HERE') {
-                showNotification('⚠️ EmailJS ikke konfigureret. Kontakt webmaster.', 'error');
+            // Send to Google Apps Script
+            fetch(GOOGLE_APPS_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(orderData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                // Google Apps Script returns plain text, need to parse manually
+                return response.text().then(text => {
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        console.error('Kunne ikke parse svar:', text);
+                        throw new Error('Ugyldig svar fra server');
+                    }
+                });
+            })
+            .then(data => {
+                if (data.success) {
+                    console.log('✓ Ordre sendt til Google Apps Script:', data);
+                    completeOrder(orderData);
+                } else {
+                    throw new Error(data.error || 'Ukendt fejl');
+                }
+            })
+            .catch(error => {
+                console.error('✗ Fejl ved sending af ordre:', error);
+                showNotification('Fejl ved sending af ordre: ' + error.message, 'error');
                 resetOrderButton();
-                return;
-            }
-
-            // Check if EmailJS library is loaded
-            if (typeof emailjs === 'undefined') {
-                showNotification('Fejl: EmailJS bibliotek ikke fuldt loadet. Prøv igen.', 'error');
-                resetOrderButton();
-                return;
-            }
-
-            // Try to send via EmailJS
-            try {
-                console.log('Sending order via EmailJS...');
-                sendOrderEmailToShop(orderData)
-                    .then(response => {
-                        console.log('✓ Order email sent successfully:', response);
-                        completeOrder(orderData);
-                    })
-                    .catch(error => {
-                        console.error('✗ Failed to send order email:', error);
-                        showNotification('Fejl ved sending af ordre: ' + error.message, 'error');
-                        resetOrderButton();
-                    });
-            } catch (error) {
-                console.error('✗ Error:', error);
-                showNotification('Fejl: ' + error.message, 'error');
-                resetOrderButton();
-            }
+            });
         }
 
         /**
@@ -786,6 +767,44 @@
         function completeOrder(orderData) {
             cart.clearCart();
             window.location.href = 'order-confirmation.html?order=' + btoa(JSON.stringify(orderData));
+        }
+
+        /**
+         * Show notification message
+         */
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                font-weight: 500;
+                z-index: 1000;
+                animation: slideIn 0.3s ease-out;
+                max-width: 400px;
+                font-size: 0.95rem;
+            `;
+
+            if (type === 'error') {
+                notification.style.backgroundColor = '#f44336';
+                notification.style.color = 'white';
+            } else if (type === 'success') {
+                notification.style.backgroundColor = '#4caf50';
+                notification.style.color = 'white';
+            } else {
+                notification.style.backgroundColor = '#667eea';
+                notification.style.color = 'white';
+            }
+
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
         }
 
         /**
