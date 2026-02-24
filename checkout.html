@@ -439,7 +439,7 @@
         <h1 class="page-title">Betaling</h1>
 
         <div class="checkout-wrapper">
-            <form class="checkout-form" id="checkoutForm" onsubmit="submitOrder(event)">
+            <form class="checkout-form" id="checkoutForm" onsubmit="submitOrder(event)">                
                 <!-- Shipping Method -->
                 <div class="form-section">
                     <h2>Forsendelse</h2>
@@ -466,6 +466,11 @@
                             </div>
                         </label>
                     </div>
+                </div>
+                <!-- Aria hidden security field -->
+                <div style="display: none;" aria-hidden="true">
+                    <label for="website_url">Website</label>
+                    <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
                 </div>
 
                 <!-- Customer Information -->
@@ -700,6 +705,8 @@
 
             // Collect order data
             const orderData = {
+                token: 'TB-8472-SECURE-991', // Skal matche serverens token
+                botField: document.getElementById('website_url').value, // Hent honeypot værdi (security)
                 customerName: document.getElementById('name').value,
                 customerEmail: document.getElementById('email').value,
                 customerPhone: document.getElementById('phone').value,
