@@ -722,43 +722,27 @@
         }
 
         /**
-         * Send order email via Google Apps Script
+         * Send order email via Google Apps Script using sendBeacon (no CORS issues)
          */
         function sendOrderEmail(orderData) {
             const btn = document.getElementById('placeOrderBtn');
 
-            // Send to Google Apps Script
-            fetch(GOOGLE_APPS_SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify(orderData),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                // Google Apps Script returns plain text, need to parse manually
-                return response.text().then(text => {
-                    try {
-                        return JSON.parse(text);
-                    } catch (e) {
-                        console.error('Kunne ikke parse svar:', text);
-                        throw new Error('Ugyldig svar fra server');
-                    }
-                });
-            })
-            .then(data => {
-                if (data.success) {
-                    console.log('✓ Ordre sendt til Google Apps Script:', data);
+            // Use sendBeacon to avoid CORS issues
+            const blob = new Blob([JSON.stringify(orderData)], { type: 'application/json' });
+
+            const success = navigator.sendBeacon(GOOGLE_APPS_SCRIPT_URL, blob);
+
+            if (success) {
+                console.log('✓ Ordre sendt til Google Apps Script via sendBeacon');
+                // sendBeacon doesn't wait for response, so complete order immediately
+                setTimeout(() => {
                     completeOrder(orderData);
-                } else {
-                    throw new Error(data.error || 'Ukendt fejl');
-                }
-            })
-            .catch(error => {
-                console.error('✗ Fejl ved sending af ordre:', error);
-                showNotification('Fejl ved sending af ordre: ' + error.message, 'error');
+                }, 500);
+            } else {
+                console.error('✗ Fejl ved sending af ordre');
+                showNotification('Fejl ved sending af ordre', 'error');
                 resetOrderButton();
-            });
+            }
         }
 
         /**
