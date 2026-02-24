@@ -722,28 +722,41 @@
         }
 
         /**
-         * Send order email via Google Apps Script using sendBeacon with FormData
+         * Send order email via Google Apps Script using fetch with text/plain
          */
         function sendOrderEmail(orderData) {
             const btn = document.getElementById('placeOrderBtn');
 
-            // Convert to FormData to avoid CORS issues
-            const formData = new FormData();
-            formData.append('data', JSON.stringify(orderData));
-
-            const success = navigator.sendBeacon(GOOGLE_APPS_SCRIPT_URL, formData);
-
-            if (success) {
-                console.log('✓ Ordre sendt til Google Apps Script');
-                // sendBeacon doesn't wait for response, so complete order immediately
-                setTimeout(() => {
+            fetch(GOOGLE_APPS_SCRIPT_URL, {
+                method: 'POST',
+                // Vi sender det som text/plain for at undgå CORS preflight (OPTIONS request)
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Netværksfejl ved kommunikation med serveren');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Server response:', data);
+                if (data.success) {
+                    console.log('✓ Ordre sendt til Google Apps Script');
                     completeOrder(orderData);
-                }, 500);
-            } else {
-                console.error('✗ Fejl ved sending af ordre');
-                showNotification('Fejl ved sending af ordre', 'error');
+                } else {
+                    console.error('Server returnerede en fejl:', data.error);
+                    showNotification('Der skete en fejl: ' + data.error, 'error');
+                    resetOrderButton();
+                }
+            })
+            .catch(error => {
+                console.error('✗ Fejl ved sending af ordre:', error);
+                showNotification('Kunne ikke sende ordren. Prøv igen senere.', 'error');
                 resetOrderButton();
-            }
+            });
         }
 
         /**
