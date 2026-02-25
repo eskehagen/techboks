@@ -40,8 +40,32 @@
             text-decoration: none;
             font-weight: 500;
         }
-        .back-link:hover {
+                .back-link:hover {
             text-decoration: underline;
+        }
+        .cart-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+        }
+        .cart-link:hover {
+            opacity: 0.8;
+        }
+        .cart-count-badge {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
         }
         .container {
             max-width: 1100px;
@@ -330,7 +354,7 @@
                 <a href="../mustang-mach-e.html" class="back-link">&#8592; Tilbage til Mustang Mach-E produkter</a>
                 <a href="../cart.html" class="cart-link">
                     🛒 Kurv
-                    <span class="cart-count-badge" id="cartBadge" style="display: none;">0</span>
+                    <span class="cart-count-badge" id="cart-count-badge" style="display: none;">0</span>
                 </a>
             </div>
         </nav>
@@ -539,9 +563,11 @@
             };
 
             if (window.cart && typeof window.cart.addToCart === 'function') {
-                window.cart.addToCart(product);
+                window.cart.addToCart(product, quantity);
+                showNotification('Produkt tilføjet til kurv!', 'success');
+                document.getElementById('quantity-input').value = 1;
             } else {
-                alert('Kurv-system er ikke indlæst. Prøv igen senere.');
+                showNotification('Fejl ved tilføjelse til kurv', 'error');
             }
         }
 
