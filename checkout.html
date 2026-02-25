@@ -542,7 +542,17 @@
     <!-- Google Apps Script Configuration -->
     <script>
         // Google Apps Script Web App URL
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFTo7XCuJfzGEdx_ztiAUR-jkuhPRtIV2dvkHxdOErQv7lZQtcHUeVdnBpF319EfRV/exec';
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwdmxC2XoPlwye3xO-PmeiPvqYramAsznAuqAocwm2usOpd7JGeDupefbUBIJSoxCLi/exec';
+    </script>
+
+    <!-- Error handler for extension-related issues -->
+    <script>
+        window.addEventListener('unhandledrejection', event => {
+            if (event.reason && typeof event.reason === 'string' && event.reason.includes('message port')) {
+                // Suppress Chrome extension port closure errors
+                event.preventDefault();
+            }
+        });
     </script>
 
     <script>
