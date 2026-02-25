@@ -383,7 +383,18 @@
         function displayOrderInfo() {
             try {
                 const params = new URLSearchParams(window.location.search);
-                const orderData = JSON.parse(atob(params.get('order') || ''));
+                const encodedData = params.get('order') || '';
+
+                if (!encodedData) {
+                    throw new Error('No order data found');
+                }
+
+                // Decode base64
+                const decodedString = atob(encodedData);
+
+                // Parse JSON - remove any problematic control characters first
+                const cleanedString = decodedString.replace(/[\n\r\t]/g, ' ');
+                const orderData = JSON.parse(cleanedString);
 
                 // Display customer info
                 document.getElementById('displayName').textContent = orderData.customerName;
@@ -413,6 +424,7 @@
 
             } catch (error) {
                 console.error('Fejl ved læsning af ordreinformation:', error);
+                console.error('Raw error:', error.message);
                 // Show generic message if data is missing
                 document.querySelector('.confirmation-subtitle').textContent =
                     'Tak for din ordre! Du bør modtage en bekræftelsesmail snart.';
