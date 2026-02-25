@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Betaling – TechBoks</title>
+    <title>Ordre – TechBoks</title>
     <style>
         * {
             margin: 0;
@@ -136,7 +136,8 @@
 
         input[type="text"],
         input[type="email"],
-        input[type="tel"] {
+        input[type="tel"],
+        textarea {
             width: 100%;
             padding: 0.8rem;
             border: 1px solid #ddd;
@@ -147,10 +148,17 @@
 
         input[type="text"]:focus,
         input[type="email"]:focus,
-        input[type="tel"]:focus {
+        input[type="tel"]:focus,
+        textarea:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            font-family: inherit;
+            min-height: 100px;
+            resize: vertical;
         }
 
         .radio-group {
@@ -436,7 +444,7 @@
     </header>
 
     <div class="container">
-        <h1 class="page-title">Betaling</h1>
+        <h1 class="page-title">Ordre</h1>
 
         <div class="checkout-wrapper">
             <form class="checkout-form" id="checkoutForm" onsubmit="submitOrder(event)">                
@@ -444,27 +452,7 @@
                 <div class="form-section">
                     <h2>Forsendelse</h2>
                     <div class="radio-group" id="shippingGroup">
-                        <label class="radio-option">
-                            <input type="radio" name="shipping" value="post-45" required onchange="updateShippingCost()">
-                            <div class="radio-label">
-                                <div class="radio-title">Post (45 kr)</div>
-                                <div class="radio-desc">Standard postkasse leverance</div>
-                            </div>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="shipping" value="post-55" onchange="updateShippingCost()">
-                            <div class="radio-label">
-                                <div class="radio-title">Post (55 kr)</div>
-                                <div class="radio-desc">Hurtig leverance</div>
-                            </div>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="shipping" value="pickup" onchange="updateShippingCost()">
-                            <div class="radio-label">
-                                <div class="radio-title">Afhentning (Gratis)</div>
-                                <div class="radio-desc">Afhentning efter aftale</div>
-                            </div>
-                        </label>
+                        <!-- Shipping options will be generated dynamically based on weight -->
                     </div>
                 </div>
                 <!-- Aria hidden security field -->
@@ -500,12 +488,17 @@
                         <input type="text" id="address" name="address" placeholder="Vej nr., Postnr. By" required>
                         <div class="error-message" id="addressError">Adresse er påkrævet</div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="notes">Bemærkning til ordren</label>
+                        <textarea id="notes" name="notes" placeholder="Evt. specielle ønsker eller bemærkninger..."></textarea>
+                    </div>
                 </div>
             </form>
 
             <!-- Order Summary -->
             <div class="order-summary">
-                <div class="summary-title">Ordresammendrag</div>
+                <div class="summary-title">Ordre oversigt</div>
 
                 <div class="order-items" id="orderItems">
                     <!-- Order items will be rendered here -->
@@ -554,13 +547,47 @@
 
     <script>
         // Shipping costs configuration
-        const shippingCosts = {
-            'post-45': 45,
-            'post-55': 55,
-            'pickup': 0
-        };
-
         let currentShippingCost = 0;
+
+        /**
+         * Generate shipping options dynamically based on cart weight
+         */
+        function generateShippingOptions() {
+            const shippingGroup = document.getElementById('shippingGroup');
+            const totalWeight = cart.getTotalWeight();
+            const shippingPrice = cart.getShippingPrice();
+
+            // If weight exceeds 19000g, only pickup is allowed
+            if (shippingPrice === null) {
+                shippingGroup.innerHTML = `
+                    <label class="radio-option">
+                        <input type="radio" name="shipping" value="pickup" required onchange="updateShippingCost()">
+                        <div class="radio-label">
+                            <div class="radio-title">Afhentning (0 kr) - Obligatorisk</div>
+                            <div class="radio-desc">Pakken vejer ${totalWeight}g og kan ikke sendes. Afhentning er obligatorisk.</div>
+                        </div>
+                    </label>
+                `;
+                return;
+            }
+
+            shippingGroup.innerHTML = `
+                <label class="radio-option">
+                    <input type="radio" name="shipping" value="delivery" required onchange="updateShippingCost()">
+                    <div class="radio-label">
+                        <div class="radio-title">Forsendelse (${shippingPrice} kr)</div>
+                        <div class="radio-desc">Pakken vejer ${totalWeight}g</div>
+                    </div>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="shipping" value="pickup" onchange="updateShippingCost()">
+                    <div class="radio-label">
+                        <div class="radio-title">Afhentning (0 kr)</div>
+                        <div class="radio-desc">Afhentning efter aftale</div>
+                    </div>
+                </label>
+            `;
+        }
 
         /**
          * Render order items
@@ -591,7 +618,11 @@
         function updateShippingCost() {
             const selectedShipping = document.querySelector('input[name="shipping"]:checked');
             if (selectedShipping) {
-                currentShippingCost = shippingCosts[selectedShipping.value];
+                if (selectedShipping.value === 'delivery') {
+                    currentShippingCost = cart.getShippingPrice();
+                } else if (selectedShipping.value === 'pickup') {
+                    currentShippingCost = 0;
+                }
                 updateOrderSummary();
 
                 // Update radio option styling
@@ -711,6 +742,7 @@
                 customerEmail: document.getElementById('email').value,
                 customerPhone: document.getElementById('phone').value,
                 customerAddress: document.getElementById('address').value,
+                customerNotes: document.getElementById('notes').value,
                 shippingMethod: document.querySelector('input[name="shipping"]:checked').value,
                 shippingCost: currentShippingCost,
                 items: cart.getCart(),
@@ -827,9 +859,18 @@
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
+            generateShippingOptions();
             renderOrderItems();
             // Set default shipping option
-            document.querySelector('input[name="shipping"]').checked = true;
+            const deliveryOption = document.querySelector('input[name="shipping"][value="delivery"]');
+            const pickupOption = document.querySelector('input[name="shipping"][value="pickup"]');
+
+            if (deliveryOption) {
+                deliveryOption.checked = true;
+            } else if (pickupOption) {
+                // If only pickup is available (over 19kg), select it
+                pickupOption.checked = true;
+            }
             updateShippingCost();
         });
 

@@ -60,6 +60,7 @@ class ShoppingCart {
                 id: product.id,
                 name: product.name,
                 price: product.price,
+                weight: product.weight,
                 image: product.image,
                 quantity: quantity
             });
@@ -117,6 +118,42 @@ class ShoppingCart {
      */
     getSubtotal() {
         return this.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    }
+
+    /**
+     * Get total weight of all items in cart (in grams)
+     * @return {number} Total weight in grams
+     */
+    getTotalWeight() {
+        return this.cart.reduce((total, item) => total + ((item.weight || 0) * item.quantity), 0);
+    }
+
+    /**
+     * Calculate shipping price based on total weight (including packaging margin)
+     * 0-900 grams = 45 kr
+     * 901-2850 grams = 55 kr
+     * 2851-4800 grams = 65 kr
+     * 4801-9500 grams = 80 kr
+     * 9501-19000 grams = 135 kr
+     * Over 19000 grams = Not allowed (pickup only)
+     * @return {number} Shipping price in DKK or null if over 19kg
+     */
+    getShippingPrice() {
+        const totalWeight = this.getTotalWeight();
+        if (totalWeight <= 900) {
+            return 45;
+        } else if (totalWeight <= 2850) {
+            return 55;
+        } else if (totalWeight <= 4800) {
+            return 65;
+        } else if (totalWeight <= 9500) {
+            return 80;
+        } else if (totalWeight <= 19000) {
+            return 135;
+        } else {
+            // For orders over 19kg, only pickup is allowed
+            return null;
+        }
     }
 
     /**
