@@ -151,6 +151,7 @@ class ShoppingCart {
 
 // Create global instance
 const cart = new ShoppingCart();
+window.cart = cart;
 
 /**
  * Show toast notification
