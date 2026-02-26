@@ -327,7 +327,7 @@ function sendOrderEmailToCustomer(orderData) {
       notesSection = `<p style="margin: 12px 0; font-size: 14px; color: #555;"><em>"${sanitizeText(orderData.customerNotes)}"</em></p>`;
     }
 
-    const subject = '✅ Ordrebekræftelse - TechBoks.dk';
+    const subject = 'Ordrebekræftelse - TechBoks.dk';
 
     const htmlBody = `
       <!DOCTYPE html>
@@ -457,7 +457,7 @@ function sendOrderEmailToCustomer(orderData) {
                 <p><strong>TechBoks.dk</strong></p>
                 <p>Eske Hagen Sinding</p>
                 <p>3D printede produkter i høj kvalitet</p>
-                <p style="margin-top: 8px; opacity: 0.8;&copy; 2025 TechBoks. Alle rettigheder forbeholdt.</p>
+                <p style="margin-top: 8px; opacity: 0.8;">&copy; 2026 TechBoks. Alle rettigheder forbeholdt.</p>
               </div>
             </div>
           </div>
