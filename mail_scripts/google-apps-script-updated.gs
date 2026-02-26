@@ -276,7 +276,7 @@ function sendOrderEmailToShop(orderData) {
               <div class="footer">
                 <p><strong>TechBoks.dk</strong></p>
                 <p>3D printede produkter i høj kvalitet</p>
-                <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdt.</p>
+                <p>&copy; 2026 TechBoks. Alle rettigheder forbeholdt.</p>
               </div>
             </div>
           </div>
