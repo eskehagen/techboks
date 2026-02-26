@@ -286,7 +286,7 @@ function sendOrderEmailToShop(orderData) {
 
     Logger.log('Sender til: ' + shopEmail);
     Logger.log('Emne: ' + subject);
-    GmailApp.sendEmail(shopEmail, subject, {
+    GmailApp.sendEmail(shopEmail, subject, '', {
       htmlBody: htmlBody
     });
     Logger.log('✓ Email til butikkejer sendt');
@@ -467,7 +467,7 @@ function sendOrderEmailToCustomer(orderData) {
 
     Logger.log('Sender til customer: ' + customerEmail);
     Logger.log('Emne: ' + subject);
-    GmailApp.sendEmail(customerEmail, subject, {
+    GmailApp.sendEmail(customerEmail, subject, '', {
       htmlBody: htmlBody
     });
     Logger.log('✓ Email til kunde sendt');
