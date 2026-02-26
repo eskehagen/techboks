@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview - Email til Kunde</title>
+  <style>
+    * { margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; color: #333; line-height: 1.6; background: #f5f5f5; padding: 10px; }
+    .wrapper { background: #f5f5f5; padding: 10px 0; }
+    .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; text-align: center; }
+    .header h1 { margin: 0; font-size: 26px; font-weight: bold; }
+    .header p { margin: 8px 0 0 0; font-size: 13px; opacity: 0.9; }
+    .greeting { padding: 20px; background: #f9f9f9; border-bottom: 2px solid #667eea; }
+    .greeting h2 { color: #667eea; font-size: 16px; margin: 0 0 8px 0; }
+    .greeting p { margin: 4px 0; font-size: 13px; color: #555; }
+    .section { padding: 20px; border-bottom: 1px solid #f0f0f0; }
+    .section h3 { color: #667eea; font-size: 13px; margin: 0 0 12px 0; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+    .products-table { width: 100%; border-collapse: collapse; margin: 0; background: white; }
+    .products-table th { background: #667eea; color: white; padding: 10px; text-align: left; font-size: 11px; font-weight: bold; }
+    .products-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+    .products-table tr:last-child td { border-bottom: none; }
+    .highlight-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 18px; border-radius: 8px; margin: 15px 0; }
+    .highlight-box p { margin: 6px 0; font-size: 13px; }
+    .highlight-box strong { font-size: 16px; }
+    .info-list { list-style: none; margin: 10px 0; }
+    .info-list li { padding: 8px 0; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+    .info-list li:last-child { border-bottom: none; }
+    .info-list-label { color: #667eea; font-weight: bold; }
+    .footer { background: #333; color: white; padding: 15px; text-align: center; font-size: 11px; }
+    .footer p { margin: 3px 0; }
+    .divider { height: 2px; background: linear-gradient(90deg, #667eea 0%, transparent 50%, #667eea 100%); margin: 10px 0; }
+    .page-section { padding: 20px; border-bottom: 1px solid #f0f0f0; }
+    .preview-label { background: #ffeb3b; padding: 15px; text-align: center; font-weight: bold; margin-bottom: 15px; border-radius: 5px; font-size: 14px; }
+
+    /* MOBIL RESPONSIV */
+    @media (max-width: 600px) {
+      body { padding: 5px; }
+      .wrapper { padding: 5px 0; }
+      .container { border-radius: 4px; }
+      .header { padding: 25px 15px; }
+      .header h1 { font-size: 22px; }
+      .header p { font-size: 12px; }
+      .greeting { padding: 15px; }
+      .greeting h2 { font-size: 15px; margin-bottom: 6px; }
+      .greeting p { font-size: 12px; margin: 3px 0; }
+      .section { padding: 15px; }
+      .page-section { padding: 15px; }
+      .section h3 { font-size: 12px; margin-bottom: 10px; }
+      .products-table th { padding: 8px; font-size: 10px; }
+      .products-table td { padding: 8px; font-size: 12px; }
+      .highlight-box { padding: 15px; margin: 12px 0; }
+      .highlight-box p { font-size: 12px; margin: 5px 0; }
+      .highlight-box strong { font-size: 15px; }
+      .info-list li { padding: 6px 0; font-size: 12px; }
+      .footer { padding: 12px; font-size: 10px; }
+      .footer p { margin: 2px 0; }
+      .divider { margin: 8px 0; }
+      .preview-label { padding: 12px; font-size: 12px; margin-bottom: 12px; }
+    }
+
+    /* TABLET */
+    @media (min-width: 601px) and (max-width: 900px) {
+      .header { padding: 35px 20px; }
+      .header h1 { font-size: 24px; }
+      .section { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-label">📧 PREVIEW - EMAIL TIL KUNDE 📧</div>
+
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <div style="margin-bottom: 15px;">
+          <img src="images/logo_transparent.png" alt="TechBoks Logo" style="max-width: 120px; height: auto;">
+        </div>
+        <h1>ORDREBEKRÆFTELSE</h1>
+        <p>Din ordre er modtaget og bekræftet</p>
+      </div>
+
+      <div class="greeting">
+        <h2>Hej Anders Andersen!</h2>
+        <p>Tusind tak for interessen for mine Mustang gadgets!</p>
+        <p>Din ordre er modtaget og bekræftet. Print og klargøring af netop dine produkter startes nu.</p>
+      </div>
+
+      <div class="section">
+        <h3>Dine Produkter</h3>
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th style="text-align: left;">Produkt</th>
+              <th style="text-align: center;">Antal</th>
+              <th style="text-align: right;">Pris</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background-color: #f9f9f9;">
+              <td style="padding: 12px; border-bottom: 1px solid #eee; font-size: 14px;">Mustang Mach-E Phone Mount</td>
+              <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px;">2</td>
+              <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; font-size: 14px;"><strong>598.00 kr</strong></td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+              <td style="padding: 12px; border-bottom: 1px solid #eee; font-size: 14px;">Mustang Cup Holder</td>
+              <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px;">1</td>
+              <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; font-size: 14px;"><strong>349.00 kr</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h3>Forsendelse</h3>
+        <ul class="info-list">
+          <li><span class="info-list-label">Metode:</span> Forsendelse</li>
+          <li><span class="info-list-label">Omkostning:</span> 79.00 kr</li>
+        </ul>
+      </div>
+
+      <div style="padding: 25px 20px;">
+        <div class="highlight-box">
+          <p>Subtotal: 947.00 kr</p>
+          <p>Forsendelse: 79.00 kr</p>
+          <div class="divider"></div>
+          <p><strong>TOTAL: 1026.00 kr</strong></p>
+        </div>
+      </div>
+
+      <div class="page-section" style="background: #f0f7ff;">
+        <h3>Leveringstid</h3>
+        <p style="font-size: 13px; margin: 0;">Afhængig af ordrens størrelse og travlhed skal du forvente <strong>1 uges klargøring</strong> af produkterne. Du vil modtage besked så snart din ordre er klar til forsendelse eller afhentning.</p>
+      </div>
+
+      <div class="page-section" style="background: #f0f7ff;">
+        <h3>Betaling</h3>
+        <p style="font-size: 13px; margin: 0;">Betal venligst via <strong>MobilePay</strong> til: <strong style="font-size: 15px;">50935952</strong></p>
+        <p style="font-size: 13px; margin: 8px 0 0 0;">Betal før forsendelse eller ved afhentning.</p>
+      </div>
+
+      <div class="page-section" style="background: #e8f5e9;">
+        <h3>Spørgsmål?</h3>
+        <p style="font-size: 13px; margin: 0;">Hvis du har spørgsmål til din ordre, kan du besvare denne mail. Jeg svarer hurtigst muligt!</p>
+      </div>
+
+      <div class="footer">
+        <p><strong>TechBoks.dk</strong></p>
+        <p>Eske Hagen Sinding</p>
+        <p>3D printede produkter i høj kvalitet</p>
+        <p style="margin-top: 8px; opacity: 0.8;">&copy; 2025 TechBoks. Alle rettigheder forbeholdt.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

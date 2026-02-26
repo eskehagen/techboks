@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview - Email til Butikkejer</title>
+  <style>
+    * { margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; color: #333; line-height: 1.6; background: #f5f5f5; padding: 10px; }
+    .wrapper { background: #f5f5f5; padding: 10px 0; }
+    .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; text-align: center; }
+    .header h1 { margin: 0; font-size: 26px; font-weight: bold; }
+    .header p { margin: 8px 0 0 0; font-size: 13px; opacity: 0.9; }
+    .section { padding: 20px; border-bottom: 1px solid #f0f0f0; }
+    .section:last-child { border-bottom: none; }
+    .section h2 { color: #667eea; font-size: 15px; margin: 0 0 15px 0; font-weight: bold; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
+    .info-item { background: #f9f9f9; padding: 10px; border-radius: 5px; }
+    .info-label { color: #667eea; font-weight: bold; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .info-value { margin-top: 4px; color: #333; font-size: 13px; }
+    .products-table { width: 100%; border-collapse: collapse; margin: 0; background: white; }
+    .products-table th { background: #667eea; color: white; padding: 10px; text-align: left; font-size: 11px; font-weight: bold; }
+    .products-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+    .products-table tr:last-child td { border-bottom: none; }
+    .price-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 18px; border-radius: 8px; margin: 15px 0; }
+    .price-row { display: flex; justify-content: space-between; margin: 6px 0; font-size: 13px; }
+    .total-row { font-weight: bold; font-size: 16px; border-top: 2px solid rgba(255,255,255,0.3); padding-top: 8px; margin-top: 8px; }
+    .info-box { background: #e8f4f8; padding: 12px; border-radius: 5px; border-left: 4px solid #667eea; font-size: 12px; }
+    .footer { background: #333; color: white; padding: 15px; text-align: center; font-size: 11px; }
+    .footer p { margin: 3px 0; }
+    .preview-label { background: #ffeb3b; padding: 15px; text-align: center; font-weight: bold; margin-bottom: 15px; border-radius: 5px; font-size: 14px; }
+
+    /* MOBIL RESPONSIV */
+    @media (max-width: 600px) {
+      body { padding: 5px; }
+      .wrapper { padding: 5px 0; }
+      .container { border-radius: 4px; }
+      .header { padding: 25px 15px; }
+      .header h1 { font-size: 22px; }
+      .header p { font-size: 12px; }
+      .section { padding: 15px; }
+      .section h2 { font-size: 14px; margin-bottom: 12px; }
+      .info-grid { grid-template-columns: 1fr; gap: 8px; }
+      .info-item { padding: 8px; }
+      .info-label { font-size: 9px; }
+      .info-value { font-size: 12px; margin-top: 3px; }
+      .products-table th { padding: 8px; font-size: 10px; }
+      .products-table td { padding: 8px; font-size: 12px; }
+      .products-table th:nth-child(2), .products-table td:nth-child(2) { font-size: 11px; }
+      .products-table th:nth-child(3), .products-table td:nth-child(3) { font-size: 11px; }
+      .price-box { padding: 15px; margin: 12px 0; }
+      .price-row { font-size: 12px; margin: 5px 0; }
+      .total-row { font-size: 15px; }
+      .info-box { padding: 10px; font-size: 11px; }
+      .footer { padding: 12px; font-size: 10px; }
+      .footer p { margin: 2px 0; }
+      .preview-label { padding: 12px; font-size: 12px; margin-bottom: 12px; }
+    }
+
+    /* TABLET */
+    @media (min-width: 601px) and (max-width: 900px) {
+      .header { padding: 35px 20px; }
+      .header h1 { font-size: 24px; }
+      .section { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-label">📧 PREVIEW - EMAIL TIL BUTIKKEJER 📧</div>
+
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <div style="margin-bottom: 15px;">
+          <img src="images/logo_transparent.png" alt="TechBoks Logo" style="max-width: 120px; height: auto;">
+        </div>
+        <h1>NY ORDRE MODTAGET</h1>
+        <p>TechBoks.dk Ordresystem</p>
+      </div>
+
+      <div class="section">
+        <h2>Kunde Information</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">Navn</div>
+            <div class="info-value">Anders Andersen</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Email</div>
+            <div class="info-value">anders@example.com</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Telefon</div>
+            <div class="info-value">+45 40 12 34 56</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Adresse</div>
+            <div class="info-value">Hovedgaden 42, Aarhus</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Produkter</h2>
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th style="text-align: left;">Produkt</th>
+              <th style="text-align: center;">Antal</th>
+              <th style="text-align: right;">Pris</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background-color: #f9f9f9;">
+              <td style="padding: 12px; border-bottom: 1px solid #eee; font-size: 14px;">Mustang Mach-E Phone Mount</td>
+              <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px;">2</td>
+              <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; font-size: 14px;"><strong>598.00 kr</strong></td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+              <td style="padding: 12px; border-bottom: 1px solid #eee; font-size: 14px;">Mustang Cup Holder</td>
+              <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px;">1</td>
+              <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; font-size: 14px;"><strong>349.00 kr</strong></td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin: 15px 0; padding: 15px; background: #f0f0f0; border-left: 4px solid #667eea; font-size: 14px; color: #333;">Gør venligst hele basen sort i stedet for hvid</p>
+      </div>
+
+      <div class="section">
+        <h2>Forsendelse</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">Metode</div>
+            <div class="info-value">Forsendelse</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Omkostning</div>
+            <div class="info-value">79.00 kr</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding: 25px 20px;">
+        <div class="price-box">
+          <div class="price-row">
+            <span>Subtotal:</span>
+            <strong>947.00 kr</strong>
+          </div>
+          <div class="price-row">
+            <span>Forsendelse:</span>
+            <strong>79.00 kr</strong>
+          </div>
+          <div class="price-row total-row">
+            <span>TOTAL:</span>
+            <strong>1026.00 kr</strong>
+          </div>
+        </div>
+        <div class="info-box">
+          <p><strong>Ordre modtaget:</strong> 26/02/2025 14:32:15</p>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p><strong>TechBoks.dk</strong></p>
+        <p>3D printede produkter i høj kvalitet</p>
+        <p>&copy; 2025 TechBoks. Alle rettigheder forbeholdt.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
