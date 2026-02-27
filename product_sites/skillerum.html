@@ -215,6 +215,33 @@
         .back-to-list:hover {
             text-decoration: underline;
         }
+        .option-group {
+            margin-bottom: 1.5rem;
+        }
+        .option-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #444;
+            font-size: 0.95rem;
+        }
+        .option-group select {
+            width: 100%;
+            max-width: 260px;
+            padding: 0.6rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            appearance: auto;
+        }
+        .option-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102,126,234,0.15);
+        }
 
         /* Gallery Modal */
         .gallery-modal {
@@ -392,8 +419,18 @@
                     </p>
                     <ul>
                         <li><strong>Materiale:</strong> PETG (robust og holdbar)</li>
+                        <li><strong>Farve:</strong> Vælg selv farve af logo</li>
                         <li><strong>Fleksibel:</strong> Kan placeres på hele bagagerumsgulvet via velcro</li>
                     </ul>
+                </div>
+                <div class="option-group">
+                    <label for="color-select">Farve</label>
+                    <select id="color-select">
+                        <option value="Hvid" selected>Hvid</option>
+                        <option value="Rød">Rød</option>
+                        <option value="Blå">Blå</option>
+                        <option value="Grøn">Grøn</option>
+                    </select>
                 </div>
                 <div style="display: flex; gap: 1rem; align-items: center; margin: 1.5rem 0; margin-bottom: 2rem;">
                     <div style="display: flex; align-items: center; border: 1px solid #ddd; border-radius: 6px; background: white;">
@@ -551,9 +588,10 @@
         // Add to cart function
         function addToCart() {
             const quantity = getQuantity();
+            const color = document.getElementById('color-select').value || 'Hvid';
             const product = {
-                id: 'skillerum',
-                name: 'Skillerum til Bagagerum',
+                id: 'skillerum-' + color.toLowerCase().replace('ø', 'oe').replace('å', 'aa').replace('æ', 'ae'),
+                name: 'Skillerum til Bagagerum – ' + color,
                 price: 60,
                 weight: 220,
                 image: '../images/floorHolder1.jpg',
