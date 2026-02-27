@@ -215,6 +215,45 @@
         .back-to-list:hover {
             text-decoration: underline;
         }
+        .variant-select-wrapper {
+            margin-bottom: 1.5rem;
+        }
+        .variant-select-wrapper label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        .variant-select {
+            width: 100%;
+            max-width: 280px;
+            padding: 0.65rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #333;
+            background: white;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23667eea' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+            transition: border-color 0.2s;
+        }
+        .variant-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .variant-select.error {
+            border-color: #f44336;
+        }
+        .variant-error-msg {
+            color: #f44336;
+            font-size: 0.88rem;
+            margin-top: 0.4rem;
+            display: none;
+        }
 
         /* Gallery Modal */
         .gallery-modal {
@@ -397,6 +436,15 @@
                         <li><strong>Vedligeholdelse:</strong> Nem at tage ud og rengøre</li>
                     </ul>
                 </div>
+                <div class="variant-select-wrapper">
+                    <label for="version-select">Vælg version <span style="color:#f44336;">*</span></label>
+                    <select id="version-select" class="variant-select" onchange="clearVersionError()">
+                        <option value="">-- Vælg Venstre eller Højre --</option>
+                        <option value="Venstre">Venstre (førersiden)</option>
+                        <option value="Højre">Højre (passagersiden)</option>
+                    </select>
+                    <div class="variant-error-msg" id="version-error">Vælg venligst en version (Venstre eller Højre).</div>
+                </div>
                 <div style="display: flex; gap: 1rem; align-items: center; margin: 1.5rem 0; margin-bottom: 2rem;">
                     <div style="display: flex; align-items: center; border: 1px solid #ddd; border-radius: 6px; background: white;">
                         <button type="button" onclick="decreaseQuantity()" style="background: none; border: none; width: 30px; height: 30px; cursor: pointer; font-weight: bold; color: #667eea;">−</button>
@@ -453,6 +501,7 @@
         window.addToCart = addToCart;
         window.increaseQuantity = increaseQuantity;
         window.decreaseQuantity = decreaseQuantity;
+        window.clearVersionError = clearVersionError;
 
         // Initialize 3D Viewer
         function init3DViewer() {
@@ -553,10 +602,21 @@
 
         // Add to cart function
         function addToCart() {
+            const version = document.getElementById('version-select').value;
+
+            if (!version) {
+                const select = document.getElementById('version-select');
+                const errorMsg = document.getElementById('version-error');
+                select.classList.add('error');
+                errorMsg.style.display = 'block';
+                select.focus();
+                return;
+            }
+
             const quantity = getQuantity();
             const product = {
-                id: 'skraldespand',
-                name: 'Skraldespand til Sidedør',
+                id: 'skraldespand-' + version.toLowerCase(),
+                name: 'Skraldespand til Sidedør (' + version + ')',
                 price: 70,
                 weight: 135,
                 image: '../images/trashBin1.jpg',
@@ -567,9 +627,17 @@
                 window.cart.addToCart(product, quantity);
                 showNotification('Produkt tilføjet til kurv!', 'success');
                 document.getElementById('quantity-input').value = 1;
+                document.getElementById('version-select').value = '';
             } else {
                 showNotification('Fejl ved tilføjelse til kurv', 'error');
             }
+        }
+
+        function clearVersionError() {
+            const select = document.getElementById('version-select');
+            const errorMsg = document.getElementById('version-error');
+            select.classList.remove('error');
+            errorMsg.style.display = 'none';
         }
 
         // Initialize everything when DOM is ready
