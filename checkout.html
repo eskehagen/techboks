@@ -811,7 +811,7 @@
          */
         function completeOrder(orderData) {
             cart.clearCart();
-            window.location.href = 'order-confirmation.html?order=' + btoa(JSON.stringify(orderData));
+            window.location.href = 'order-confirmation.html?order=' + btoa(unescape(encodeURIComponent(JSON.stringify(orderData))));
         }
 
         /**
