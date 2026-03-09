@@ -56,15 +56,26 @@ function doPost(e) {
       throw new Error('Systemet har midlertidigt travlt. Prøv igen om lidt.');
     }
 
+    // Generer ordre ID tidligt, så det kan bruges i emails og Airtable
+    const orderId = generateOrderId();
+
     // Send mail til ejer
     Logger.log('Sender email til butikkejer...');
-    sendOrderEmailToShop(data);
+    sendOrderEmailToShop(data, orderId);
     Logger.log('✓ Email sendt til butikkejer');
 
     // Send mail til kunde
     Logger.log('Sender email til kunde: ' + data.customerEmail);
-    sendOrderEmailToCustomer(data);
+    sendOrderEmailToCustomer(data, orderId);
     Logger.log('✓ Email sendt til kunde');
+
+    // Sync til Airtable (fejler ikke ordreoprettelsen hvis Airtable fejler)
+    try {
+      syncToAirtable(data, orderId);
+      Logger.log('✓ Ordre synkroniseret til Airtable');
+    } catch (airtableError) {
+      Logger.log('⚠ Airtable sync fejlede (ordre er stadig gyldig): ' + airtableError.toString());
+    }
 
     // Opdater caches
     cache.put(emailKey, 'true', 300);
@@ -73,7 +84,7 @@ function doPost(e) {
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
       message: 'Ordre modtaget og emails sendt',
-      orderId: generateOrderId(),
+      orderId: orderId,
       timestamp: new Date().toISOString()
     })).setMimeType(ContentService.MimeType.JSON);
 
@@ -105,7 +116,7 @@ function sanitizeText(text) {
 /**
  * Send ordre email til butikkejer - HTML VERSION
  */
-function sendOrderEmailToShop(orderData) {
+function sendOrderEmailToShop(orderData, orderId) {
   try {
     const shopEmail = 'eskehagen@gmail.com';
 
@@ -132,7 +143,7 @@ function sendOrderEmailToShop(orderData) {
       notesSection = `<p style="margin: 15px 0; padding: 15px; background: #f0f0f0; border-left: 4px solid #667eea; font-size: 14px; color: #333;">${sanitizeText(orderData.customerNotes)}</p>`;
     }
 
-    const subject = `Ny TechBoks.dk ordre - ${sanitizeText(orderData.customerName)}`;
+    const subject = `Ny TechBoks.dk ordre [${orderId}] - ${sanitizeText(orderData.customerName)}`;
 
     const htmlBody = `
       <!DOCTYPE html>
@@ -269,6 +280,7 @@ function sendOrderEmailToShop(orderData) {
                   </div>
                 </div>
                 <div class="info-box">
+                  <p><strong>Ordre ID:</strong> ${orderId}</p>
                   <p><strong>Ordre modtaget:</strong> ${new Date().toLocaleString('da-DK')}</p>
                 </div>
               </div>
@@ -300,7 +312,7 @@ function sendOrderEmailToShop(orderData) {
 /**
  * Send bekræftelsesmail til kunden - HTML VERSION
  */
-function sendOrderEmailToCustomer(orderData) {
+function sendOrderEmailToCustomer(orderData, orderId) {
   try {
     const customerEmail = orderData.customerEmail;
 
@@ -327,7 +339,7 @@ function sendOrderEmailToCustomer(orderData) {
       notesSection = `<p style="margin: 12px 0; font-size: 14px; color: #555;"><em>"${sanitizeText(orderData.customerNotes)}"</em></p>`;
     }
 
-    const subject = 'Ordrebekræftelse - TechBoks.dk';
+    const subject = `Ordrebekræftelse [${orderId}] - TechBoks.dk`;
 
     const htmlBody = `
       <!DOCTYPE html>
@@ -401,6 +413,7 @@ function sendOrderEmailToCustomer(orderData) {
                 <h2>Hej ${sanitizeText(orderData.customerName)}!</h2>
                 <p>Tusind tak for interessen for mine Mustang gadgets!</p>
                 <p>Din ordre er modtaget og bekræftet. Print og klargøring af netop dine produkter startes nu.</p>
+                <p style="margin-top: 10px; font-size: 12px; color: #888;">Ordre ID: <strong>${orderId}</strong></p>
               </div>
 
               <div class="section">
@@ -485,4 +498,189 @@ function generateOrderId() {
   const timestamp = Date.now();
   const random = Math.floor(Math.random() * 1000);
   return `ORD-${timestamp}-${random}`;
+}
+
+/**
+ * Synkroniser ordre til Airtable (Kunder, Ordrer og Produktlinjer tabeller)
+ * Kræver Script Properties: AIRTABLE_API_KEY og AIRTABLE_BASE_ID
+ */
+function syncToAirtable(orderData, orderId) {
+  const props = PropertiesService.getScriptProperties();
+  const apiKey = props.getProperty('AIRTABLE_API_KEY');
+  const baseId = props.getProperty('AIRTABLE_BASE_ID');
+
+  if (!apiKey || !baseId) {
+    throw new Error('AIRTABLE_API_KEY eller AIRTABLE_BASE_ID mangler i Script Properties');
+  }
+
+  const headers = {
+    'Authorization': 'Bearer ' + apiKey,
+    'Content-Type': 'application/json'
+  };
+
+  // 1. Find eller opret kunde
+  const customerId = findOrCreateCustomer(orderData, baseId, headers);
+  Logger.log('Airtable kunde ID: ' + customerId);
+
+  // 2. Opret ordre-record
+  const orderPayload = {
+    fields: {
+      'Ordre ID': orderId,
+      'Kunde': [customerId],
+      'Dato': new Date().toISOString(),
+      'Forsendelsesmetode': orderData.shippingMethod === 'pickup' ? 'Afhentning' : 'Levering',
+      'Fragt': parseFloat(orderData.shippingCost) || 0,
+      'Subtotal': parseFloat(orderData.subtotal) || 0,
+      'Total': parseFloat(orderData.total) || 0,
+      'Noter': sanitizeText(orderData.customerNotes || ''),
+      'Status': 'Ny'
+    }
+  };
+
+  const orderResponse = UrlFetchApp.fetch(
+    'https://api.airtable.com/v0/' + baseId + '/Ordrer',
+    { method: 'POST', headers: headers, payload: JSON.stringify(orderPayload) }
+  );
+  const orderRecord = JSON.parse(orderResponse.getContentText());
+
+  if (!orderRecord.id) {
+    throw new Error('Airtable ordre oprettelse fejlede: ' + orderResponse.getContentText());
+  }
+  const orderRecordId = orderRecord.id;
+  Logger.log('Airtable ordre record ID: ' + orderRecordId);
+
+  // 3. Opret produktlinje-record for hvert produkt i ordren
+  const items = orderData.items || [];
+  for (const item of items) {
+    const linePayload = {
+      fields: {
+        'Ordre': [orderRecordId],
+        'Produktnavn': sanitizeText(item.name || ''),
+        'Produkt ID': sanitizeText(item.id || ''),
+        'Antal': parseInt(item.quantity) || 1,
+        'Stykpris': parseFloat(item.price) || 0,
+        'Vægt (g)': parseFloat(item.weight) || 0
+      }
+    };
+    UrlFetchApp.fetch(
+      'https://api.airtable.com/v0/' + baseId + '/Produktlinjer',
+      { method: 'POST', headers: headers, payload: JSON.stringify(linePayload) }
+    );
+  }
+  Logger.log('Airtable: ' + items.length + ' produktlinjer oprettet');
+}
+
+/**
+ * Find eksisterende kunde på email, eller opret ny kunde
+ * Returnerer Airtable record ID for kunden
+ */
+function findOrCreateCustomer(orderData, baseId, headers) {
+  const email = orderData.customerEmail;
+
+  // Søg efter eksisterende kunde med samme email
+  const searchUrl = 'https://api.airtable.com/v0/' + baseId + '/Kunder?filterByFormula=' +
+    encodeURIComponent('({Email}="' + email + '")');
+  const searchResponse = UrlFetchApp.fetch(searchUrl, { method: 'GET', headers: headers });
+  const searchResult = JSON.parse(searchResponse.getContentText());
+
+  if (searchResult.records && searchResult.records.length > 0) {
+    Logger.log('Airtable: Eksisterende kunde fundet (' + email + ')');
+    return searchResult.records[0].id;
+  }
+
+  // Opret ny kunde
+  Logger.log('Airtable: Opretter ny kunde (' + email + ')');
+  const customerPayload = {
+    fields: {
+      'Navn': sanitizeText(orderData.customerName || ''),
+      'Email': email,
+      'Telefon': sanitizeText(orderData.customerPhone || ''),
+      'Adresse': sanitizeText(orderData.customerAddress || '')
+    }
+  };
+  const createResponse = UrlFetchApp.fetch(
+    'https://api.airtable.com/v0/' + baseId + '/Kunder',
+    { method: 'POST', headers: headers, payload: JSON.stringify(customerPayload) }
+  );
+  const newCustomer = JSON.parse(createResponse.getContentText());
+
+  if (!newCustomer.id) {
+    throw new Error('Airtable kunde oprettelse fejlede: ' + createResponse.getContentText());
+  }
+  return newCustomer.id;
+}
+
+/**
+ * TESTFUNKTION - Kør manuelt fra Apps Script editor for at diagnosere Airtable-forbindelsen
+ * Slet eller ignorer denne funktion når alt virker
+ */
+function testAirtableConnection() {
+  Logger.log('=== AIRTABLE DIAGNOSE START ===');
+
+  // Trin 1: Tjek Script Properties
+  const props = PropertiesService.getScriptProperties();
+  const apiKey = props.getProperty('AIRTABLE_API_KEY');
+  const baseId = props.getProperty('AIRTABLE_BASE_ID');
+
+  Logger.log('API Key fundet: ' + (apiKey ? 'JA (' + apiKey.substring(0, 10) + '...)' : 'NEJ - mangler!'));
+  Logger.log('Base ID fundet: ' + (baseId ? 'JA (' + baseId + ')' : 'NEJ - mangler!'));
+
+  if (!apiKey || !baseId) {
+    Logger.log('STOP: Manglende credentials i Script Properties');
+    return;
+  }
+
+  const headers = {
+    'Authorization': 'Bearer ' + apiKey,
+    'Content-Type': 'application/json'
+  };
+
+  // Trin 2: Hent liste over tabeller i basen (meta API)
+  Logger.log('--- Tjekker tabeller i basen ---');
+  try {
+    const metaResponse = UrlFetchApp.fetch(
+      'https://api.airtable.com/v0/meta/bases/' + baseId + '/tables',
+      { method: 'GET', headers: headers }
+    );
+    const meta = JSON.parse(metaResponse.getContentText());
+    if (meta.tables) {
+      meta.tables.forEach(function(t) {
+        Logger.log('Tabel fundet: "' + t.name + '"');
+        t.fields.forEach(function(f) {
+          Logger.log('  Felt: "' + f.name + '" (' + f.type + ')');
+        });
+      });
+    } else {
+      Logger.log('Meta svar: ' + metaResponse.getContentText());
+    }
+  } catch (err) {
+    Logger.log('Meta API fejl: ' + err.toString());
+  }
+
+  // Trin 3: Test oprettelse af en testkunde
+  Logger.log('--- Tester oprettelse i Kunder ---');
+  try {
+    const testCustomer = {
+      fields: {
+        'Navn': 'TEST KUNDE - slet mig',
+        'Email': 'test@techboks.dk',
+        'Telefon': '12345678',
+        'Adresse': 'Testvej 1, 1234 Testby'
+      }
+    };
+    const resp = UrlFetchApp.fetch(
+      'https://api.airtable.com/v0/' + baseId + '/Kunder',
+      { method: 'POST', headers: headers, payload: JSON.stringify(testCustomer) }
+    );
+    const result = JSON.parse(resp.getContentText());
+    if (result.id) {
+      Logger.log('Kunder: OK - record oprettet: ' + result.id);
+    } else {
+      Logger.log('Kunder FEJL: ' + resp.getContentText());
+    }
+  } catch (err) {
+    Logger.log('Kunder undtagelse: ' + err.toString());
+  }
+
+  Logger.log('=== DIAGNOSE SLUT - se resultater ovenfor ===');
 }
