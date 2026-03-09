@@ -390,7 +390,7 @@
                 }
 
                 // Decode base64
-                const decodedString = atob(encodedData);
+                const decodedString = decodeURIComponent(escape(atob(encodedData)));
 
                 // Parse JSON - remove any problematic control characters first
                 const cleanedString = decodedString.replace(/[\n\r\t]/g, ' ');

@@ -501,7 +501,7 @@ function generateOrderId() {
 }
 
 /**
- * Synkroniser ordre til Airtable (Kunder, Ordrer og Produktlinjer tabeller)
+ * Synkroniser ordre til Airtable (Kunder + Ordrer tabeller)
  * Kræver Script Properties: AIRTABLE_API_KEY og AIRTABLE_BASE_ID
  */
 function syncToAirtable(orderData, orderId) {
@@ -522,52 +522,89 @@ function syncToAirtable(orderData, orderId) {
   const customerId = findOrCreateCustomer(orderData, baseId, headers);
   Logger.log('Airtable kunde ID: ' + customerId);
 
-  // 2. Opret ordre-record
-  const orderPayload = {
-    fields: {
-      'Ordre ID': orderId,
-      'Kunde': [customerId],
-      'Dato': new Date().toISOString(),
-      'Forsendelsesmetode': orderData.shippingMethod === 'pickup' ? 'Afhentning' : 'Levering',
-      'Fragt': parseFloat(orderData.shippingCost) || 0,
-      'Subtotal': parseFloat(orderData.subtotal) || 0,
-      'Total': parseFloat(orderData.total) || 0,
-      'Noter': sanitizeText(orderData.customerNotes || ''),
-      'Status': 'Ny'
-    }
+  // 2. Slå produkt-records op i Produkter-tabellen via Website ID
+  const productRecordIds = findProductRecordIds(orderData.items || [], baseId, headers);
+  Logger.log('Airtable produkter fundet: ' + productRecordIds.length);
+
+  // 3. Opret ordre-record
+  const now = new Date();
+  const dateStr = now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0');
+  const orderFields = {
+    'Ordre ID': orderId,
+    'Dato': dateStr,
+    'Kunde': [customerId],
+    'Salgsplatform': 'TechBoks.dk'
   };
+
+  if (productRecordIds.length > 0) {
+    orderFields['Produkter'] = productRecordIds;
+  }
 
   const orderResponse = UrlFetchApp.fetch(
     'https://api.airtable.com/v0/' + baseId + '/Ordrer',
-    { method: 'POST', headers: headers, payload: JSON.stringify(orderPayload) }
+    { method: 'POST', headers: headers, payload: JSON.stringify({ fields: orderFields }), muteHttpExceptions: true }
   );
+  Logger.log('Airtable Ordrer HTTP status: ' + orderResponse.getResponseCode());
+  Logger.log('Airtable Ordrer svar: ' + orderResponse.getContentText());
   const orderRecord = JSON.parse(orderResponse.getContentText());
 
   if (!orderRecord.id) {
     throw new Error('Airtable ordre oprettelse fejlede: ' + orderResponse.getContentText());
   }
-  const orderRecordId = orderRecord.id;
-  Logger.log('Airtable ordre record ID: ' + orderRecordId);
+  Logger.log('Airtable ordre record ID: ' + orderRecord.id);
+}
 
-  // 3. Opret produktlinje-record for hvert produkt i ordren
-  const items = orderData.items || [];
+/**
+ * Slå produkter op i Airtable Produkter-tabellen via Website ID.
+ * Prøver først fuldt match (fx "skraldespand-venstre"), derefter base-ID (fx "frontboks").
+ * Returnerer array af unikke Airtable record IDs.
+ */
+function findProductRecordIds(items, baseId, headers) {
+  const recordIds = [];
+  const cache = {};
+
   for (const item of items) {
-    const linePayload = {
-      fields: {
-        'Ordre': [orderRecordId],
-        'Produktnavn': sanitizeText(item.name || ''),
-        'Produkt ID': sanitizeText(item.id || ''),
-        'Antal': parseInt(item.quantity) || 1,
-        'Stykpris': parseFloat(item.price) || 0,
-        'Vægt (g)': parseFloat(item.weight) || 0
+    const websiteId = (item.id || '').toLowerCase();
+    if (!websiteId) continue;
+
+    // Byg liste af IDs at prøve: fuldt ID først, så base-ID (uden sidste -xxx suffix)
+    const idsToTry = [websiteId];
+    const lastDash = websiteId.lastIndexOf('-');
+    if (lastDash > 0) {
+      idsToTry.push(websiteId.substring(0, lastDash));
+    }
+
+    let foundId = null;
+    for (const tryId of idsToTry) {
+      // Brug cache for at undgå gentagne API-kald for samme ID
+      if (cache[tryId] !== undefined) {
+        foundId = cache[tryId];
+        break;
       }
-    };
-    UrlFetchApp.fetch(
-      'https://api.airtable.com/v0/' + baseId + '/Produktlinjer',
-      { method: 'POST', headers: headers, payload: JSON.stringify(linePayload) }
-    );
+      const searchUrl = 'https://api.airtable.com/v0/' + baseId + '/Produkter?filterByFormula=' +
+        encodeURIComponent('({Website ID}="' + tryId + '")');
+      const resp = UrlFetchApp.fetch(searchUrl, { method: 'GET', headers: headers, muteHttpExceptions: true });
+      const result = JSON.parse(resp.getContentText());
+      if (result.records && result.records.length > 0) {
+        cache[tryId] = result.records[0].id;
+        foundId = result.records[0].id;
+        Logger.log('Produkt matchet: "' + websiteId + '" → "' + tryId + '" (' + foundId + ')');
+        break;
+      } else {
+        cache[tryId] = null;
+      }
+    }
+
+    if (foundId && recordIds.indexOf(foundId) === -1) {
+      recordIds.push(foundId);
+    } else if (!foundId) {
+      Logger.log('⚠ Produkt ikke fundet i Airtable: ' + websiteId);
+    }
   }
-  Logger.log('Airtable: ' + items.length + ' produktlinjer oprettet');
+
+  return recordIds;
 }
 
 /**
@@ -659,6 +696,7 @@ function testAirtableConnection() {
 
   // Trin 3: Test oprettelse af en testkunde
   Logger.log('--- Tester oprettelse i Kunder ---');
+  let testCustomerId = null;
   try {
     const testCustomer = {
       fields: {
@@ -670,16 +708,51 @@ function testAirtableConnection() {
     };
     const resp = UrlFetchApp.fetch(
       'https://api.airtable.com/v0/' + baseId + '/Kunder',
-      { method: 'POST', headers: headers, payload: JSON.stringify(testCustomer) }
+      { method: 'POST', headers: headers, payload: JSON.stringify(testCustomer), muteHttpExceptions: true }
     );
+    Logger.log('Kunder HTTP status: ' + resp.getResponseCode());
     const result = JSON.parse(resp.getContentText());
     if (result.id) {
+      testCustomerId = result.id;
       Logger.log('Kunder: OK - record oprettet: ' + result.id);
     } else {
       Logger.log('Kunder FEJL: ' + resp.getContentText());
     }
   } catch (err) {
     Logger.log('Kunder undtagelse: ' + err.toString());
+  }
+
+  // Trin 4: Test oprettelse i Ordrer (med linked kunde hvis muligt)
+  Logger.log('--- Tester oprettelse i Ordrer ---');
+  try {
+    const nowTest = new Date();
+    const dateStrTest = nowTest.getFullYear() + '-' +
+      String(nowTest.getMonth() + 1).padStart(2, '0') + '-' +
+      String(nowTest.getDate()).padStart(2, '0');
+    const testOrder = {
+      fields: {
+        'Ordre ID': 'TEST-ORD-slet-mig',
+        'Dato': dateStrTest,
+        'Salgsplatform': 'TechBoks.dk'
+      }
+    };
+    if (testCustomerId) {
+      testOrder.fields['Kunde'] = [testCustomerId];
+    }
+    const resp = UrlFetchApp.fetch(
+      'https://api.airtable.com/v0/' + baseId + '/Ordrer',
+      { method: 'POST', headers: headers, payload: JSON.stringify(testOrder), muteHttpExceptions: true }
+    );
+    Logger.log('Ordrer HTTP status: ' + resp.getResponseCode());
+    Logger.log('Ordrer svar: ' + resp.getContentText());
+    const result = JSON.parse(resp.getContentText());
+    if (result.id) {
+      Logger.log('Ordrer: OK - record oprettet: ' + result.id);
+    } else {
+      Logger.log('Ordrer FEJL - se svar ovenfor for detaljer');
+    }
+  } catch (err) {
+    Logger.log('Ordrer undtagelse: ' + err.toString());
   }
 
   Logger.log('=== DIAGNOSE SLUT - se resultater ovenfor ===');
