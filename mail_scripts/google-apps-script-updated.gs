@@ -492,12 +492,14 @@ function sendOrderEmailToCustomer(orderData, orderId) {
 }
 
 /**
- * Generer unik ordre ID
+ * Generer unik ordre ID som inkrementelt tal startende fra 200
  */
 function generateOrderId() {
-  const timestamp = Date.now();
-  const random = Math.floor(Math.random() * 1000);
-  return `ORD-${timestamp}-${random}`;
+  const props = PropertiesService.getScriptProperties();
+  const current = parseInt(props.getProperty('ORDER_COUNTER') || '199');
+  const next = current + 1;
+  props.setProperty('ORDER_COUNTER', next.toString());
+  return 'ORD-' + next;
 }
 
 /**
