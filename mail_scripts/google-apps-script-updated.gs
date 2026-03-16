@@ -529,13 +529,8 @@ function syncToAirtable(orderData, orderId) {
   Logger.log('Airtable produkter fundet: ' + productRecordIds.length);
 
   // 3. Opret ordre-record
-  const now = new Date();
-  const dateStr = now.getFullYear() + '-' +
-    String(now.getMonth() + 1).padStart(2, '0') + '-' +
-    String(now.getDate()).padStart(2, '0');
   const orderFields = {
     'Ordre ID': orderId,
-    'Dato': dateStr,
     'Kunde': [customerId],
     'Salgsplatform': 'TechBoks.dk'
   };
@@ -631,6 +626,7 @@ function findOrCreateCustomer(orderData, baseId, headers) {
   Logger.log('Airtable: Opretter ny kunde (' + email + ')');
   const customerPayload = {
     fields: {
+      'Kunde ID': sanitizeText(orderData.customerName || ''),
       'Navn': sanitizeText(orderData.customerName || ''),
       'Email': email,
       'Telefon': sanitizeText(orderData.customerPhone || ''),
@@ -727,14 +723,9 @@ function testAirtableConnection() {
   // Trin 4: Test oprettelse i Ordrer (med linked kunde hvis muligt)
   Logger.log('--- Tester oprettelse i Ordrer ---');
   try {
-    const nowTest = new Date();
-    const dateStrTest = nowTest.getFullYear() + '-' +
-      String(nowTest.getMonth() + 1).padStart(2, '0') + '-' +
-      String(nowTest.getDate()).padStart(2, '0');
     const testOrder = {
       fields: {
         'Ordre ID': 'TEST-ORD-slet-mig',
-        'Dato': dateStrTest,
         'Salgsplatform': 'TechBoks.dk'
       }
     };
