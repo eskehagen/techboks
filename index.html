@@ -420,17 +420,16 @@
                     </div>
                 </a>
 
-                <div class="category-card coming-soon">
-                    <div class="coming-soon-badge">Kommer Snart</div>
+                <a href="hjemmet.html" class="category-card">
                     <div class="category-image">🏠</div>
                     <div class="category-info">
                         <h3 class="category-title">Hjemmet</h3>
                         <p class="category-description">
                             Smarte produkter til hjemmet 
                         </p>
-                        <span class="category-badge">Snart tilgængelig</span>
+                        <span class="category-badge" id="hjemmet-product-count">Indlæser...</span>
                     </div>
-                </div>
+                </a>
 
             </div>
         </div>
@@ -518,6 +517,24 @@
             .catch(error => {
                 console.error('Error loading product count:', error);
                 document.getElementById('mustang-product-count').textContent = 'Flere produkter';
+            });
+
+        // Dynamically fetch and display product count for Hjemmet category
+        fetch('hjemmet.html')
+            .then(response => response.text())
+            .then(html => {
+                // Extract the products array from the HTML
+                const match = html.match(/const products = \[([\s\S]*?)\];/);
+                if (match) {
+                    // Count the number of product objects by counting opening braces after array start
+                    const productsString = match[1];
+                    const productCount = (productsString.match(/\{[^}]*id:/g) || []).length;
+                    document.getElementById('hjemmet-product-count').textContent = productCount + ' produkter';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading product count:', error);
+                document.getElementById('hjemmet-product-count').textContent = 'Flere produkter';
             });
     </script>
 </body>
