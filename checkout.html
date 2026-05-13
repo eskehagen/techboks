@@ -485,8 +485,14 @@
 
                     <div class="form-group">
                         <label for="address">Adresse *</label>
-                        <input type="text" id="address" name="address" placeholder="Vej nr., Postnr. By" required>
+                        <input type="text" id="address" name="address" placeholder="Vejnavn og husnummer" required>
                         <div class="error-message" id="addressError">Adresse er påkrævet</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cityPostal">By / Postnummer *</label>
+                        <input type="text" id="cityPostal" name="cityPostal" placeholder="Postnummer og by" required>
+                        <div class="error-message" id="cityPostalError">By/Postnummer er påkrævet</div>
                     </div>
 
                     <div class="form-group">
@@ -542,8 +548,8 @@
     <!-- Google Apps Script Configuration -->
     <script>
         // Google Apps Script Web App URL
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNrMQTEF9fpFwlI-mXcqQBUIBJ0XjnqCYp7S7z0adlE1XWojFWXwRPEvLEE-2bJ2J2/exec';
-    </script>
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwA4fHgmX_7sMUXh2ko3_Mxt5LNv2qwNdvqsS4OJCqJc2sOLJ7Mh8ggKNoRX4WD-aXq/exec';
+    </script>                           
 
     <!-- Error handler for extension-related issues -->
     <script>
@@ -683,6 +689,7 @@
             const email = document.getElementById('email');
             const phone = document.getElementById('phone');
             const address = document.getElementById('address');
+            const cityPostal = document.getElementById('cityPostal');
             const shipping = document.querySelector('input[name="shipping"]:checked');
 
             // Clear previous errors
@@ -719,6 +726,13 @@
                 isValid = false;
             }
 
+            // Validate city/postal
+            if (!cityPostal.value.trim()) {
+                cityPostal.parentElement.classList.add('error');
+                cityPostal.parentElement.querySelector('.error-message').classList.add('show');
+                isValid = false;
+            }
+
             // Validate shipping selection
             if (!shipping) {
                 showNotification('Vælg venligst forsendelsesmetode', 'error');
@@ -750,6 +764,7 @@
                 customerEmail: document.getElementById('email').value,
                 customerPhone: document.getElementById('phone').value,
                 customerAddress: document.getElementById('address').value,
+                customerCityPostal: document.getElementById('cityPostal').value,
                 customerNotes: document.getElementById('notes').value,
                 shippingMethod: document.querySelector('input[name="shipping"]:checked').value,
                 shippingCost: currentShippingCost,

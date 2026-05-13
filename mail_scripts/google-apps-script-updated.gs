@@ -228,7 +228,7 @@ function sendOrderEmailToShop(orderData, orderId) {
                   </div>
                   <div class="info-item">
                     <div class="info-label">Adresse</div>
-                    <div class="info-value">${sanitizeText(orderData.customerAddress)}</div>
+                    <div class="info-value">${sanitizeText(orderData.customerAddress)}<br>${sanitizeText(orderData.customerCityPostal)}</div>
                   </div>
                 </div>
               </div>
@@ -438,6 +438,7 @@ function sendOrderEmailToCustomer(orderData, orderId) {
                 <ul class="info-list">
                   <li><span class="info-list-label">Metode:</span> ${orderData.shippingMethod === 'pickup' ? 'Afhentning' : 'Forsendelse'}</li>
                   <li><span class="info-list-label">Omkostning:</span> ${parseFloat(orderData.shippingCost).toFixed(2)} kr</li>
+                  ${orderData.shippingMethod !== 'pickup' ? `<li><span class="info-list-label">Leveringsadresse:</span> ${sanitizeText(orderData.customerAddress)}, ${sanitizeText(orderData.customerCityPostal)}</li>` : ''}
                 </ul>
               </div>
 
@@ -630,7 +631,7 @@ function findOrCreateCustomer(orderData, baseId, headers) {
       'Navn': sanitizeText(orderData.customerName || ''),
       'Email': email,
       'Telefon': sanitizeText(orderData.customerPhone || ''),
-      'Adresse': sanitizeText(orderData.customerAddress || '')
+      'Adresse': [sanitizeText(orderData.customerAddress || ''), sanitizeText(orderData.customerCityPostal || '')].filter(Boolean).join(', ')
     }
   };
   const createResponse = UrlFetchApp.fetch(
