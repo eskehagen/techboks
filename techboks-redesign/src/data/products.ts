@@ -244,7 +244,7 @@ export const products: Product[] = [
     description:
       "Hæng paraplyen op eller fastgør ting i bagagerummet. Sælges i sæt af to og monteres uden værktøj.",
     category: "mustang-mach-e",
-    price: 60,
+    price: 50,
     currency: "DKK",
     images: [img("bagagerumkrog.jpg")],
     specifications: [...petg, { label: "Indhold", value: "2 stk." }],
