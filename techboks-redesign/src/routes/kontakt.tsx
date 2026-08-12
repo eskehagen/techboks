@@ -4,6 +4,7 @@ import { ArrowUpRight, Check, Instagram, MapPin, MessageCircle } from "lucide-re
 import { useState } from "react";
 import { z } from "zod";
 import { Reveal } from "@/components/Reveal";
+import { submitContactMessage } from "@/lib/contact";
 
 export const Route = createFileRoute("/kontakt")({
   head: () => ({
@@ -31,7 +32,7 @@ const contactSchema = z.object({
   email: z.string().trim().email("Ugyldig email").max(255),
   phone: z.string().trim().max(40, "Telefonnummeret er for langt"),
   subject: z.string().trim().min(1, "Skriv et emne").max(150, "Emnet er for langt"),
-  message: z.string().trim().min(1, "Skriv en besked").max(1000, "Beskeden er for lang"),
+  message: z.string().trim().min(1, "Skriv en besked").max(5000, "Beskeden er for lang"),
 });
 
 type Field = keyof z.infer<typeof contactSchema>;
@@ -61,15 +62,17 @@ function ContactPage() {
     subject: "",
     message: "",
   });
+  const [botField, setBotField] = useState("");
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const set = (field: Field) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValues((v) => ({ ...v, [field]: e.target.value }));
     setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = contactSchema.safeParse(values);
     if (!parsed.success) {
@@ -81,20 +84,18 @@ function ContactPage() {
       setErrors(next);
       return;
     }
-    const d = parsed.data;
-    const body = [
-      `Navn: ${d.name}`,
-      `Email: ${d.email}`,
-      d.phone ? `Telefon: ${d.phone}` : "",
-      "",
-      d.message,
-    ]
-      .filter(Boolean)
-      .join("\n");
-    window.location.href = `mailto:info@techboks.dk?subject=${encodeURIComponent(
-      d.subject,
-    )}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+
+    setStatus("sending");
+    setErrorMessage(null);
+    try {
+      await submitContactMessage({ ...parsed.data, botField });
+      setStatus("done");
+    } catch (error) {
+      setStatus("idle");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Kunne ikke sende beskeden. Prøv igen senere.",
+      );
+    }
   };
 
   return (
@@ -177,7 +178,7 @@ function ContactPage() {
               Send mig en besked
             </h2>
 
-            {sent ? (
+            {status === "done" ? (
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -189,13 +190,23 @@ function ContactPage() {
                 <div>
                   <p className="text-ink font-semibold">Tak for din besked!</p>
                   <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
-                    Dit mailprogram åbner med beskeden klar til afsendelse. Jeg vender tilbage
-                    hurtigst muligt — typisk inden for 24 timer.
+                    Beskeden er sendt. Jeg vender tilbage hurtigst muligt — typisk inden for 24
+                    timer.
                   </p>
                 </div>
               </motion.div>
             ) : (
               <form onSubmit={onSubmit} noValidate className="mt-8 grid gap-4 sm:grid-cols-2">
+                <input
+                  type="text"
+                  name="botField"
+                  value={botField}
+                  onChange={(e) => setBotField(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute left-[-9999px] h-0 w-0 opacity-0"
+                />
                 <TextField
                   label="Navn"
                   value={values.name}
@@ -234,10 +245,14 @@ function ContactPage() {
                 <div className="sm:col-span-2">
                   <button
                     type="submit"
-                    className="bg-ink text-canvas inline-flex h-12 items-center rounded-full px-7 text-sm font-semibold transition-transform hover:scale-[1.03]"
+                    disabled={status === "sending"}
+                    className="bg-ink text-canvas inline-flex h-12 items-center rounded-full px-7 text-sm font-semibold transition-transform hover:scale-[1.03] disabled:scale-100 disabled:opacity-40"
                   >
-                    Send besked
+                    {status === "sending" ? "Sender…" : "Send besked"}
                   </button>
+                  {errorMessage && (
+                    <p className="text-destructive mt-3 text-sm">{errorMessage}</p>
+                  )}
                 </div>
               </form>
             )}
