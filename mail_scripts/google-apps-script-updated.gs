@@ -128,13 +128,17 @@ function sendOrderEmailToShop(orderData, orderId) {
     // Formatér items liste
     let itemsHtml = '';
     if (orderData.items && Array.isArray(orderData.items)) {
-      itemsHtml = orderData.items.map(item => `
-        <tr style="background-color: #f9f9f9;">
-          <td style="padding: 12px; border-bottom: 1px solid #eee; font-size: 14px;">${sanitizeText(item.name)}</td>
-          <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px;">${item.quantity}</td>
-          <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; font-size: 14px;"><strong>${(item.price * item.quantity).toFixed(2)} kr</strong></td>
+      itemsHtml = orderData.items.map((item, i) => {
+        const rowBg = i % 2 === 0 ? '#ffffff' : '#f7f8f9';
+        const variantLine = item.variant ? `<br><span style="color: #676c73; font-size: 12px; font-weight: 400;">${sanitizeText(item.variant)}</span>` : '';
+        return `
+        <tr>
+          <td style="padding: 11px 12px; border-bottom: 1px solid #eef0f2; font-size: 13.5px; background: ${rowBg}; color: #13181d;">${sanitizeText(item.name)}${variantLine}</td>
+          <td style="padding: 11px 12px; border-bottom: 1px solid #eef0f2; text-align: center; font-size: 13.5px; background: ${rowBg}; color: #13181d;">${item.quantity}</td>
+          <td style="padding: 11px 12px; border-bottom: 1px solid #eef0f2; text-align: right; font-size: 13.5px; background: ${rowBg}; color: #13181d;"><strong>${(item.price * item.quantity).toFixed(2)} kr</strong></td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     }
 
     // Formatér bemærkninger
@@ -330,13 +334,17 @@ function sendOrderEmailToCustomer(orderData, orderId) {
     // Formatér items liste
     let itemsHtml = '';
     if (orderData.items && Array.isArray(orderData.items)) {
-      itemsHtml = orderData.items.map(item => `
-        <tr style="background-color: #f9f9f9;">
-          <td style="padding: 12px; border-bottom: 1px solid #eee; font-size: 14px;">${sanitizeText(item.name)}</td>
-          <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px;">${item.quantity}</td>
-          <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; font-size: 14px;"><strong>${(item.price * item.quantity).toFixed(2)} kr</strong></td>
+      itemsHtml = orderData.items.map((item, i) => {
+        const rowBg = i % 2 === 0 ? '#ffffff' : '#f7f8f9';
+        const variantLine = item.variant ? `<br><span style="color: #676c73; font-size: 12px; font-weight: 400;">${sanitizeText(item.variant)}</span>` : '';
+        return `
+        <tr>
+          <td style="padding: 11px 12px; border-bottom: 1px solid #eef0f2; font-size: 13.5px; background: ${rowBg}; color: #13181d;">${sanitizeText(item.name)}${variantLine}</td>
+          <td style="padding: 11px 12px; border-bottom: 1px solid #eef0f2; text-align: center; font-size: 13.5px; background: ${rowBg}; color: #13181d;">${item.quantity}</td>
+          <td style="padding: 11px 12px; border-bottom: 1px solid #eef0f2; text-align: right; font-size: 13.5px; background: ${rowBg}; color: #13181d;"><strong>${(item.price * item.quantity).toFixed(2)} kr</strong></td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     }
 
     // Formatér bemærkninger
