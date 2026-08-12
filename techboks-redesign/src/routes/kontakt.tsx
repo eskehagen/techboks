@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { ArrowUpRight, Check, Instagram, MapPin } from "lucide-react";
 import { useState } from "react";
@@ -163,8 +163,8 @@ function ContactPage() {
         </Reveal>
       </section>
 
-      {/* Form + info */}
-      <section className="mx-auto mt-3 grid max-w-[92rem] gap-3 lg:grid-cols-[1.3fr_1fr]">
+      {/* Form */}
+      <section className="mx-auto mt-3 max-w-[72rem]">
         <Reveal>
           <div className="rounded-blob-lg bg-surface p-7 sm:p-10">
             <h2 className="font-display text-ink text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -249,32 +249,6 @@ function ContactPage() {
                 </div>
               </form>
             )}
-          </div>
-        </Reveal>
-
-        <Reveal delay={0.1}>
-          <div className="rounded-blob-lg bg-ink text-canvas h-full p-7 sm:p-10">
-            <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-              Bestilling
-            </h2>
-            <div className="text-canvas/65 mt-6 space-y-4 text-sm leading-relaxed">
-              <p>
-                For bestilling kontakter du mig via formularen. Skriv hvilke produkter du ønsker
-                at bestille, samt eventuelle specialønsker.
-              </p>
-              <p>
-                Det er muligt at få tilsendt bestillingen eller afhente den i Aarhus N. Betaling
-                sker via MobilePay, når ordren er bekræftet.
-              </p>
-              <p>Jeg bestræber mig på at besvare alle henvendelser inden for 24 timer.</p>
-            </div>
-            <Link
-              to="/handelsbetingelser"
-              className="bg-canvas text-ink mt-8 inline-flex h-12 items-center gap-2 rounded-full px-6 text-sm font-semibold transition-transform hover:scale-[1.03]"
-            >
-              Se handelsbetingelser
-              <ArrowUpRight className="h-4 w-4" />
-            </Link>
           </div>
         </Reveal>
       </section>
