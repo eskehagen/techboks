@@ -96,9 +96,6 @@ export function CartPanel({ onNavigate }: { onNavigate?: () => void }) {
             <ArrowRight className="h-4 w-4" />
           </span>
         </Link>
-        <p className="text-canvas/50 mt-3 text-[11px] leading-relaxed">
-          Ingen online betaling — du får en bekræftelse og betaler via MobilePay.
-        </p>
       </div>
     </div>
   );

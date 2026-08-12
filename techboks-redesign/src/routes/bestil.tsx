@@ -101,7 +101,7 @@ function OrderPage() {
             <Check className="h-7 w-7" />
           </motion.div>
           <h1 className="font-display relative mt-8 text-4xl leading-[1] font-semibold tracking-tight sm:text-5xl">
-            Tak for din forespørgsel
+            Tak for din ordre
           </h1>
           <p className="text-canvas/60 relative mx-auto mt-5 max-w-md text-sm leading-relaxed">
             Vi har modtaget din ordre og vender tilbage på mail med en bekræftelse samt et
@@ -133,7 +133,7 @@ function OrderPage() {
         <div className="bg-accent-mint/20 pointer-events-none absolute -right-16 -bottom-24 h-72 w-72 rounded-full blur-3xl" />
         <span className="text-canvas/50 text-xs tracking-[0.24em] uppercase">Trin 2 af 2</span>
         <h1 className="font-display mt-4 text-5xl leading-[0.95] font-semibold tracking-tight sm:text-7xl">
-          Ordreforespørgsel
+          Din Ordre
         </h1>
         <p className="text-canvas/60 mt-5 max-w-lg text-sm leading-relaxed">
           Der er ingen online betaling. Udfyld dine oplysninger, så bekræfter vi ordren på mail med

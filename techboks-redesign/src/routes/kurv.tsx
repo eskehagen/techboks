@@ -41,7 +41,7 @@ function CartPage() {
         <p className="text-canvas/60 mt-5 max-w-md text-sm leading-relaxed">
           {count === 0
             ? "Ingen varer endnu — find noget der løser et problem i hverdagen."
-            : `${count} ${count === 1 ? "vare" : "varer"} klar til din ordreforespørgsel. Ingen online betaling.`}
+            : `${count} ${count === 1 ? "vare" : "varer"} klar til bestilling.`}
         </p>
       </motion.header>
 
@@ -162,7 +162,7 @@ function CartPage() {
               to="/bestil"
               className="bg-accent-mint text-accent-mint-foreground group mt-7 flex h-14 items-center justify-between rounded-full pr-2 pl-6 text-sm font-semibold transition-transform hover:scale-[1.02]"
             >
-              Gå til ordreforespørgsel
+              Gå til kassen
               <span className="bg-ink text-canvas grid h-10 w-10 place-items-center rounded-full transition-transform group-hover:translate-x-1">
                 <ArrowRight className="h-4 w-4" />
               </span>
