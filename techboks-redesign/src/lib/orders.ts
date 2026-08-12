@@ -41,7 +41,7 @@ export interface OrderResult {
 
 const orderEndpoint =
   import.meta.env.VITE_ORDER_ENDPOINT ??
-  "https://script.google.com/macros/s/AKfycbwA4fHgmX_7sMUXh2ko3_Mxt5LNv2qwNdvqsS4OJCqJc2sOLJ7Mh8ggKNoRX4WD-aXq/exec";
+  "https://script.google.com/macros/s/AKfycbxqL2a7yE_ahmjKlFURzXJC0qzPumTYhj4r9-mWinLJRO5SQLEJ0gC5alCnM2CR3UEk/exec";
 
 function buildLegacyPayload(payload: OrderPayload) {
   const address = [payload.customer.address, payload.customer.postalCode, payload.customer.city]
