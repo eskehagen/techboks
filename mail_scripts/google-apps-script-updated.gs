@@ -140,7 +140,7 @@ function sendOrderEmailToShop(orderData, orderId) {
     // Formatér bemærkninger
     let notesSection = '';
     if (orderData.customerNotes && orderData.customerNotes.trim() !== '') {
-      notesSection = `<p style="margin: 15px 0; padding: 15px; background: #f0f0f0; border-left: 4px solid #667eea; font-size: 14px; color: #333;">${sanitizeText(orderData.customerNotes)}</p>`;
+      notesSection = `<p style="margin: 16px 0 0 0; padding: 14px 16px; background: #eef0f2; border-left: 3px solid #3bd8a9; border-radius: 0 12px 12px 0; font-size: 13.5px; color: #25292f;">${sanitizeText(orderData.customerNotes)}</p>`;
     }
 
     const subject = `Ny TechBoks.dk ordre [${orderId}] - ${sanitizeText(orderData.customerName)}`;
@@ -151,52 +151,59 @@ function sendOrderEmailToShop(orderData, orderId) {
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
           <style>
-            * { margin: 0; padding: 0; }
-            body { font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; color: #333; line-height: 1.6; background: #f5f5f5; padding: 10px; }
-            .wrapper { background: #f5f5f5; padding: 10px 0; }
-            .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; text-align: center; }
-            .header h1 { margin: 0; font-size: 26px; font-weight: bold; }
-            .header p { margin: 8px 0 0 0; font-size: 13px; opacity: 0.9; }
-            .section { padding: 20px; border-bottom: 1px solid #f0f0f0; }
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { font-family: 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif; color: #13181d; line-height: 1.6; background: #f0efeb; padding: 24px 12px; }
+            .wrapper { background: #f0efeb; }
+            .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; border: 1px solid #dde0e3; }
+            .header { background: #13181d; color: #ffffff; padding: 36px 28px; text-align: center; }
+            .brand { font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+            .brand .accent { color: #3bd8a9; }
+            .eyebrow { display: inline-block; margin-top: 18px; background: #3bd8a9; color: #091d16; font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 7px 16px; border-radius: 999px; }
+            .header h1 { margin: 16px 0 0 0; font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
+            .header p { margin: 6px 0 0 0; font-size: 13px; color: rgba(255,255,255,0.6); }
+            .section { padding: 24px 28px; border-bottom: 1px solid #eef0f2; }
             .section:last-child { border-bottom: none; }
-            .section h2 { color: #667eea; font-size: 15px; margin: 0 0 15px 0; font-weight: bold; }
+            .section h2 { color: #676c73; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; margin: 0 0 14px 0; font-family: 'Space Grotesk', 'Inter', sans-serif; }
             .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
-            .info-item { background: #f9f9f9; padding: 10px; border-radius: 5px; }
-            .info-label { color: #667eea; font-weight: bold; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-            .info-value { margin-top: 4px; color: #333; font-size: 13px; }
-            .products-table { width: 100%; border-collapse: collapse; margin: 0; background: white; }
-            .products-table th { background: #667eea; color: white; padding: 10px; text-align: left; font-size: 11px; font-weight: bold; }
-            .products-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+            .info-item { background: #eef0f2; padding: 12px 14px; border-radius: 14px; }
+            .info-label { color: #676c73; font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+            .info-value { margin-top: 4px; color: #13181d; font-size: 13.5px; word-break: break-word; }
+            .products-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0; }
+            .products-table th { background: #13181d; color: #ffffff; padding: 11px 12px; text-align: left; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+            .products-table th:first-child { border-top-left-radius: 10px; }
+            .products-table th:last-child { border-top-right-radius: 10px; }
+            .products-table td { padding: 11px 12px; border-bottom: 1px solid #eef0f2; font-size: 13.5px; background: #ffffff; }
+            .products-table tr:nth-child(even) td { background: #f7f8f9; }
             .products-table tr:last-child td { border-bottom: none; }
-            .price-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 18px; border-radius: 8px; margin: 15px 0; }
-            .price-row { display: flex; justify-content: space-between; margin: 6px 0; font-size: 13px; }
-            .total-row { font-weight: bold; font-size: 16px; border-top: 2px solid rgba(255,255,255,0.3); padding-top: 8px; margin-top: 8px; }
-            .info-box { background: #e8f4f8; padding: 12px; border-radius: 5px; border-left: 4px solid #667eea; font-size: 12px; }
-            .footer { background: #333; color: white; padding: 15px; text-align: center; font-size: 11px; }
+            .price-box { background: #3bd8a9; color: #091d16; padding: 20px; border-radius: 18px; margin: 18px 0; }
+            .price-row { display: flex; justify-content: space-between; margin: 5px 0; font-size: 13.5px; }
+            .total-row { font-weight: 700; font-size: 17px; border-top: 1.5px solid rgba(9,29,22,0.2); padding-top: 10px; margin-top: 10px; }
+            .info-box { background: #dec6ab; padding: 14px 16px; border-radius: 14px; font-size: 12.5px; color: #13181d; }
+            .info-box p { margin: 3px 0; }
+            .footer { background: #13181d; color: rgba(255,255,255,0.65); padding: 22px; text-align: center; font-size: 11.5px; }
+            .footer strong { color: #ffffff; }
             .footer p { margin: 3px 0; }
             @media (max-width: 600px) {
-              body { padding: 5px; }
-              .wrapper { padding: 5px 0; }
-              .container { border-radius: 4px; }
-              .header { padding: 25px 15px; }
-              .header h1 { font-size: 22px; }
+              body { padding: 12px 6px; }
+              .container { border-radius: 16px; }
+              .header { padding: 28px 18px; }
+              .header h1 { font-size: 21px; }
               .header p { font-size: 12px; }
-              .section { padding: 15px; }
-              .section h2 { font-size: 14px; margin-bottom: 12px; }
+              .section { padding: 18px; }
+              .section h2 { font-size: 10.5px; margin-bottom: 12px; }
               .info-grid { grid-template-columns: 1fr; gap: 8px; }
-              .info-item { padding: 8px; }
+              .info-item { padding: 10px 12px; }
               .info-label { font-size: 9px; }
-              .info-value { font-size: 12px; margin-top: 3px; }
-              .products-table th { padding: 8px; font-size: 10px; }
-              .products-table td { padding: 8px; font-size: 12px; }
-              .price-box { padding: 15px; margin: 12px 0; }
-              .price-row { font-size: 12px; margin: 5px 0; }
+              .info-value { font-size: 12.5px; margin-top: 3px; }
+              .products-table th { padding: 9px 10px; font-size: 9.5px; }
+              .products-table td { padding: 9px 10px; font-size: 12.5px; }
+              .price-box { padding: 16px; margin: 14px 0; }
+              .price-row { font-size: 12.5px; margin: 5px 0; }
               .total-row { font-size: 15px; }
-              .info-box { padding: 10px; font-size: 11px; }
-              .footer { padding: 12px; font-size: 10px; }
-              .footer p { margin: 2px 0; }
+              .info-box { padding: 12px 14px; font-size: 11.5px; }
+              .footer { padding: 16px; font-size: 10.5px; }
             }
           </style>
         </head>
@@ -204,15 +211,14 @@ function sendOrderEmailToShop(orderData, orderId) {
           <div class="wrapper">
             <div class="container">
               <div class="header">
-                <div style="margin-bottom: 15px;">
-                  <img src="https://www.techboks.dk/images/logo_transparent.png" alt="TechBoks Logo" style="max-width: 120px; height: auto;">
-                </div>
+                <div class="brand">Tech<span class="accent">Boks</span></div>
+                <span class="eyebrow">Ny ordre</span>
                 <h1>NY ORDRE MODTAGET</h1>
                 <p>TechBoks.dk Ordresystem</p>
               </div>
 
               <div class="section">
-                <h2>Kunde Information</h2>
+                <h2>Kunde information</h2>
                 <div class="info-grid">
                   <div class="info-item">
                     <div class="info-label">Navn</div>
@@ -264,7 +270,7 @@ function sendOrderEmailToShop(orderData, orderId) {
                 </div>
               </div>
 
-              <div style="padding: 25px 20px;">
+              <div style="padding: 25px 28px;">
                 <div class="price-box">
                   <div class="price-row">
                     <span>Subtotal:</span>
@@ -336,7 +342,7 @@ function sendOrderEmailToCustomer(orderData, orderId) {
     // Formatér bemærkninger
     let notesSection = '';
     if (orderData.customerNotes && orderData.customerNotes.trim() !== '') {
-      notesSection = `<p style="margin: 12px 0; font-size: 14px; color: #555;"><em>"${sanitizeText(orderData.customerNotes)}"</em></p>`;
+      notesSection = `<p style="margin: 14px 0 0 0; font-size: 13.5px; color: #676c73;"><em>"${sanitizeText(orderData.customerNotes)}"</em></p>`;
     }
 
     const subject = `Ordrebekræftelse [${orderId}] - TechBoks.dk`;
@@ -347,54 +353,69 @@ function sendOrderEmailToCustomer(orderData, orderId) {
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
           <style>
-            * { margin: 0; padding: 0; }
-            body { font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; color: #333; line-height: 1.6; background: #f5f5f5; padding: 10px; }
-            .wrapper { background: #f5f5f5; padding: 10px 0; }
-            .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; text-align: center; }
-            .header h1 { margin: 0; font-size: 26px; font-weight: bold; }
-            .header p { margin: 8px 0 0 0; font-size: 13px; opacity: 0.9; }
-            .greeting { padding: 20px; background: #f9f9f9; border-bottom: 2px solid #667eea; }
-            .greeting h2 { color: #667eea; font-size: 16px; margin: 0 0 8px 0; }
-            .greeting p { margin: 4px 0; font-size: 13px; color: #555; }
-            .section { padding: 20px; border-bottom: 1px solid #f0f0f0; }
-            .section h3 { color: #667eea; font-size: 13px; margin: 0 0 12px 0; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
-            .products-table { width: 100%; border-collapse: collapse; margin: 0; background: white; }
-            .products-table th { background: #667eea; color: white; padding: 10px; text-align: left; font-size: 11px; font-weight: bold; }
-            .products-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { font-family: 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif; color: #13181d; line-height: 1.6; background: #f0efeb; padding: 24px 12px; }
+            .wrapper { background: #f0efeb; }
+            .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; border: 1px solid #dde0e3; }
+            .header { background: #13181d; color: #ffffff; padding: 36px 28px; text-align: center; }
+            .brand { font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+            .brand .accent { color: #3bd8a9; }
+            .eyebrow { display: inline-block; margin-top: 18px; background: #3bd8a9; color: #091d16; font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 7px 16px; border-radius: 999px; }
+            .header h1 { margin: 16px 0 0 0; font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
+            .header p { margin: 6px 0 0 0; font-size: 13px; color: rgba(255,255,255,0.6); }
+            .greeting { padding: 24px 28px; background: #f7f8f9; border-bottom: 2px solid #3bd8a9; }
+            .greeting h2 { color: #13181d; font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 8px 0; }
+            .greeting p { margin: 4px 0; font-size: 13.5px; color: #25292f; }
+            .section { padding: 24px 28px; border-bottom: 1px solid #eef0f2; }
+            .section h3 { color: #676c73; font-size: 11px; margin: 0 0 14px 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; font-family: 'Space Grotesk', 'Inter', sans-serif; }
+            .products-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0; }
+            .products-table th { background: #13181d; color: #ffffff; padding: 11px 12px; text-align: left; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+            .products-table th:first-child { border-top-left-radius: 10px; }
+            .products-table th:last-child { border-top-right-radius: 10px; }
+            .products-table td { padding: 11px 12px; border-bottom: 1px solid #eef0f2; font-size: 13.5px; background: #ffffff; }
+            .products-table tr:nth-child(even) td { background: #f7f8f9; }
             .products-table tr:last-child td { border-bottom: none; }
-            .highlight-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 18px; border-radius: 8px; margin: 15px 0; }
-            .highlight-box p { margin: 6px 0; font-size: 13px; }
+            .highlight-box { background: #3bd8a9; color: #091d16; padding: 20px; border-radius: 18px; margin: 18px 0; }
+            .highlight-box p { margin: 6px 0; font-size: 13.5px; }
             .highlight-box strong { font-size: 16px; }
-            .info-list { list-style: none; margin: 10px 0; }
-            .info-list li { padding: 8px 0; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+            .info-list { list-style: none; margin: 4px 0 0 0; }
+            .info-list li { padding: 9px 0; font-size: 13.5px; border-bottom: 1px solid #eef0f2; }
             .info-list li:last-child { border-bottom: none; }
-            .info-list-label { color: #667eea; font-weight: bold; }
-            .footer { background: #333; color: white; padding: 15px; text-align: center; font-size: 11px; }
+            .info-list-label { color: #676c73; font-weight: 700; }
+            .callout { padding: 24px 28px; border-bottom: 1px solid #eef0f2; }
+            .callout-mint { background: #eafbf5; }
+            .callout-clay { background: #faf4ee; }
+            .callout-dark { background: #13181d; color: #ffffff; }
+            .callout-dark h3 { color: rgba(255,255,255,0.55); }
+            .payment-number { font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 22px; font-weight: 700; color: #3bd8a9; letter-spacing: 0.02em; }
+            .cta-wrap { padding: 6px 28px 28px; text-align: center; }
+            .cta-button { display: inline-block; background: #13181d; color: #ffffff !important; font-family: 'Space Grotesk', 'Inter', sans-serif; font-weight: 600; font-size: 14px; text-decoration: none; padding: 13px 28px; border-radius: 999px; }
+            .footer { background: #13181d; color: rgba(255,255,255,0.65); padding: 22px; text-align: center; font-size: 11.5px; }
+            .footer strong { color: #ffffff; }
             .footer p { margin: 3px 0; }
-            .divider { height: 2px; background: linear-gradient(90deg, #667eea 0%, transparent 50%, #667eea 100%); margin: 10px 0; }
+            .divider { height: 1.5px; background: rgba(9,29,22,0.2); margin: 10px 0; }
             @media (max-width: 600px) {
-              body { padding: 5px; }
-              .wrapper { padding: 5px 0; }
-              .container { border-radius: 4px; }
-              .header { padding: 25px 15px; }
-              .header h1 { font-size: 22px; }
+              body { padding: 12px 6px; }
+              .container { border-radius: 16px; }
+              .header { padding: 28px 18px; }
+              .header h1 { font-size: 21px; }
               .header p { font-size: 12px; }
-              .greeting { padding: 15px; }
-              .greeting h2 { font-size: 15px; margin-bottom: 6px; }
-              .greeting p { font-size: 12px; margin: 3px 0; }
-              .section { padding: 15px; }
-              .section h3 { font-size: 12px; margin-bottom: 10px; }
-              .products-table th { padding: 8px; font-size: 10px; }
-              .products-table td { padding: 8px; font-size: 12px; }
-              .highlight-box { padding: 15px; margin: 12px 0; }
-              .highlight-box p { font-size: 12px; margin: 5px 0; }
+              .greeting { padding: 18px; }
+              .greeting h2 { font-size: 17px; }
+              .greeting p { font-size: 12.5px; }
+              .section, .callout { padding: 18px; }
+              .section h3 { font-size: 10.5px; margin-bottom: 10px; }
+              .products-table th { padding: 9px 10px; font-size: 9.5px; }
+              .products-table td { padding: 9px 10px; font-size: 12.5px; }
+              .highlight-box { padding: 16px; margin: 14px 0; }
+              .highlight-box p { font-size: 12.5px; margin: 5px 0; }
               .highlight-box strong { font-size: 15px; }
-              .info-list li { padding: 6px 0; font-size: 12px; }
-              .footer { padding: 12px; font-size: 10px; }
-              .footer p { margin: 2px 0; }
-              .divider { margin: 8px 0; }
+              .info-list li { padding: 7px 0; font-size: 12.5px; }
+              .payment-number { font-size: 19px; }
+              .cta-wrap { padding: 4px 18px 22px; }
+              .footer { padding: 16px; font-size: 10.5px; }
             }
           </style>
         </head>
@@ -402,22 +423,21 @@ function sendOrderEmailToCustomer(orderData, orderId) {
           <div class="wrapper">
             <div class="container">
               <div class="header">
-                <div style="margin-bottom: 15px;">
-                  <img src="https://www.techboks.dk/images/logo_transparent.png" alt="TechBoks Logo" style="max-width: 120px; height: auto;">
-                </div>
-                <h1>ORDREBEKRÆFTELSE</h1>
-                <p>Din ordre er modtaget og bekræftet</p>
+                <div class="brand">Tech<span class="accent">Boks</span></div>
+                <span class="eyebrow">Ordrebekræftelse</span>
+                <h1>DIN ORDRE ER BEKRÆFTET</h1>
+                <p>Vi er allerede i gang med at klargøre den</p>
               </div>
 
               <div class="greeting">
                 <h2>Hej ${sanitizeText(orderData.customerName)}!</h2>
                 <p>Tusind tak for interessen for mine Mustang gadgets!</p>
                 <p>Din ordre er modtaget og bekræftet. Print og klargøring af netop dine produkter startes nu.</p>
-                <p style="margin-top: 10px; font-size: 12px; color: #888;">Ordre ID: <strong>${orderId}</strong></p>
+                <p style="margin-top: 10px; font-size: 12px; color: #676c73;">Ordre ID: <strong style="color: #13181d;">${orderId}</strong></p>
               </div>
 
               <div class="section">
-                <h3>Dine Produkter</h3>
+                <h3>Dine produkter</h3>
                 <table class="products-table">
                   <thead>
                     <tr>
@@ -442,7 +462,7 @@ function sendOrderEmailToCustomer(orderData, orderId) {
                 </ul>
               </div>
 
-              <div style="padding: 25px 20px;">
+              <div style="padding: 25px 28px 0;">
                 <div class="highlight-box">
                   <p>Subtotal: ${parseFloat(orderData.subtotal).toFixed(2)} kr</p>
                   <p>Forsendelse: ${parseFloat(orderData.shippingCost).toFixed(2)} kr</p>
@@ -451,20 +471,25 @@ function sendOrderEmailToCustomer(orderData, orderId) {
                 </div>
               </div>
 
-              <div class="section" style="background: #f0f7ff;">
+              <div class="callout callout-clay">
                 <h3>Leveringstid</h3>
                 <p style="font-size: 14px; margin: 0;">Afhængig af ordrens størrelse og travlhed skal du forvente <strong>1 uges klargøring</strong> af produkterne. Du vil modtage besked så snart din ordre er klar til forsendelse eller afhentning.</p>
               </div>
 
-              <div class="section" style="background: #f0f7ff;">
+              <div class="callout callout-dark">
                 <h3>Betaling</h3>
-                <p style="font-size: 14px; margin: 0;">Betal venligst via <strong>MobilePay</strong> til: <strong style="font-size: 16px;">50935952</strong></p>
-                <p style="font-size: 14px; margin: 8px 0 0 0;">Betal før forsendelse eller ved afhentning.</p>
+                <p style="font-size: 14px; margin: 0;">Betal venligst via <strong>MobilePay</strong> til:</p>
+                <p class="payment-number" style="margin-top: 6px;">50935952</p>
+                <p style="font-size: 13px; margin: 8px 0 0 0; color: rgba(255,255,255,0.7);">Betal før forsendelse eller ved afhentning.</p>
               </div>
 
-              <div class="section" style="background: #e8f5e9;">
+              <div class="callout callout-mint" style="border-bottom: none;">
                 <h3>Spørgsmål?</h3>
-                <p style="font-size: 14px; margin: 0;">Hvis du har spørgsmål til din ordre, kan du besvare denne mail. Jeg svarer hurtigst muligt!</p>
+                <p style="font-size: 14px; margin: 0; color: #25292f;">Hvis du har spørgsmål til din ordre, kan du besvare denne mail. Jeg svarer hurtigst muligt!</p>
+              </div>
+
+              <div class="cta-wrap">
+                <a href="https://techboks.dk" class="cta-button">Besøg TechBoks.dk</a>
               </div>
 
               <div class="footer">

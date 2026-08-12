@@ -118,30 +118,49 @@ function sendContactEmailToShop(data) {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
         <style>
-          * { margin: 0; padding: 0; }
-          body { font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; color: #333; line-height: 1.6; background: #f5f5f5; padding: 10px; }
-          .wrapper { background: #f5f5f5; padding: 10px 0; }
-          .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; text-align: center; }
-          .header h1 { margin: 0; font-size: 24px; font-weight: bold; }
-          .section { padding: 20px; border-bottom: 1px solid #f0f0f0; }
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif; color: #13181d; line-height: 1.6; background: #f0efeb; padding: 24px 12px; }
+          .wrapper { background: #f0efeb; }
+          .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; border: 1px solid #dde0e3; }
+          .header { background: #13181d; color: #ffffff; padding: 32px 28px; text-align: center; }
+          .brand { font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+          .brand .accent { color: #3bd8a9; }
+          .eyebrow { display: inline-block; margin-top: 16px; background: #3bd8a9; color: #091d16; font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 7px 16px; border-radius: 999px; }
+          .header h1 { margin: 14px 0 0 0; font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+          .section { padding: 24px 28px; border-bottom: 1px solid #eef0f2; }
           .section:last-child { border-bottom: none; }
+          .section h2 { color: #676c73; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; margin: 0 0 14px 0; font-family: 'Space Grotesk', 'Inter', sans-serif; }
           .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
-          .info-item { background: #f9f9f9; padding: 10px; border-radius: 5px; }
-          .info-label { color: #667eea; font-weight: bold; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-          .info-value { margin-top: 4px; color: #333; font-size: 13px; word-break: break-word; }
-          .message-box { background: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea; font-size: 14px; color: #333; white-space: pre-wrap; }
-          .footer { background: #333; color: white; padding: 15px; text-align: center; font-size: 11px; }
+          .info-item { background: #eef0f2; padding: 12px 14px; border-radius: 14px; }
+          .info-label { color: #676c73; font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+          .info-value { margin-top: 4px; color: #13181d; font-size: 13.5px; word-break: break-word; }
+          .message-box { background: #eef0f2; padding: 16px; border-radius: 0 14px 14px 0; border-left: 3px solid #3bd8a9; font-size: 14px; color: #25292f; white-space: pre-wrap; }
+          .footer { background: #13181d; color: rgba(255,255,255,0.65); padding: 20px; text-align: center; font-size: 11.5px; }
+          @media (max-width: 600px) {
+            body { padding: 12px 6px; }
+            .container { border-radius: 16px; }
+            .header { padding: 24px 18px; }
+            .header h1 { font-size: 19px; }
+            .section { padding: 18px; }
+            .info-grid { grid-template-columns: 1fr; gap: 8px; }
+            .info-item { padding: 10px 12px; }
+            .message-box { padding: 14px; font-size: 13px; }
+            .footer { padding: 16px; font-size: 10.5px; }
+          }
         </style>
       </head>
       <body>
         <div class="wrapper">
           <div class="container">
             <div class="header">
+              <div class="brand">Tech<span class="accent">Boks</span></div>
+              <span class="eyebrow">Kontaktformular</span>
               <h1>Ny kontaktbesked</h1>
             </div>
             <div class="section">
+              <h2>Afsender</h2>
               <div class="info-grid">
                 <div class="info-item">
                   <div class="info-label">Navn</div>
@@ -162,6 +181,7 @@ function sendContactEmailToShop(data) {
               </div>
             </div>
             <div class="section">
+              <h2>Besked</h2>
               <div class="message-box">${escapeHtml(data.message)}</div>
             </div>
             <div class="footer">
