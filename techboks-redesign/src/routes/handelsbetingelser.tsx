@@ -50,7 +50,7 @@ const sections: { title: string; items: string[] }[] = [
   {
     title: "Levering",
     items: [
-      "Der tilstræbes 7-10 dages leveringstid. Leveringstiden kan variere afhængigt af produktets kompleksitet og lagerstatus.",
+      "Der tilstræbes 3-7 hverdages leveringstid. Leveringstiden kan variere afhængigt af produktets kompleksitet og lagerstatus.",
       "Leveringstider er vejledende og ikke garanterede. Forsinkelser giver ikke ret til annullering eller erstatning.",
       "Det er både muligt at afhente produkter personligt efter aftale, eller få dem sendt med posten. Fragtomkostninger tilkommer ved forsendelse.",
       "Risikoen for produktet overgår til køber ved levering/afhentning. Ved forsendelse sker det når produktet afleveres til transportøren.",
