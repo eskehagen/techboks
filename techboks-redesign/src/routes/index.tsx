@@ -146,12 +146,12 @@ function Hero() {
       <div className="mt-3">
         <Marquee
           items={[
-            "0,2 mm laghøjde",
-            "Printet i Danmark",
+            "Høj kvalitet",
+            "Dansk design",
             "3–7 hverdages levering",
-            "Betaling via MobilePay",
+            "Lave priser",
             `${products.length}+ produkter`,
-            "PETG & PLA",
+            "3D print",
           ]}
         />
       </div>
@@ -176,8 +176,8 @@ function Manifesto() {
       <div className="mt-16 grid gap-3 md:grid-cols-3">
         {[
           [`${products.length}+`, "produkter i katalog", "bg-surface"],
-          ["0,2 mm", "laghøjde på hvert print", "bg-clay"],
-          ["3–7", "hverdage til din dør", "bg-accent-mint"],
+          ["100%", "dansk kvalitet og detaljer", "bg-clay"],
+          ["3–7", "hverdages leveringstid", "bg-accent-mint"],
         ].map(([value, label, bg], i) => (
           <Reveal key={label} delay={i * 0.08}>
             <motion.div
