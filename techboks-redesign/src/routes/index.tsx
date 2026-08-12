@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "TechBoks designer og 3D printer funktionelt tilbehør i Danmark. Gadgets til Mustang Mach-E og smarte løsninger til hjemmet.",
+          "TechBoks designer og 3D printer funktionelt tilbehør — til bilen, hjemmet og praktisk brug",
       },
       { property: "og:title", content: "TechBoks — Dansk designet 3D print tilbehør" },
       {
@@ -105,7 +105,7 @@ function Hero() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-muted-foreground mt-6 max-w-md text-base leading-relaxed"
           >
-            Små serier, præcise mål og funktion før pynt — tegnet fra bunden i vores eget
+            Små serier, præcise mål og funktionelt design — tegnet fra bunden eget
             værksted.
           </motion.p>
 
@@ -166,11 +166,11 @@ function Manifesto() {
   return (
     <section id="manifest" className="container-tb scroll-mt-28 py-28 sm:py-40">
       <span className="text-muted-foreground text-xs tracking-[0.24em] uppercase">
-        Sådan arbejder vi
+        Sådan arbejder jeg
       </span>
       <ScrollText
         className="display-lg text-ink mt-8 max-w-5xl"
-        text="Vi tegner hvert produkt fra bunden, måler op i virkeligheden og printer i små serier — så det passer præcist, holder til hverdagen og ikke ligner noget andet."
+        text="Tegner hvert produkt fra bunden, måler op i virkeligheden og printer i små serier — så det passer præcist, holder til hverdagen og ikke ligner noget andet."
       />
 
       <div className="mt-16 grid gap-3 md:grid-cols-3">
@@ -375,7 +375,7 @@ function BenefitsSection() {
     {
       icon: ShieldCheck,
       title: "Holdbare materialer",
-      text: "Vi printer i PETG og tekniske filamenter, der tåler varme, vibrationer og daglig brug.",
+      text: "Produkterne printes i holdbart materiale der er henvendt til det enkelte produkt. Fx PETG filament til de dele som skal tåle varme, kulde og vibrationer. PLA filament til de dele som skal være simple og præcise.",
       bg: "bg-ink",
       textColor: "text-canvas",
       accent: "bg-accent-mint",
@@ -385,7 +385,7 @@ function BenefitsSection() {
     {
       icon: Leaf,
       title: "Grøn produktion",
-      text: "Bionedbrydeligt plast og grøn strøm. Små serier betyder minimalt spild.",
+      text: "Bionedbrydeligt plast og grøn strøm bruges til produktionen. Jeg sætter fokus på bæredygtighed. Små serier betyder minimalt spild.",
       bg: "bg-accent-mint",
       textColor: "text-accent-mint-foreground",
       accent: "bg-ink",
@@ -395,7 +395,7 @@ function BenefitsSection() {
     {
       icon: Boxes,
       title: "Personlig service",
-      text: "Farver, mål og detaljer kan tilpasses. Skriv til os — der sidder et menneske i den anden ende.",
+      text: "Farver, mål og detaljer kan tilpasses. Skriv til mig — der sidder et menneske i den anden ende.",
       bg: "bg-clay",
       textColor: "text-ink",
       accent: "bg-ink",
@@ -414,7 +414,7 @@ function BenefitsSection() {
             </span>
             <h2 className="display-lg mt-6">Håndværk, ikke masseproduktion</h2>
             <p className="text-canvas/60 mt-4 text-base leading-relaxed">
-              Vi designer, måler og printer hver detalje selv — så du får reservedele og gadgets der
+              Jeg designer, måler og printer hver detalje selv — så du får gadgets og produkter der passer og
               holder.
             </p>
           </div>
@@ -492,13 +492,13 @@ function ClosingCta() {
     <section className="container-tb mt-3">
       <Reveal>
         <div className="rounded-blob-lg bg-accent-mint text-accent-mint-foreground flex flex-wrap items-center justify-between gap-6 p-10 sm:p-16">
-          <h2 className="display-lg max-w-xl">Klar til at rydde op i bilen?</h2>
+          <h2 className="display-lg max-w-xl">Klar til at se nærmere på produkterne?</h2>
           <Link
             to="/produkter"
             search={{ kategori: "alle", q: "" }}
             className="bg-ink text-canvas group flex h-14 items-center gap-4 rounded-full pr-2 pl-7 text-sm font-semibold"
           >
-            Gå til kataloget
+            Gå til produkter
             <span className="bg-accent-mint text-accent-mint-foreground grid h-10 w-10 place-items-center rounded-full transition-transform group-hover:translate-x-1">
               <ArrowRight className="h-4 w-4" />
             </span>

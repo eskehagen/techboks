@@ -85,7 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "TechBoks designer og 3D printer funktionelt tilbehør i Danmark — til bil, hjem og dine egne projekter.",
+          "TechBoks designer og 3D printer funktionelt tilbehør — til bilen, hjemmet og praktisk brug.",
       },
       { name: "author", content: "TechBoks" },
       { property: "og:title", content: "TechBoks — Dansk designet 3D print tilbehør" },

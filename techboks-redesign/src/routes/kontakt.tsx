@@ -110,9 +110,9 @@ function ContactPage() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="font-display mt-5 text-5xl leading-[0.95] font-semibold tracking-tight sm:text-7xl"
           >
-            Lad os få dit
+            Er du i tvivl om noget
             <br />
-            print på vej
+            kontakt mig endelig
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 18 }}
@@ -120,7 +120,7 @@ function ContactPage() {
             transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             className="text-canvas/60 mt-6 max-w-xl text-base leading-relaxed"
           >
-            Ønsker du at købe nogle af mine produkter — eller har du et specialønske? Skriv en
+            Har du spørgsmål til mine produkter — eller har du et specialønske? Skriv en
             besked, så vender jeg tilbage inden for 24 timer.
           </motion.p>
         </div>
@@ -157,7 +157,7 @@ function ContactPage() {
             </span>
             <h2 className="font-display mt-6 text-2xl font-semibold tracking-tight">Levering</h2>
             <p className="mt-2 text-sm opacity-80">
-              Ordre kan sendes med GLS / PostNord — eller afhentes i Aarhus N.
+              Ordre kan sendes med DAO / GLS — eller afhentes i Aarhus N.
             </p>
           </div>
         </Reveal>
