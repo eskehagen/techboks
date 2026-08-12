@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "motion/react";
-import { ArrowUpRight, Check, Instagram, MapPin } from "lucide-react";
-import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowUpRight, Check, Instagram, Loader2, MapPin } from "lucide-react";
+import { useCallback, useState } from "react";
 import { z } from "zod";
+import { ContactProgressOverlay } from "@/components/ContactProgressOverlay";
 import { Reveal } from "@/components/Reveal";
+import type { SubmitOverlayPhase } from "@/components/SubmitProgressOverlay";
 import { submitContactMessage } from "@/lib/contact";
 
 export const Route = createFileRoute("/kontakt")({
@@ -47,6 +49,19 @@ const channels = [
   },
 ];
 
+/**
+ * Minimum time the sending overlay stays up, so a fast response still reads as
+ * a deliberate step rather than a flash.
+ */
+const MIN_OVERLAY_MS = 1400;
+
+const waitAtLeast = (startedAt: number) => {
+  const remaining = MIN_OVERLAY_MS - (Date.now() - startedAt);
+  return remaining > 0
+    ? new Promise((resolve) => setTimeout(resolve, remaining))
+    : Promise.resolve();
+};
+
 function ContactPage() {
   const [values, setValues] = useState<Record<Field, string>>({
     name: "",
@@ -57,8 +72,12 @@ function ContactPage() {
   });
   const [botField, setBotField] = useState("");
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
-  const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "done">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const overlayPhase: SubmitOverlayPhase | null =
+    status === "sending" || status === "success" ? status : null;
+  const isPending = overlayPhase !== null;
 
   const set = (field: Field) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValues((v) => ({ ...v, [field]: e.target.value }));
@@ -78,12 +97,15 @@ function ContactPage() {
       return;
     }
 
+    const startedAt = Date.now();
     setStatus("sending");
     setErrorMessage(null);
     try {
       await submitContactMessage({ ...parsed.data, botField });
-      setStatus("done");
+      await waitAtLeast(startedAt);
+      setStatus("success");
     } catch (error) {
+      await waitAtLeast(startedAt);
       setStatus("idle");
       setErrorMessage(
         error instanceof Error ? error.message : "Kunne ikke sende beskeden. Prøv igen senere.",
@@ -91,8 +113,12 @@ function ContactPage() {
     }
   };
 
+  /** Called by the overlay once its completion beat has played. */
+  const showConfirmation = useCallback(() => setStatus("done"), []);
+
   return (
     <div className="px-3 pb-20">
+      <ContactProgressOverlay phase={overlayPhase} onFinished={showConfirmation} />
       {/* Hero */}
       <section className="rounded-blob-lg bg-ink text-canvas relative mt-3 overflow-hidden px-6 py-16 sm:px-12 sm:py-24">
         <motion.div
@@ -120,8 +146,8 @@ function ContactPage() {
             transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             className="text-canvas/60 mt-6 max-w-xl text-base leading-relaxed"
           >
-            Har du spørgsmål til mine produkter — eller har du et specialønske? Skriv en
-            besked, så vender jeg tilbage inden for 24 timer.
+            Har du spørgsmål til mine produkter — eller har du et specialønske? Skriv en besked, så
+            vender jeg tilbage inden for 24 timer.
           </motion.p>
         </div>
       </section>
@@ -238,14 +264,33 @@ function ContactPage() {
                 <div className="sm:col-span-2">
                   <button
                     type="submit"
-                    disabled={status === "sending"}
-                    className="bg-ink text-canvas inline-flex h-12 items-center rounded-full px-7 text-sm font-semibold transition-transform hover:scale-[1.03] disabled:scale-100 disabled:opacity-40"
+                    disabled={isPending}
+                    className="bg-ink text-canvas relative inline-flex h-12 items-center gap-2.5 overflow-hidden rounded-full px-7 text-sm font-semibold transition-transform hover:scale-[1.03] disabled:scale-100 disabled:opacity-40 disabled:hover:scale-100"
                   >
-                    {status === "sending" ? "Sender…" : "Send besked"}
+                    {isPending && (
+                      <motion.span
+                        aria-hidden
+                        animate={{ x: ["-140%", "260%"] }}
+                        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                        className="via-canvas/25 absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent to-transparent"
+                      />
+                    )}
+                    <span className="relative">{isPending ? "Sender besked…" : "Send besked"}</span>
+                    {isPending && <Loader2 className="relative h-4 w-4 animate-spin" />}
                   </button>
-                  {errorMessage && (
-                    <p className="text-destructive mt-3 text-sm">{errorMessage}</p>
-                  )}
+                  <AnimatePresence>
+                    {errorMessage && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -6, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        role="alert"
+                        className="text-destructive mt-3 text-sm"
+                      >
+                        {errorMessage}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </div>
               </form>
             )}

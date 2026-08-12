@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, Check, Loader2, Package, Truck } from "lucide-react";
 import { useCallback, useState, type FormEvent } from "react";
-import { OrderProgressOverlay, type OrderOverlayPhase } from "@/components/OrderProgressOverlay";
+import { OrderProgressOverlay } from "@/components/OrderProgressOverlay";
+import type { SubmitOverlayPhase } from "@/components/SubmitProgressOverlay";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { submitOrder, type OrderCustomer } from "@/lib/orders";
@@ -59,7 +60,7 @@ function OrderPage() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "done">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const overlayPhase: OrderOverlayPhase | null =
+  const overlayPhase: SubmitOverlayPhase | null =
     status === "sending" || status === "success" ? status : null;
   const isPending = overlayPhase !== null;
   const deliveryPrice = getDeliveryPrice(totalWeight);
