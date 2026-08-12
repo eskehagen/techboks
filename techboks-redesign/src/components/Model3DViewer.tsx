@@ -75,7 +75,7 @@ export function Model3DViewer({ src, className }: Model3DViewerProps) {
         const scale = 100 / maxDim;
 
         const material = new THREE.MeshPhongMaterial({
-          color: 0x667eea,
+          color: 0x000000,
           specular: 0x111111,
           shininess: 200,
           side: THREE.DoubleSide,
