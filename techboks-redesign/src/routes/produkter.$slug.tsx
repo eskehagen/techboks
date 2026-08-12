@@ -62,9 +62,15 @@ function ProductDetail({ product }: { product: Product }) {
   const related = getRelatedProducts(product);
   const { add } = useCart();
   const [activeImage, setActiveImage] = useState(0);
-  const [variant, setVariant] = useState(product.options?.[0]?.values[0]);
+  const [selections, setSelections] = useState<Record<string, string>>(() =>
+    Object.fromEntries((product.options ?? []).map((o) => [o.label, o.values[0]!])),
+  );
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+
+  const variant = product.options?.length
+    ? product.options.map((o) => selections[o.label]).join(" · ")
+    : undefined;
 
   const handleAdd = () => {
     add(product.id, quantity, variant);
@@ -129,9 +135,9 @@ function ProductDetail({ product }: { product: Product }) {
                   <button
                     key={value}
                     type="button"
-                    onClick={() => setVariant(value)}
+                    onClick={() => setSelections((s) => ({ ...s, [option.label]: value }))}
                     className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
-                      variant === value
+                      selections[option.label] === value
                         ? "border-ink bg-ink text-primary-foreground"
                         : "border-border bg-surface text-muted-foreground hover:border-ink/30 hover:text-ink"
                     }`}

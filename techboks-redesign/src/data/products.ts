@@ -83,6 +83,21 @@ const colorOption6: ProductOption = {
   values: ["Sort", "Hvid", "Grå", "Rød", "Blå", "Grøn"],
 };
 
+const sideOptionPlain: ProductOption = {
+  label: "Version",
+  values: ["Venstre", "Højre"],
+};
+
+const sideOptionCar: ProductOption = {
+  label: "Version",
+  values: ["Venstre (førersiden)", "Højre (passagersiden)"],
+};
+
+const patternOption: ProductOption = {
+  label: "Mønster",
+  values: ["Honeycomb", "Triangles", "Rectangles", "Cross Zag (45 grader)"],
+};
+
 export const products: Product[] = [
   {
     id: "tb-001",
@@ -222,6 +237,7 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("trashBin1.jpg")],
     specifications: [...petg, { label: "Montering", value: "Placeres i sidedørens lomme" }],
+    options: [sideOptionCar],
     featured: false,
   },
   {
@@ -293,6 +309,7 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("hattehyldeMount.jpg")],
     specifications: [...petg, { label: "Type", value: "Reservedel" }],
+    options: [sideOptionPlain],
     featured: false,
   },
   {
@@ -321,7 +338,7 @@ export const products: Product[] = [
     currency: "DKK",
     images: [homeyProCover],
     specifications: [...petg, { label: "Passer til", value: "Homey Pro 23 / 26" }],
-    options: [colorOption6],
+    options: [colorOption6, patternOption],
     featured: true,
   },
 ];
