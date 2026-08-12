@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "motion/react";
 import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Leaf, ShieldCheck } from "lucide-react";
 import { useRef } from "react";
-import heroAsset from "@/assets/hero-mache.png.asset.json";
+import heroImage from "@/assets/hero-workshop.jpg";
 import { categories, formatPrice, products } from "@/data/products";
 import { Marquee } from "@/components/Marquee";
 import { Reveal } from "@/components/Reveal";
@@ -60,7 +60,7 @@ function Hero() {
       >
 
         <img
-          src={heroAsset.url}
+          src={heroImage}
           alt="Sort Ford Mustang Mach-E i et værksted med 3D printere"
           className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
         />
