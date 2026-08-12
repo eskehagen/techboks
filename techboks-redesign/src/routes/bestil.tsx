@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Package, Truck } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { submitOrder, type OrderCustomer } from "@/lib/orders";
+import { getDeliveryPrice, type ShippingMethod } from "@/lib/shipping";
 
 export const Route = createFileRoute("/bestil")({
   head: () => ({
@@ -38,10 +39,17 @@ const empty: OrderCustomer = {
 };
 
 function OrderPage() {
-  const { lines, total, clear } = useCart();
+  const { lines, total, totalWeight, clear } = useCart();
   const [customer, setCustomer] = useState<OrderCustomer>(empty);
+  const [shippingMethod, setShippingMethod] = useState<ShippingMethod>("pickup");
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const deliveryPrice = getDeliveryPrice(totalWeight);
+  const deliveryAvailable = deliveryPrice !== null;
+  const effectiveShippingMethod = deliveryAvailable ? shippingMethod : "pickup";
+  const shippingCost = effectiveShippingMethod === "delivery" ? (deliveryPrice ?? 0) : 0;
+  const orderTotal = total + shippingCost;
 
   const update = (key: keyof OrderCustomer, value: string) =>
     setCustomer((c) => ({ ...c, [key]: value }));
@@ -61,7 +69,8 @@ function OrderPage() {
           quantity: l.quantity,
           unitPrice: l.product.price,
         })),
-        total,
+        subtotal: total,
+        shipping: { method: effectiveShippingMethod, cost: shippingCost },
       });
       clear();
       setStatus("done");
@@ -188,6 +197,32 @@ function OrderPage() {
             />
           </div>
 
+          <div className="mt-5">
+            <span className="text-ink block text-sm font-medium">Levering</span>
+            {deliveryAvailable ? (
+              <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                <ShippingOption
+                  icon={Package}
+                  label="Afhentning"
+                  price="0 kr."
+                  selected={shippingMethod === "pickup"}
+                  onClick={() => setShippingMethod("pickup")}
+                />
+                <ShippingOption
+                  icon={Truck}
+                  label="Forsendelse"
+                  price={`${deliveryPrice} kr.`}
+                  selected={shippingMethod === "delivery"}
+                  onClick={() => setShippingMethod("delivery")}
+                />
+              </div>
+            ) : (
+              <p className="bg-canvas text-muted-foreground mt-2 rounded-2xl px-5 py-4 text-sm">
+                Din ordre vejer over 19 kg og kan derfor kun afhentes.
+              </p>
+            )}
+          </div>
+
           <button
             type="submit"
             disabled={lines.length === 0 || status === "sending"}
@@ -248,17 +283,63 @@ function OrderPage() {
             )}
           </ul>
           <div className="bg-ink text-canvas mt-5 rounded-[1.5rem] p-5">
-            <div className="flex items-baseline justify-between">
+            <dl className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <dt className="text-canvas/60">Varer</dt>
+                <dd className="font-medium">{formatPrice(total)}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt className="text-canvas/60">Fragt</dt>
+                <dd className="font-medium">
+                  {deliveryAvailable ? formatPrice(shippingCost) : "Afhentning"}
+                </dd>
+              </div>
+            </dl>
+            <div className="border-canvas/15 mt-3 flex items-baseline justify-between border-t pt-3">
               <span className="text-canvas/60 text-xs tracking-[0.18em] uppercase">I alt</span>
-              <span className="font-display text-2xl font-semibold">{formatPrice(total)}</span>
+              <span className="font-display text-2xl font-semibold">{formatPrice(orderTotal)}</span>
             </div>
             <p className="text-canvas/50 mt-3 text-[11px] leading-relaxed">
-              Fragt afregnes ved bekræftelsen. Betaling via MobilePay.
+              Betaling via MobilePay, når ordren er bekræftet.
             </p>
           </div>
         </motion.aside>
       </div>
     </div>
+  );
+}
+
+function ShippingOption({
+  icon: Icon,
+  label,
+  price,
+  selected,
+  onClick,
+}: {
+  icon: typeof Package;
+  label: string;
+  price: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-colors ${
+        selected
+          ? "border-ink bg-ink text-canvas"
+          : "border-border bg-canvas text-ink hover:border-ink/30"
+      }`}
+    >
+      <Icon className="h-4 w-4 shrink-0" />
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-medium">{label}</span>
+        <span className={`block text-xs ${selected ? "text-canvas/60" : "text-muted-foreground"}`}>
+          {price}
+        </span>
+      </span>
+    </button>
   );
 }
 

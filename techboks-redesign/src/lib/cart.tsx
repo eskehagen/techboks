@@ -17,6 +17,7 @@ interface CartContextValue {
   lines: CartLineView[];
   count: number;
   total: number;
+  totalWeight: number;
   add: (productId: string, quantity?: number, variant?: string) => void;
   remove: (productId: string, variant?: string) => void;
   setQuantity: (productId: string, quantity: number, variant?: string) => void;
@@ -60,6 +61,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       lines: views,
       count: views.reduce((sum, l) => sum + l.quantity, 0),
       total: views.reduce((sum, l) => sum + l.lineTotal, 0),
+      totalWeight: views.reduce((sum, l) => sum + l.product.weight * l.quantity, 0),
       add: (productId, quantity = 1, variant) =>
         setLines((prev) => {
           const existing = prev.find((l) => sameLine(l, productId, variant));

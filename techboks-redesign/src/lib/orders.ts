@@ -6,6 +6,8 @@
  * The payload shape is kept compatible with the original checkout flow.
  */
 
+import type { ShippingMethod } from "./shipping";
+
 export interface OrderCustomer {
   name: string;
   email: string;
@@ -27,7 +29,9 @@ export interface OrderLine {
 export interface OrderPayload {
   customer: OrderCustomer;
   lines: OrderLine[];
-  total: number;
+  /** Product subtotal, excluding shipping. */
+  subtotal: number;
+  shipping: { method: ShippingMethod; cost: number };
 }
 
 export interface OrderResult {
@@ -43,6 +47,7 @@ function buildLegacyPayload(payload: OrderPayload) {
   const address = [payload.customer.address, payload.customer.postalCode, payload.customer.city]
     .filter(Boolean)
     .join(", ");
+  const total = payload.subtotal + payload.shipping.cost;
 
   return {
     token: "TB-8472-SECURE-991",
@@ -53,16 +58,16 @@ function buildLegacyPayload(payload: OrderPayload) {
     customerAddress: payload.customer.address,
     customerCityPostal: [payload.customer.postalCode, payload.customer.city].filter(Boolean).join(" "),
     customerNotes: payload.customer.notes,
-    shippingMethod: "pickup",
-    shippingCost: 0,
+    shippingMethod: payload.shipping.method,
+    shippingCost: payload.shipping.cost,
     items: payload.lines.map((line) => ({
       name: line.name,
       quantity: line.quantity,
       price: line.unitPrice,
       variant: line.variant ?? "",
     })),
-    subtotal: payload.total,
-    total: payload.total,
+    subtotal: payload.subtotal,
+    total,
     timestamp: new Date().toISOString(),
     _legacyAddress: address,
   };
