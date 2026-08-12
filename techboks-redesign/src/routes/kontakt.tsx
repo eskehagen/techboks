@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowUpRight, Check, Instagram, MapPin, MessageCircle } from "lucide-react";
+import { ArrowUpRight, Check, Instagram, MapPin } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 import { Reveal } from "@/components/Reveal";
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/kontakt")({
       {
         name: "description",
         content:
-          "Kontakt TechBoks om bestilling, specialønsker eller levering. Skriv via formularen, Messenger eller Instagram — svar inden for 24 timer.",
+          "Kontakt TechBoks om bestilling, specialønsker eller levering. Skriv via formularen eller Instagram — svar inden for 24 timer.",
       },
       { property: "og:title", content: "Kontakt TechBoks" },
       {
@@ -38,13 +38,6 @@ const contactSchema = z.object({
 type Field = keyof z.infer<typeof contactSchema>;
 
 const channels = [
-  {
-    icon: MessageCircle,
-    label: "Messenger",
-    text: "Send en Messenger besked",
-    href: "https://www.facebook.com/messages/t/eskehagen",
-    cta: "Åbn Messenger",
-  },
   {
     icon: Instagram,
     label: "Instagram",
@@ -134,7 +127,7 @@ function ContactPage() {
       </section>
 
       {/* Channels */}
-      <section className="mx-auto mt-3 grid max-w-[92rem] gap-3 md:grid-cols-3">
+      <section className="mx-auto mt-3 grid max-w-[92rem] gap-3 md:grid-cols-2">
         {channels.map((c, i) => (
           <Reveal key={c.label} delay={i * 0.08}>
             <a
@@ -266,8 +259,8 @@ function ContactPage() {
             </h2>
             <div className="text-canvas/65 mt-6 space-y-4 text-sm leading-relaxed">
               <p>
-                For bestilling kontakter du mig via formularen eller Messenger. Skriv hvilke
-                produkter du ønsker at bestille, samt eventuelle specialønsker.
+                For bestilling kontakter du mig via formularen. Skriv hvilke produkter du ønsker
+                at bestille, samt eventuelle specialønsker.
               </p>
               <p>
                 Det er muligt at få tilsendt bestillingen eller afhente den i Aarhus N. Betaling
