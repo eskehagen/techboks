@@ -7,3 +7,6 @@ build/
 *.log
 .vscode/
 .idea/
+.output/
+.vercel/
+.wrangler/
