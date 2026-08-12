@@ -72,9 +72,15 @@ const petg: ProductSpec[] = [
   { label: "Leveringstid", value: "3–7 hverdage" },
 ];
 
-const colorOption: ProductOption = {
+/** Matches the old site's per-product color dropdowns — most products never offered "Sort". */
+const colorOption4: ProductOption = {
   label: "Farve",
-  values: ["Sort", "Hvid", "Rød", "Blå", "Grøn"],
+  values: ["Hvid", "Rød", "Blå", "Grøn"],
+};
+
+const colorOption6: ProductOption = {
+  label: "Farve",
+  values: ["Sort", "Hvid", "Grå", "Rød", "Blå", "Grøn"],
 };
 
 export const products: Product[] = [
@@ -98,7 +104,7 @@ export const products: Product[] = [
       ...petg,
       { label: "Anvendelse", value: "Placeres i midterkonsollen under armlænet" },
     ],
-    options: [colorOption],
+    options: [colorOption4],
     featured: true,
   },
   {
@@ -113,7 +119,7 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("frontBox1.jpg")],
     specifications: [...petg, { label: "Anvendelse", value: "Monteres foran frontskærmen" }],
-    options: [colorOption],
+    options: [colorOption4],
     featured: true,
   },
   {
@@ -128,7 +134,6 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("vinterCover1.jpg")],
     specifications: [...petg, { label: "Anvendelse", value: "Sættes over ladeporten" }],
-    options: [colorOption],
     featured: true,
   },
   {
@@ -143,7 +148,7 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("case6pack4.jpg")],
     specifications: [...petg, { label: "Kapacitet", value: "6 standard dåser" }],
-    options: [colorOption],
+    options: [colorOption4],
     featured: true,
   },
   {
@@ -158,7 +163,7 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("ladekabel_hvid.jpg")],
     specifications: [...petg, { label: "Montering", value: "Skrues på væg" }],
-    options: [colorOption],
+    options: [colorOption4],
     featured: false,
   },
   {
@@ -173,7 +178,7 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("ladekabel_large1.jpg")],
     specifications: [...petg, { label: "Montering", value: "Skrues på væg" }],
-    options: [colorOption],
+    options: [colorOption4],
     featured: false,
   },
   {
@@ -188,7 +193,7 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("anhangerProp.jpg")],
     specifications: [...petg, { label: "Anvendelse", value: "Sættes på anhængertrækket" }],
-    options: [colorOption],
+    options: [colorOption4],
     featured: false,
   },
   {
@@ -203,7 +208,6 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("hattehyldeClips1.jpg")],
     specifications: [...petg, { label: "Indhold", value: "2 stk." }],
-    options: [colorOption],
     featured: false,
   },
   {
@@ -218,7 +222,6 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("trashBin1.jpg")],
     specifications: [...petg, { label: "Montering", value: "Placeres i sidedørens lomme" }],
-    options: [colorOption],
     featured: false,
   },
   {
@@ -233,7 +236,6 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("nakkestotteKrog3.jpg")],
     specifications: [...petg, { label: "Montering", value: "Klikkes på nakkestøttens stænger" }],
-    options: [colorOption],
     featured: false,
   },
   {
@@ -248,7 +250,6 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("bagagerumkrog.jpg")],
     specifications: [...petg, { label: "Indhold", value: "2 stk." }],
-    options: [colorOption],
     featured: false,
   },
   {
@@ -263,7 +264,6 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("frontBoxPhone.jpg")],
     specifications: [...petg, { label: "Kræver", value: "Front Boks" }],
-    options: [colorOption],
     featured: false,
   },
   {
@@ -278,7 +278,7 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("floorHolder1.jpg")],
     specifications: [...petg, { label: "Anvendelse", value: "Placeres i bagagerummet" }],
-    options: [colorOption],
+    options: [colorOption4],
     featured: false,
   },
   {
@@ -293,7 +293,6 @@ export const products: Product[] = [
     currency: "DKK",
     images: [img("hattehyldeMount.jpg")],
     specifications: [...petg, { label: "Type", value: "Reservedel" }],
-    options: [colorOption],
     featured: false,
   },
   {
@@ -322,7 +321,7 @@ export const products: Product[] = [
     currency: "DKK",
     images: [homeyProCover],
     specifications: [...petg, { label: "Passer til", value: "Homey Pro 23 / 26" }],
-    options: [colorOption],
+    options: [colorOption6],
     featured: true,
   },
 ];
