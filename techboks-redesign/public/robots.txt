@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://precision-prints-dk.lovable.app/sitemap.xml
+Sitemap: https://www.techboks.dk/sitemap.xml

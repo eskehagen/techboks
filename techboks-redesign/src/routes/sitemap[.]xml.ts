@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { products } from "@/data/products";
 
-const BASE_URL = "https://precision-prints-dk.lovable.app";
+const BASE_URL = "https://www.techboks.dk";
 
 interface SitemapEntry {
   path: string;
