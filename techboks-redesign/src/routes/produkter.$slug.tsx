@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Check, Minus, Plus } from "lucide-react";
 import { useState } from "react";
+import { Model3DViewer } from "@/components/Model3DViewer";
 import { ProductCard } from "@/components/ProductCard";
 import {
   formatPrice,
@@ -112,6 +113,16 @@ function ProductDetail({ product }: { product: Product }) {
                   <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
                 </button>
               ))}
+            </div>
+          )}
+          {product.modelPath && (
+            <div className="mt-3">
+              <div className="rounded-blob-lg bg-muted aspect-[4/3] overflow-hidden">
+                <Model3DViewer src={product.modelPath} className="h-full w-full" />
+              </div>
+              <p className="text-muted-foreground mt-2 text-center text-xs">
+                3D model — træk for at rotere
+              </p>
             </div>
           )}
         </div>
