@@ -62,7 +62,13 @@ export function Footer() {
 
         <div className="border-canvas/15 text-canvas/45 mt-12 flex flex-wrap items-center justify-between gap-2 border-t pt-6 text-xs">
           <span>© {new Date().getFullYear()} TechBoks — printet i Danmark</span>
-          <span>CVR · Handelsbetingelser · Privatlivspolitik</span>
+          <span>
+            CVR ·{" "}
+            <Link to="/handelsbetingelser" className="link-underline">
+              Handelsbetingelser
+            </Link>{" "}
+            · Privatlivspolitik
+          </span>
         </div>
       </div>
     </footer>

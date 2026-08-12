@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BestilRouteImport } from './routes/bestil'
+import { Route as HandelsbetingelserRouteImport } from './routes/handelsbetingelser'
 import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as KurvRouteImport } from './routes/kurv'
 import { Route as OmRouteImport } from './routes/om'
@@ -26,6 +27,11 @@ const IndexRoute = IndexRouteImport.update({
 const BestilRoute = BestilRouteImport.update({
   id: '/bestil',
   path: '/bestil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HandelsbetingelserRoute = HandelsbetingelserRouteImport.update({
+  id: '/handelsbetingelser',
+  path: '/handelsbetingelser',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontaktRoute = KontaktRouteImport.update({
@@ -62,6 +68,7 @@ const ProdukterSlugRoute = ProdukterSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
+  '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/kontakt': typeof KontaktRoute
   '/kurv': typeof KurvRoute
   '/om': typeof OmRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
+  '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/kontakt': typeof KontaktRoute
   '/kurv': typeof KurvRoute
   '/om': typeof OmRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
+  '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/kontakt': typeof KontaktRoute
   '/kurv': typeof KurvRoute
   '/om': typeof OmRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/bestil'
+    | '/handelsbetingelser'
     | '/kontakt'
     | '/kurv'
     | '/om'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/bestil'
+    | '/handelsbetingelser'
     | '/kontakt'
     | '/kurv'
     | '/om'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/bestil'
+    | '/handelsbetingelser'
     | '/kontakt'
     | '/kurv'
     | '/om'
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BestilRoute: typeof BestilRoute
+  HandelsbetingelserRoute: typeof HandelsbetingelserRoute
   KontaktRoute: typeof KontaktRoute
   KurvRoute: typeof KurvRoute
   OmRoute: typeof OmRoute
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/bestil'
       fullPath: '/bestil'
       preLoaderRoute: typeof BestilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/handelsbetingelser': {
+      id: '/handelsbetingelser'
+      path: '/handelsbetingelser'
+      fullPath: '/handelsbetingelser'
+      preLoaderRoute: typeof HandelsbetingelserRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kontakt': {
@@ -198,6 +218,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BestilRoute: BestilRoute,
+  HandelsbetingelserRoute: HandelsbetingelserRoute,
   KontaktRoute: KontaktRoute,
   KurvRoute: KurvRoute,
   OmRoute: OmRoute,

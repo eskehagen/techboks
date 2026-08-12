@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { ArrowUpRight, Check, Instagram, MapPin, MessageCircle } from "lucide-react";
 import { useState } from "react";
@@ -260,15 +260,13 @@ function ContactPage() {
               </p>
               <p>Jeg bestræber mig på at besvare alle henvendelser inden for 24 timer.</p>
             </div>
-            <a
-              href="https://www.techboks.dk/handelsbetingelser.html"
-              target="_blank"
-              rel="noreferrer noopener"
+            <Link
+              to="/handelsbetingelser"
               className="bg-canvas text-ink mt-8 inline-flex h-12 items-center gap-2 rounded-full px-6 text-sm font-semibold transition-transform hover:scale-[1.03]"
             >
               Se handelsbetingelser
               <ArrowUpRight className="h-4 w-4" />
-            </a>
+            </Link>
           </div>
         </Reveal>
       </section>
