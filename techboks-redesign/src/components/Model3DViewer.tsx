@@ -1,20 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { Maximize2, Minimize2, Pause, Play, RotateCcw } from "lucide-react";
 
 interface Model3DViewerProps {
   src: string;
   className?: string;
-}
-
-/** Handles kept around so the React controls can drive the scene after it's built. */
-interface SceneHandles {
-  controls: OrbitControls;
-  camera: THREE.PerspectiveCamera;
-  home: { position: THREE.Vector3; target: THREE.Vector3 };
 }
 
 /**
@@ -23,13 +15,8 @@ interface SceneHandles {
  * rim light picking out the silhouette.
  */
 export function Model3DViewer({ src, className }: Model3DViewerProps) {
-  const stageRef = useRef<HTMLDivElement>(null);
   const canvasHostRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<SceneHandles | null>(null);
-
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
-  const [autoRotate, setAutoRotate] = useState(true);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
@@ -138,20 +125,13 @@ export function Model3DViewer({ src, className }: Model3DViewerProps) {
         const fov = camera.fov * (Math.PI / 180);
         const distance = Math.abs(radius / Math.sin(fov / 2)) * 1.25;
 
-        const homePosition = new THREE.Vector3(distance * 0.35, radius * 0.5, distance * 0.9);
-        camera.position.copy(homePosition);
+        camera.position.set(distance * 0.35, radius * 0.5, distance * 0.9);
         controls.target.set(0, 0, 0);
         controls.minDistance = distance * 0.45;
         controls.maxDistance = distance * 2.2;
         // Keep the camera above the shadow plane so the model never looks like it's floating.
         controls.maxPolarAngle = Math.PI * 0.52;
         controls.update();
-
-        sceneRef.current = {
-          controls,
-          camera,
-          home: { position: homePosition.clone(), target: new THREE.Vector3(0, 0, 0) },
-        };
 
         setStatus("ready");
       },
@@ -179,7 +159,6 @@ export function Model3DViewer({ src, className }: Model3DViewerProps) {
 
     return () => {
       disposed = true;
-      sceneRef.current = null;
       cancelAnimationFrame(animationId);
       resizeObserver.disconnect();
       controls.dispose();
@@ -200,42 +179,8 @@ export function Model3DViewer({ src, className }: Model3DViewerProps) {
     };
   }, [src]);
 
-  // React state drives the control, so the toggle survives re-renders.
-  useEffect(() => {
-    const handles = sceneRef.current;
-    if (handles) handles.controls.autoRotate = autoRotate;
-  }, [autoRotate, status]);
-
-  useEffect(() => {
-    const onChange = () => setIsFullscreen(document.fullscreenElement === stageRef.current);
-    document.addEventListener("fullscreenchange", onChange);
-    return () => document.removeEventListener("fullscreenchange", onChange);
-  }, []);
-
-  const resetView = useCallback(() => {
-    const handles = sceneRef.current;
-    if (!handles) return;
-    handles.camera.position.copy(handles.home.position);
-    handles.controls.target.copy(handles.home.target);
-    handles.controls.update();
-  }, []);
-
-  const toggleFullscreen = useCallback(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
-    // Both can reject (denied gesture, unsupported) — nothing to recover, just don't warn.
-    if (document.fullscreenElement === stage) {
-      void document.exitFullscreen().catch(() => {});
-    } else {
-      void stage.requestFullscreen?.().catch(() => {});
-    }
-  }, []);
-
   return (
-    <div
-      ref={stageRef}
-      className={`rounded-blob-lg bg-ink relative overflow-hidden ${className ?? ""}`}
-    >
+    <div className={`rounded-blob-lg bg-ink relative overflow-hidden ${className ?? ""}`}>
       {/* Stage lighting */}
       <div
         aria-hidden
@@ -252,27 +197,6 @@ export function Model3DViewer({ src, className }: Model3DViewerProps) {
       <span className="bg-canvas/10 text-canvas/70 ring-canvas/10 pointer-events-none absolute top-4 left-4 rounded-full px-3 py-1.5 text-[10px] font-semibold tracking-[0.18em] uppercase ring-1 backdrop-blur-sm">
         3D model
       </span>
-
-      {/* Controls */}
-      {status === "ready" && (
-        <div className="absolute top-4 right-4 flex gap-1.5">
-          <ViewerButton
-            label={autoRotate ? "Stop rotation" : "Start rotation"}
-            onClick={() => setAutoRotate((v) => !v)}
-          >
-            {autoRotate ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-          </ViewerButton>
-          <ViewerButton label="Nulstil visning" onClick={resetView}>
-            <RotateCcw className="h-4 w-4" />
-          </ViewerButton>
-          <ViewerButton
-            label={isFullscreen ? "Luk fuld skærm" : "Vis i fuld skærm"}
-            onClick={toggleFullscreen}
-          >
-            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-          </ViewerButton>
-        </div>
-      )}
 
       {/* Interaction hint — fades once the user grabs the model */}
       {status === "ready" && (
@@ -304,27 +228,5 @@ export function Model3DViewer({ src, className }: Model3DViewerProps) {
         </div>
       )}
     </div>
-  );
-}
-
-function ViewerButton({
-  label,
-  onClick,
-  children,
-}: {
-  label: string;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={label}
-      title={label}
-      className="bg-canvas/10 text-canvas/70 ring-canvas/10 hover:bg-canvas/20 hover:text-canvas grid h-9 w-9 place-items-center rounded-full ring-1 backdrop-blur-sm transition-colors"
-    >
-      {children}
-    </button>
   );
 }
