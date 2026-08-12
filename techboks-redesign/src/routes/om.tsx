@@ -31,17 +31,17 @@ function AboutPage() {
           </h1>
           <div className="mt-6 space-y-4 text-base leading-relaxed text-muted-foreground">
             <p>
-              Hos TechBoks kombineres passion for design og innovation med funktionelle 3D printede
-              produkter. Vi laver ting, der ikke bare ser godt ud, men også løser konkrete
+              Hos TechBoks kombinerer jeg passion for design og innovation med funktionelle 3D printede
+              produkter. Jeg laver ting, der ikke bare ser godt ud, men også løser konkrete
               udfordringer i hverdagen.
             </p>
             <p>
-              Hvert produkt tegnes fra bunden med fokus på funktionalitet, holdbarhed og æstetik —
+              Hvert produkt tegnes fra bunden af mig med fokus på funktionalitet, holdbarhed og æstetik —
               fra specialdesignede bilgadgets til smarte løsninger i hjemmet. Alt produceres i små
-              serier på egne printere med bæredygtige materialer og grøn strøm.
+              serier på mine egne printere med bæredygtige materialer og grøn strøm.
             </p>
             <p>
-              Visionen er enkel: at gøre gennemtænkte, funktionelle produkter tilgængelige for alle
+              Min vision er enkel: at gøre gennemtænkte, funktionelle produkter tilgængelige for alle
               — og gøre din hverdag en anelse nemmere.
             </p>
           </div>
