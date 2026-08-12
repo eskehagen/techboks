@@ -1,57 +1,102 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import { Maximize2, Minimize2, Pause, Play, RotateCcw } from "lucide-react";
 
 interface Model3DViewerProps {
   src: string;
   className?: string;
 }
 
-/** Rotatable STL preview — ported from the old site's 3d-viewer-module.js onto three.js's own loader/controls. */
+/** Handles kept around so the React controls can drive the scene after it's built. */
+interface SceneHandles {
+  controls: OrbitControls;
+  camera: THREE.PerspectiveCamera;
+  home: { position: THREE.Vector3; target: THREE.Vector3 };
+}
+
+/**
+ * Rotatable STL preview, presented as a lit studio shot: light satin model on a
+ * dark stage, environment-mapped reflections, a soft contact shadow, and a mint
+ * rim light picking out the silhouette.
+ */
 export function Model3DViewer({ src, className }: Model3DViewerProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const canvasHostRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<SceneHandles | null>(null);
+
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [autoRotate, setAutoRotate] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    const host = canvasHostRef.current;
+    if (!host) return;
 
     let disposed = false;
     let animationId = 0;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf5f5f5);
 
     const camera = new THREE.PerspectiveCamera(
-      45,
-      container.clientWidth / Math.max(container.clientHeight, 1),
+      42,
+      host.clientWidth / Math.max(host.clientHeight, 1),
       0.1,
-      2000,
+      3000,
     );
-    camera.position.set(0, 0, 150);
+    camera.position.set(0, 40, 200);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(host.clientWidth, host.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.78;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    host.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-    const light1 = new THREE.DirectionalLight(0xffffff, 0.8);
-    light1.position.set(100, 100, 100);
-    scene.add(light1);
-    const light2 = new THREE.DirectionalLight(0xffffff, 0.4);
-    light2.position.set(-100, -100, -100);
-    scene.add(light2);
-    const light3 = new THREE.DirectionalLight(0xffffff, 0.3);
-    light3.position.set(0, -100, 0);
-    scene.add(light3);
+    // Studio reflections — gives the satin finish something to catch.
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
+    scene.environment = envRT.texture;
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.1);
+    keyLight.position.set(60, 120, 90);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.set(1024, 1024);
+    keyLight.shadow.radius = 4;
+    keyLight.shadow.bias = -0.0005;
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.25);
+    fillLight.position.set(-90, 20, 60);
+    scene.add(fillLight);
+
+    // Mint rim light — ties the viewer to the brand accent.
+    const rimLight = new THREE.DirectionalLight(0x5ee0b0, 1.5);
+    rimLight.position.set(-40, 30, -120);
+    scene.add(rimLight);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.12));
+
+    const shadowPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(1200, 1200),
+      new THREE.ShadowMaterial({ opacity: 0.35 }),
+    );
+    shadowPlane.rotation.x = -Math.PI / 2;
+    shadowPlane.receiveShadow = true;
+    scene.add(shadowPlane);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
     controls.enablePan = false;
     controls.autoRotate = true;
-    controls.autoRotateSpeed = 1.4;
+    controls.autoRotateSpeed = 1.1;
+    controls.addEventListener("start", () => setHasInteracted(true));
 
     setStatus("loading");
     const loader = new STLLoader();
@@ -74,24 +119,39 @@ export function Model3DViewer({ src, className }: Model3DViewerProps) {
         const maxDim = Math.max(size.x, size.y, size.z) || 1;
         const scale = 100 / maxDim;
 
-        const material = new THREE.MeshPhongMaterial({
-          color: 0x000000,
-          specular: 0x111111,
-          shininess: 200,
-          side: THREE.DoubleSide,
+        const material = new THREE.MeshStandardMaterial({
+          color: 0x7f8a99,
+          metalness: 0.25,
+          roughness: 0.45,
+          envMapIntensity: 0.32,
         });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.scale.setScalar(scale);
+        mesh.castShadow = true;
         scene.add(mesh);
+
+        // Drop the shadow catcher just under the model's lowest point.
+        const scaledBox = new THREE.Box3().setFromObject(mesh);
+        shadowPlane.position.y = scaledBox.min.y - 2;
 
         const radius = (geometry.boundingSphere?.radius ?? maxDim / 2) * scale;
         const fov = camera.fov * (Math.PI / 180);
-        const distance = Math.abs(radius / Math.sin(fov / 2)) * 1.3;
-        camera.position.set(0, radius * 0.4, distance);
+        const distance = Math.abs(radius / Math.sin(fov / 2)) * 1.25;
+
+        const homePosition = new THREE.Vector3(distance * 0.35, radius * 0.5, distance * 0.9);
+        camera.position.copy(homePosition);
         controls.target.set(0, 0, 0);
-        controls.minDistance = distance * 0.4;
-        controls.maxDistance = distance * 2.5;
+        controls.minDistance = distance * 0.45;
+        controls.maxDistance = distance * 2.2;
+        // Keep the camera above the shadow plane so the model never looks like it's floating.
+        controls.maxPolarAngle = Math.PI * 0.52;
         controls.update();
+
+        sceneRef.current = {
+          controls,
+          camera,
+          home: { position: homePosition.clone(), target: new THREE.Vector3(0, 0, 0) },
+        };
 
         setStatus("ready");
       },
@@ -109,20 +169,22 @@ export function Model3DViewer({ src, className }: Model3DViewerProps) {
     animate();
 
     const resizeObserver = new ResizeObserver(() => {
-      const { clientWidth, clientHeight } = container;
+      const { clientWidth, clientHeight } = host;
       if (clientWidth === 0 || clientHeight === 0) return;
       camera.aspect = clientWidth / clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(clientWidth, clientHeight);
     });
-    resizeObserver.observe(container);
+    resizeObserver.observe(host);
 
     return () => {
       disposed = true;
+      sceneRef.current = null;
       cancelAnimationFrame(animationId);
       resizeObserver.disconnect();
       controls.dispose();
-      renderer.dispose();
+      envRT.texture.dispose();
+      pmrem.dispose();
       scene.traverse((obj) => {
         if (obj instanceof THREE.Mesh) {
           obj.geometry.dispose();
@@ -131,25 +193,138 @@ export function Model3DViewer({ src, className }: Model3DViewerProps) {
           else material.dispose();
         }
       });
-      if (renderer.domElement.parentNode === container) {
-        container.removeChild(renderer.domElement);
+      renderer.dispose();
+      if (renderer.domElement.parentNode === host) {
+        host.removeChild(renderer.domElement);
       }
     };
   }, [src]);
 
+  // React state drives the control, so the toggle survives re-renders.
+  useEffect(() => {
+    const handles = sceneRef.current;
+    if (handles) handles.controls.autoRotate = autoRotate;
+  }, [autoRotate, status]);
+
+  useEffect(() => {
+    const onChange = () => setIsFullscreen(document.fullscreenElement === stageRef.current);
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  const resetView = useCallback(() => {
+    const handles = sceneRef.current;
+    if (!handles) return;
+    handles.camera.position.copy(handles.home.position);
+    handles.controls.target.copy(handles.home.target);
+    handles.controls.update();
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    // Both can reject (denied gesture, unsupported) — nothing to recover, just don't warn.
+    if (document.fullscreenElement === stage) {
+      void document.exitFullscreen().catch(() => {});
+    } else {
+      void stage.requestFullscreen?.().catch(() => {});
+    }
+  }, []);
+
   return (
-    <div className={`relative ${className ?? ""}`}>
-      <div ref={containerRef} className="h-full w-full cursor-grab active:cursor-grabbing" />
-      {status === "loading" && (
-        <div className="text-muted-foreground pointer-events-none absolute inset-0 grid place-items-center text-sm">
-          Indlæser 3D model…
+    <div
+      ref={stageRef}
+      className={`rounded-blob-lg bg-ink relative overflow-hidden ${className ?? ""}`}
+    >
+      {/* Stage lighting */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_90%_at_75%_5%,rgba(94,224,176,0.16),transparent_55%),radial-gradient(90%_70%_at_20%_100%,rgba(255,255,255,0.07),transparent_60%)]"
+      />
+      <div
+        aria-hidden
+        className="ring-canvas/10 pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset"
+      />
+
+      <div ref={canvasHostRef} className="h-full w-full cursor-grab active:cursor-grabbing" />
+
+      {/* Badge */}
+      <span className="bg-canvas/10 text-canvas/70 ring-canvas/10 pointer-events-none absolute top-4 left-4 rounded-full px-3 py-1.5 text-[10px] font-semibold tracking-[0.18em] uppercase ring-1 backdrop-blur-sm">
+        3D model
+      </span>
+
+      {/* Controls */}
+      {status === "ready" && (
+        <div className="absolute top-4 right-4 flex gap-1.5">
+          <ViewerButton
+            label={autoRotate ? "Stop rotation" : "Start rotation"}
+            onClick={() => setAutoRotate((v) => !v)}
+          >
+            {autoRotate ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+          </ViewerButton>
+          <ViewerButton label="Nulstil visning" onClick={resetView}>
+            <RotateCcw className="h-4 w-4" />
+          </ViewerButton>
+          <ViewerButton
+            label={isFullscreen ? "Luk fuld skærm" : "Vis i fuld skærm"}
+            onClick={toggleFullscreen}
+          >
+            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+          </ViewerButton>
         </div>
       )}
+
+      {/* Interaction hint — fades once the user grabs the model */}
+      {status === "ready" && (
+        <div
+          className={`pointer-events-none absolute inset-x-0 bottom-4 flex justify-center transition-opacity duration-700 ${
+            hasInteracted ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          <span className="bg-ink/60 text-canvas/70 ring-canvas/10 rounded-full px-4 py-2 text-xs ring-1 backdrop-blur-sm">
+            Træk for at rotere · scroll for at zoome
+          </span>
+        </div>
+      )}
+
+      {status === "loading" && (
+        <div className="pointer-events-none absolute inset-0 grid place-items-center">
+          <div className="flex flex-col items-center gap-3">
+            <span className="border-canvas/15 border-t-accent-mint h-8 w-8 animate-spin rounded-full border-2" />
+            <span className="text-canvas/50 text-xs tracking-wide">Indlæser 3D model…</span>
+          </div>
+        </div>
+      )}
+
       {status === "error" && (
-        <div className="text-muted-foreground pointer-events-none absolute inset-0 grid place-items-center px-4 text-center text-sm">
-          Kunne ikke indlæse 3D model.
+        <div className="pointer-events-none absolute inset-0 grid place-items-center px-6">
+          <span className="text-canvas/50 text-center text-sm">
+            Kunne ikke indlæse 3D modellen.
+          </span>
         </div>
       )}
     </div>
+  );
+}
+
+function ViewerButton({
+  label,
+  onClick,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className="bg-canvas/10 text-canvas/70 ring-canvas/10 hover:bg-canvas/20 hover:text-canvas grid h-9 w-9 place-items-center rounded-full ring-1 backdrop-blur-sm transition-colors"
+    >
+      {children}
+    </button>
   );
 }
