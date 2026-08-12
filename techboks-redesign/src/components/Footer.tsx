@@ -6,13 +6,13 @@ export function Footer() {
   return (
     <footer className="px-3 pb-3">
       <div className="rounded-blob-lg bg-ink text-canvas mt-6 p-7 sm:p-12">
-        <div className="grid gap-10 md:grid-cols-[1.6fr_1fr_1fr]">
+        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div className="max-w-md">
             <div className="bg-canvas inline-flex rounded-full px-4 py-2">
               <Logo />
             </div>
             <p className="font-display mt-8 text-3xl leading-[1.05] font-semibold tracking-tight sm:text-4xl">
-              Dansk designet.
+              Dansk design og udvikling.
               <br />
               Printet i små serier.
             </p>
@@ -22,7 +22,7 @@ export function Footer() {
             </p>
           </div>
 
-          <div>
+          <div className="shrink-0">
             <h3 className="text-canvas/45 text-[11px] tracking-[0.2em] uppercase">Kategorier</h3>
             <ul className="mt-5 space-y-3 text-sm">
               {categories.map((c) => (
@@ -48,27 +48,13 @@ export function Footer() {
               </li>
             </ul>
           </div>
-
-          <div>
-            <h3 className="text-canvas/45 text-[11px] tracking-[0.2em] uppercase">Kontakt</h3>
-            <ul className="text-canvas/80 mt-5 space-y-3 text-sm">
-              <li><Link to="/kontakt" className="link-underline">Kontakt &amp; bestilling</Link></li>
-              <li>info@techboks.dk</li>
-              <li>Betaling via MobilePay</li>
-              <li>Fragt med GLS / PostNord</li>
-            </ul>
-          </div>
         </div>
 
-        <div className="border-canvas/15 text-canvas/45 mt-12 flex flex-wrap items-center justify-between gap-2 border-t pt-6 text-xs">
-          <span>© {new Date().getFullYear()} TechBoks — printet i Danmark</span>
-          <span>
-            CVR ·{" "}
-            <Link to="/handelsbetingelser" className="link-underline">
-              Handelsbetingelser
-            </Link>{" "}
-            · Privatlivspolitik
-          </span>
+        <div className="border-canvas/15 text-canvas/45 mt-12 border-t pt-6 text-xs">
+          © {new Date().getFullYear()} TechBoks - Alle rettigheder forbeholdt. ·{" "}
+          <Link to="/handelsbetingelser" className="link-underline">
+            Handelsbetingelser
+          </Link>
         </div>
       </div>
     </footer>
