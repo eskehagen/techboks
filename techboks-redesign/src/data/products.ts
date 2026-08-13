@@ -467,7 +467,6 @@ export const products: Product[] = [
     price: 40,
     currency: "DKK",
     images: [
-      homeyProCover,
       img("homeycover_1.jpg"),
       img("homeycover_2.jpg"),
       img("homeycover_3.jpg"),
