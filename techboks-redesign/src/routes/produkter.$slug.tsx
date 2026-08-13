@@ -3,6 +3,7 @@ import { ArrowLeft, Check, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { Model3DViewer } from "@/components/Model3DViewer";
 import { ProductCard } from "@/components/ProductCard";
+import { ProductGallery } from "@/components/ProductGallery";
 import {
   formatPrice,
   getCategory,
@@ -62,7 +63,6 @@ function ProductDetail({ product }: { product: Product }) {
   const category = getCategory(product.category);
   const related = getRelatedProducts(product);
   const { add } = useCart();
-  const [activeImage, setActiveImage] = useState(0);
   const [selections, setSelections] = useState<Record<string, string>>(() =>
     Object.fromEntries((product.options ?? []).map((o) => [o.label, o.values[0]!])),
   );
@@ -90,37 +90,16 @@ function ProductDetail({ product }: { product: Product }) {
       </Link>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
-        <div>
-          <div className="rounded-blob-lg bg-muted overflow-hidden">
-            <img
-              src={product.images[activeImage]}
-              alt={product.name}
-              className="aspect-[4/3] h-full w-full object-cover"
-            />
-          </div>
-          {product.images.length > 1 && (
-            <div className="mt-3 flex gap-3">
-              {product.images.map((src, i) => (
-                <button
-                  key={src}
-                  type="button"
-                  onClick={() => setActiveImage(i)}
-                  aria-label={`Vis billede ${i + 1}`}
-                  className={`h-20 w-20 overflow-hidden rounded-2xl transition-all ${
-                    i === activeImage ? "ring-ink ring-2" : "opacity-70 hover:opacity-100"
-                  }`}
-                >
-                  <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
+        {/* min-w-0: grid items default to min-width:auto, which lets the
+            content push the column past the viewport on narrow screens. */}
+        <div className="min-w-0">
+          <ProductGallery images={product.images} alt={product.name} />
           {product.modelPath && (
             <Model3DViewer src={product.modelPath} className="mt-3 aspect-[4/3] w-full" />
           )}
         </div>
 
-        <div className="bg-surface rounded-blob-lg p-7 sm:p-9">
+        <div className="bg-surface rounded-blob-lg min-w-0 p-7 sm:p-9">
           <span className="eyebrow">{category?.name}</span>
           <h1 className="display-lg text-ink mt-3">{product.name}</h1>
           <p className="font-display text-ink mt-4 text-2xl font-semibold">
