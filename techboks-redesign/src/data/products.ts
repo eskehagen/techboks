@@ -139,7 +139,14 @@ export const products: Product[] = [
     category: "mustang-mach-e",
     price: 90,
     currency: "DKK",
-    images: [img("frontBox1.jpg")],
+    images: [
+      img("frontBox1.jpg"),
+      img("frontBox2.jpg"),
+      img("frontBox3.jpg"),
+      img("frontbox4.jpg"),
+      img("frontbox5.png"),
+      img("frontBoxPhone.jpg"),
+    ],
     weight: 480,
     modelPath: "/models/frontboks.stl",
     specifications: [
@@ -160,7 +167,7 @@ export const products: Product[] = [
     category: "mustang-mach-e",
     price: 90,
     currency: "DKK",
-    images: [img("vinterCover1.jpg")],
+    images: [img("vinterCover1.jpg"), img("vinterCover2.jpg")],
     weight: 200,
     modelPath: "/models/vinterdeksel.stl",
     specifications: [
@@ -179,7 +186,14 @@ export const products: Product[] = [
     category: "mustang-mach-e",
     price: 150,
     currency: "DKK",
-    images: [img("case6pack4.jpg")],
+    images: [
+      img("case6pack.jpg"),
+      img("case6pack2.jpg"),
+      img("case6pack3.jpg"),
+      img("case6pack4.jpg"),
+      img("case6pack5.jpg"),
+      img("case6pack6.png"),
+    ],
     weight: 440,
     modelPath: "/models/case6pack.stl",
     specifications: [
@@ -201,7 +215,12 @@ export const products: Product[] = [
     category: "mustang-mach-e",
     price: 90,
     currency: "DKK",
-    images: [img("ladekabel_hvid.jpg")],
+    images: [
+      img("ladekabel_hvid.jpg"),
+      img("ladekabel_std1.jpg"),
+      img("ladekabel_std2.jpg"),
+      img("ladekabel_std3.jpg"),
+    ],
     weight: 200,
     modelPath: "/models/kabelophang.stl",
     specifications: [
@@ -222,7 +241,11 @@ export const products: Product[] = [
     category: "mustang-mach-e",
     price: 150,
     currency: "DKK",
-    images: [img("ladekabel_large1.jpg")],
+    images: [
+      img("ladekabel_large1.jpg"),
+      img("ladekabel_large2.jpg"),
+      img("ladekabel_large3.jpg"),
+    ],
     weight: 340,
     modelPath: "/models/kabelophanglarge.stl",
     specifications: [
@@ -243,7 +266,7 @@ export const products: Product[] = [
     category: "mustang-mach-e",
     price: 40,
     currency: "DKK",
-    images: [img("anhangerProp.jpg")],
+    images: [img("anhangerProp.jpg"), img("anhangerProp2.png")],
     weight: 20,
     modelPath: "/models/anhangerprop.stl",
     specifications: [
@@ -264,7 +287,7 @@ export const products: Product[] = [
     category: "mustang-mach-e",
     price: 40,
     currency: "DKK",
-    images: [img("hattehyldeClips1.jpg")],
+    images: [img("hattehyldeClips1.jpg"), img("hattehyldeClips2.jpg")],
     weight: 10,
     modelPath: "/models/hattehyldeclips.stl",
     specifications: [
@@ -283,7 +306,12 @@ export const products: Product[] = [
     category: "mustang-mach-e",
     price: 70,
     currency: "DKK",
-    images: [img("trashBin1.jpg")],
+    images: [
+      img("trashBin1.jpg"),
+      img("trashBin2.jpg"),
+      img("trashBin3.jpg"),
+      img("trashBin4.jpg"),
+    ],
     weight: 135,
     modelPath: "/models/skraldespand.stl",
     specifications: [
@@ -304,7 +332,11 @@ export const products: Product[] = [
     category: "mustang-mach-e",
     price: 40,
     currency: "DKK",
-    images: [img("nakkestotteKrog3.jpg")],
+    images: [
+      img("nakkestotteKrog1.jpg"),
+      img("nakkestotteKrog2.jpg"),
+      img("nakkestotteKrog3.jpg"),
+    ],
     weight: 20,
     modelPath: "/models/nakkestottekrog.stl",
     specifications: [
@@ -363,7 +395,11 @@ export const products: Product[] = [
     category: "mustang-mach-e",
     price: 60,
     currency: "DKK",
-    images: [img("floorHolder1.jpg")],
+    images: [
+      img("floorHolder1.jpg"),
+      img("floorHolder2.jpg"),
+      img("floorHolder3.jpg"),
+    ],
     weight: 220,
     modelPath: "/models/skillerum.stl",
     specifications: [
@@ -406,7 +442,11 @@ export const products: Product[] = [
     category: "mustang-mach-e",
     price: 70,
     currency: "DKK",
-    images: [img("gulvmattetemplate.jpg")],
+    images: [
+      img("gulvmattetemplate.jpg"),
+      img("gulvmattetemplate2.jpg"),
+      img("gulvmattetemplate3.jpg"),
+    ],
     weight: 40,
     modelPath: "/models/gulvmattetemplate.stl",
     specifications: [
