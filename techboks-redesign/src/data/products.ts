@@ -46,7 +46,6 @@ export interface Product {
   featured: boolean;
 }
 
-import homeyProCover from "@/assets/homey-pro-cover.jpg";
 
 const img = (file: string) => `https://www.techboks.dk/images/${file}`;
 
@@ -66,7 +65,7 @@ export const categories: Category[] = [
     slug: "hjemmet",
     tagline: "Smarte løsninger",
     description: "Diskrete, funktionelle produkter der løser små irritationsmomenter derhjemme.",
-    image: homeyProCover,
+    image: img("homey_cover_collage.png"),
   },
 ];
 
