@@ -139,7 +139,7 @@ export const products: Product[] = [
     name: "Center Konsol Boks",
     shortDescription: "Organiser din midterkonsol under armlænet",
     description:
-      "Organiser dine ting i midterkonsollen med denne specialdesignede boks til Mustang Mach-E. Den passer præcist ned i rummet under armlænet, og der medfølger en kortholder til fx ladekort og ladebrikker.",
+      "Organiser dine ting i midterkonsollen med denne specialdesignede boks til Mustang Mach-E. Den passer præcist ned i rummet under armlænet, og der medfølger en kortholder til fx ladekort og ladebrikker. \n Husk at vælge årgang, så den passer til din bil.",
     category: "mustang-mach-e",
     price: 90,
     currency: "DKK",
