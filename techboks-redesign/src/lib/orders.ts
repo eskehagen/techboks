@@ -20,8 +20,12 @@ export interface OrderCustomer {
 
 export interface OrderLine {
   productId: string;
+  /** Product slug — what the Airtable "Produkter" lookup matches on. */
+  slug: string;
   name: string;
   variant?: string | undefined;
+  /** Per-option choices, e.g. { "Årgang": "2025+", "Farve": "Hvid" }. */
+  options?: Record<string, string> | undefined;
   quantity: number;
   unitPrice: number;
 }
@@ -61,10 +65,14 @@ function buildLegacyPayload(payload: OrderPayload) {
     shippingMethod: payload.shipping.method,
     shippingCost: payload.shipping.cost,
     items: payload.lines.map((line) => ({
+      // `id` is what the Apps Script looks up in Airtable's Produkter table
+      // ("Website ID"); it reads slugs, not the internal tb-00x id.
+      id: line.slug,
       name: line.name,
       quantity: line.quantity,
       price: line.unitPrice,
       variant: line.variant ?? "",
+      options: line.options ?? {},
     })),
     subtotal: payload.subtotal,
     total,

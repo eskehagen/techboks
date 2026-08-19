@@ -569,22 +569,157 @@ function syncToAirtable(orderData, orderId) {
     'Salgsplatform': 'TechBoks.dk'
   };
 
+  // Valgfrie felter: alt der kan mangle som kolonne i basen. Holdt adskilt fra
+  // orderFields, så en manglende kolonne aldrig koster os hele ordren.
+  const items = orderData.items || [];
+  const optionalFields = {};
+
   if (productRecordIds.length > 0) {
-    orderFields['Produkter'] = productRecordIds;
+    optionalFields['Produkter'] = productRecordIds;
   }
 
-  const orderResponse = UrlFetchApp.fetch(
-    'https://api.airtable.com/v0/' + baseId + '/Ordrer',
-    { method: 'POST', headers: headers, payload: JSON.stringify({ fields: orderFields }), muteHttpExceptions: true }
-  );
-  Logger.log('Airtable Ordrer HTTP status: ' + orderResponse.getResponseCode());
-  Logger.log('Airtable Ordrer svar: ' + orderResponse.getContentText());
-  const orderRecord = JSON.parse(orderResponse.getContentText());
+  const aargang = collectOptionValues(items, 'Årgang');
+  if (aargang) optionalFields['Årgang'] = aargang;
 
-  if (!orderRecord.id) {
-    throw new Error('Airtable ordre oprettelse fejlede: ' + orderResponse.getContentText());
-  }
+  const orderLines = describeOrderLines(items);
+  if (orderLines) optionalFields['Ordrelinjer'] = orderLines;
+
+  const orderRecord = createOrderRecord(baseId, headers, orderFields, optionalFields);
   Logger.log('Airtable ordre record ID: ' + orderRecord.id);
+}
+
+/**
+ * Opret ordre-record.
+ *
+ * De valgfrie felter (produktvalg, produktlinks) kan mangle som kolonner i basen.
+ * Afviser Airtable ét af dem som ukendt, droppes præcis det felt og ordren prøves
+ * igen — resten af oplysningerne går altså ikke tabt, fordi én kolonne mangler.
+ */
+function createOrderRecord(baseId, headers, orderFields, optionalFields) {
+  const url = 'https://api.airtable.com/v0/' + baseId + '/Ordrer';
+
+  function post(fields) {
+    return UrlFetchApp.fetch(url, {
+      method: 'POST',
+      headers: headers,
+      // typecast: lader Airtable selv oprette nye valgmuligheder i fx et single
+      // select-felt (en ny årgang), i stedet for at afvise hele ordren.
+      payload: JSON.stringify({ fields: fields, typecast: true }),
+      muteHttpExceptions: true
+    });
+  }
+
+  const remaining = {};
+  for (const key in optionalFields) remaining[key] = optionalFields[key];
+
+  // Ét forsøg pr. valgfrit felt der kan droppes, plus det første.
+  const maxAttempts = Object.keys(remaining).length + 1;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const fields = {};
+    for (const key in orderFields) fields[key] = orderFields[key];
+    for (const key in remaining) fields[key] = remaining[key];
+
+    const response = post(fields);
+    Logger.log('Airtable Ordrer HTTP status: ' + response.getResponseCode());
+    Logger.log('Airtable Ordrer svar: ' + response.getContentText());
+    const record = JSON.parse(response.getContentText());
+
+    if (record.id) return record;
+
+    const isUnknownField = record.error && record.error.type === 'UNKNOWN_FIELD_NAME';
+    const dropped = isUnknownField ? dropUnknownField(remaining, record.error.message) : null;
+
+    if (!dropped) {
+      throw new Error('Airtable ordre oprettelse fejlede: ' + response.getContentText());
+    }
+
+    Logger.log('⚠ Feltet "' + dropped + '" findes ikke i Airtable-tabellen Ordrer — ' +
+      'ordren gemmes uden det. Opret kolonnen i Airtable for at få oplysningen med.');
+  }
+
+  throw new Error('Airtable ordre oprettelse fejlede: for mange ukendte felter');
+}
+
+/**
+ * Fjern det felt Airtable klagede over fra `fields`. Airtables besked ser ud som
+ * 'Unknown field name: "Årgang"'. Kan navnet ikke læses, droppes ét vilkårligt
+ * valgfrit felt, så et retry stadig kan komme videre.
+ * Returnerer navnet på det droppede felt, eller null hvis der ikke var noget.
+ */
+function dropUnknownField(fields, message) {
+  const match = /"([^"]+)"/.exec(message || '');
+  const named = match ? match[1] : null;
+
+  if (named && Object.prototype.hasOwnProperty.call(fields, named)) {
+    delete fields[named];
+    return named;
+  }
+
+  const keys = Object.keys(fields);
+  if (keys.length === 0) return null;
+  delete fields[keys[0]];
+  return keys[0];
+}
+
+/**
+ * Saml ét produktvalg (fx 'Årgang') på tværs af ordrens varer.
+ * Læser det strukturerede options-objekt, med fallback til variant-strengen
+ * ("2025+ · Hvid") for ordrer sendt fra en ældre cachet version af siden.
+ */
+function collectOptionValues(items, label) {
+  const seen = [];
+
+  for (const item of items) {
+    let value = item.options && item.options[label] ? String(item.options[label]) : '';
+
+    if (!value && item.variant) {
+      // Uden labels kan vi kun genkende værdien på dens form: et årstal.
+      const parts = String(item.variant).split('·');
+      for (const part of parts) {
+        const candidate = part.trim();
+        if (/^[0-9]{4}([ ]*[-–][ ]*[0-9]{4}|[+])?$/.test(candidate)) {
+          value = candidate;
+          break;
+        }
+      }
+    }
+
+    if (value && seen.indexOf(value) === -1) seen.push(value);
+  }
+
+  return seen.join(', ');
+}
+
+/**
+ * Læsbar opsummering af ordrens varer med alle produktvalg — én linje pr. vare,
+ * fx: "Center Konsol Boks × 1 — Årgang: 2025+, Farve: Hvid (90 kr.)"
+ */
+function describeOrderLines(items) {
+  const lines = [];
+
+  for (const item of items) {
+    const name = sanitizeText(item.name || 'Ukendt produkt');
+    const quantity = item.quantity || 1;
+
+    const choices = [];
+    if (item.options) {
+      for (const label in item.options) {
+        if (item.options[label]) {
+          choices.push(sanitizeText(label) + ': ' + sanitizeText(String(item.options[label])));
+        }
+      }
+    }
+    // Falder tilbage på den sammensatte variant-streng, hvis der ikke er labels.
+    if (choices.length === 0 && item.variant) choices.push(sanitizeText(item.variant));
+
+    let line = name + ' × ' + quantity;
+    if (choices.length > 0) line += ' — ' + choices.join(', ');
+    if (item.price) line += ' (' + item.price + ' kr.)';
+    lines.push(line);
+  }
+
+  return lines.join('\n');
 }
 
 /**

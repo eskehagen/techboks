@@ -73,8 +73,20 @@ function ProductDetail({ product }: { product: Product }) {
     ? product.options.map((o) => selections[o.label]).join(" · ")
     : undefined;
 
+  // What the current selection points at — today only the centre console box
+  // uses these, to show the fit for the chosen model year. First option that
+  // maps its selected value wins.
+  const selectedAsset = (key: "imageByValue" | "modelByValue") =>
+    product.options?.reduce<string | undefined>(
+      (found, option) => found ?? option[key]?.[selections[option.label] ?? ""],
+      undefined,
+    );
+
+  const focusImage = selectedAsset("imageByValue");
+  const modelPath = selectedAsset("modelByValue") ?? product.modelPath;
+
   const handleAdd = () => {
-    add(product.id, quantity, variant);
+    add(product.id, quantity, variant, selections);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 2000);
   };
@@ -93,10 +105,8 @@ function ProductDetail({ product }: { product: Product }) {
         {/* min-w-0: grid items default to min-width:auto, which lets the
             content push the column past the viewport on narrow screens. */}
         <div className="min-w-0">
-          <ProductGallery images={product.images} alt={product.name} />
-          {product.modelPath && (
-            <Model3DViewer src={product.modelPath} className="mt-3 aspect-[4/3] w-full" />
-          )}
+          <ProductGallery images={product.images} alt={product.name} focus={focusImage} />
+          {modelPath && <Model3DViewer src={modelPath} className="mt-3 aspect-[4/3] w-full" />}
         </div>
 
         <div className="bg-surface rounded-blob-lg min-w-0 p-7 sm:p-9">

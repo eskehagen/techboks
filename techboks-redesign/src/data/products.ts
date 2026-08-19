@@ -25,6 +25,19 @@ export interface ProductSpec {
 export interface ProductOption {
   label: string;
   values: string[];
+  /**
+   * Optional value → image map. Selecting a value scrolls the product gallery to
+   * that image, so a choice that changes what the customer receives (fit, shape)
+   * is shown rather than just named. Every image listed here must also appear in
+   * the product's `images` — that array is what the gallery actually renders.
+   */
+  imageByValue?: Record<string, string>;
+  /**
+   * Optional value → 3D model map, same idea as `imageByValue`: when the choice
+   * is a different physical part, the rotatable preview should show that part.
+   * Falls back to the product's own `modelPath` when a value isn't listed.
+   */
+  modelByValue?: Record<string, string>;
 }
 
 export interface Product {
@@ -96,6 +109,24 @@ const sideOptionCar: ProductOption = {
   values: ["Venstre (førersiden)", "Højre (passagersiden)"],
 };
 
+/**
+ * The Mach-E's centre console changed shape with the 2025 model year, so the box
+ * ships in two fits. Kept product-local rather than shared: the image map names
+ * this product's own photos.
+ */
+const centerConsoleYearOption: ProductOption = {
+  label: "Årgang",
+  values: ["2021-2024", "2025+"],
+  imageByValue: {
+    "2021-2024": img("centerConsol1.jpg"),
+    "2025+": img("centerConsol25-1.jpg"),
+  },
+  modelByValue: {
+    "2021-2024": "/models/centerboks.stl",
+    "2025+": "/models/centerboks25.stl",
+  },
+};
+
 const patternOption: ProductOption = {
   label: "Mønster",
   values: ["Honeycomb", "Triangles", "Rectangles", "Cross Zag (45 grader)"],
@@ -117,6 +148,8 @@ export const products: Product[] = [
       img("centerConsol2.jpg"),
       img("centerConsol3.jpg"),
       img("centerConsol4.png"),
+      img("centerConsol25-1.jpg"),
+      img("centerConsol25-2.jpg"),
     ],
     weight: 290,
     modelPath: "/models/centerboks.stl",
@@ -124,8 +157,9 @@ export const products: Product[] = [
       { label: "Materiale", value: "PETG (varmebestandig)" },
       { label: "Farver", value: "Vælg selv farve af logo og linjer" },
       { label: "Anvendelse", value: "Placeres i midterkonsollen under armlænet" },
+      { label: "Passer til", value: "Mach-E 2021-2024 og 2025+ — vælg årgang ovenfor" },
     ],
-    options: [colorOption4],
+    options: [centerConsoleYearOption, colorOption4],
     featured: true,
   },
   {

@@ -83,8 +83,10 @@ function OrderPage() {
         customer,
         lines: lines.map((l) => ({
           productId: l.productId,
+          slug: l.product.slug,
           name: l.product.name,
           variant: l.variant,
+          options: l.options,
           quantity: l.quantity,
           unitPrice: l.product.price,
         })),

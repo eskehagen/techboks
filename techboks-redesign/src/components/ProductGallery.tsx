@@ -50,7 +50,21 @@ function swipeStep(info: PanInfo): number {
   return 0;
 }
 
-export function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
+export function ProductGallery({
+  images,
+  alt,
+  focus,
+}: {
+  images: string[];
+  alt: string;
+  /**
+   * An image from `images` the page wants brought to the front — used when a
+   * product option (e.g. which model year the part fits) picks out one photo.
+   * The gallery only reacts when this changes, so browsing the thumbnails
+   * afterwards is never yanked back.
+   */
+  focus?: string | undefined;
+}) {
   // Index and direction travel together so the exit animation knows which way
   // the previous image should leave.
   const [[index, direction], setSlide] = useState<[number, number]>([0, 0]);
@@ -65,7 +79,12 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
   useEffect(() => setMounted(true), []);
 
   const goTo = useCallback(
-    (next: number) => setSlide(([current]) => [next, next > current ? 1 : next < current ? -1 : 0]),
+    (next: number) =>
+      setSlide((slide) =>
+        // Same image: keep the tuple so re-selecting the current thumbnail, or a
+        // focus that already matches, doesn't re-render.
+        next === slide[0] ? slide : [next, next > slide[0] ? 1 : -1],
+      ),
     [],
   );
 
@@ -73,6 +92,12 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
     (step: number) => setSlide(([current]) => [(current + step + count) % count, step]),
     [count],
   );
+
+  const focusIndex = focus ? images.indexOf(focus) : -1;
+
+  useEffect(() => {
+    if (focusIndex >= 0) goTo(focusIndex);
+  }, [focusIndex, goTo]);
 
   // Keep the neighbours warm so an arrow press swaps instantly.
   useEffect(() => {

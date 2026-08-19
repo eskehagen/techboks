@@ -5,6 +5,12 @@ export interface CartLine {
   productId: string;
   quantity: number;
   variant?: string | undefined;
+  /**
+   * The same choices as `variant`, but still split by option label — the order
+   * payload needs them addressable ("Årgang" → "2025+") rather than joined into
+   * one display string. Lines saved before this existed simply lack it.
+   */
+  options?: Record<string, string> | undefined;
 }
 
 
@@ -18,7 +24,12 @@ interface CartContextValue {
   count: number;
   total: number;
   totalWeight: number;
-  add: (productId: string, quantity?: number, variant?: string) => void;
+  add: (
+    productId: string,
+    quantity?: number,
+    variant?: string,
+    options?: Record<string, string>,
+  ) => void;
   remove: (productId: string, variant?: string) => void;
   setQuantity: (productId: string, quantity: number, variant?: string) => void;
   clear: () => void;
@@ -62,7 +73,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       count: views.reduce((sum, l) => sum + l.quantity, 0),
       total: views.reduce((sum, l) => sum + l.lineTotal, 0),
       totalWeight: views.reduce((sum, l) => sum + l.product.weight * l.quantity, 0),
-      add: (productId, quantity = 1, variant) =>
+      add: (productId, quantity = 1, variant, options) =>
         setLines((prev) => {
           const existing = prev.find((l) => sameLine(l, productId, variant));
           if (existing) {
@@ -70,7 +81,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
               sameLine(l, productId, variant) ? { ...l, quantity: l.quantity + quantity } : l,
             );
           }
-          return [...prev, { productId, quantity, variant }];
+          const line: CartLine = { productId, quantity, variant };
+          if (options && Object.keys(options).length > 0) line.options = options;
+          return [...prev, line];
         }),
       remove: (productId, variant) =>
         setLines((prev) => prev.filter((l) => !sameLine(l, productId, variant))),
