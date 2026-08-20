@@ -426,7 +426,7 @@ export const products: Product[] = [
     description:
       "Skillerum der deler bagagerummet op i faste zoner, så indkøbene ikke vælter rundt på vej hjem.",
     category: "mustang-mach-e",
-    price: 60,
+    price: 80,
     currency: "DKK",
     images: [
       img("floorHolder1.jpg"),

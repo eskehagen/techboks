@@ -78,7 +78,7 @@
 - **Problem:** ingen god placering til mobilholder i synsfeltet.
 - **Vinkel:** **tilbehør til tilbehøret** — kræver Front Boks. Sælg aldrig alene; sælg altid som opgradering.
 
-### Skillerum til Bagagerum · 60 kr · `skillerum-bagagerum`
+### Skillerum til Bagagerum · 80 kr · `skillerum-bagagerum`
 - **Problem:** indkøbene vælter rundt på vej hjem.
 - **Vinkel:** fastgøres med velcro og kan flyttes frit på hele bagagerumsgulvet.
 - **Sæson:** hele året, stærk i december.
@@ -106,7 +106,7 @@
 |---|---|---|---|
 | **Startpakken** | Center Konsol Boks + Front Boks | 180 kr | "De to første ting du skal have" |
 | **Ladepakken** | Vinter Cover + Ladekabel Ophæng | 180 kr | Vinterklar ladeplads |
-| **Familiepakken** | Skraldespand + Nakkestøtte Krog + Skillerum | 170 kr | Ryddelig bil med børn |
+| **Familiepakken** | Skraldespand + Nakkestøtte Krog + Skillerum | 190 kr | Ryddelig bil med børn |
 | **Frontpakken** | Front Boks + Mobil-mount | 130 kr | Opbevaring + mobil i synsfeltet |
 | **Gavepakken** | 6-pack + Anhængertræk Prop | 190 kr | Til ham der har alt |
 
