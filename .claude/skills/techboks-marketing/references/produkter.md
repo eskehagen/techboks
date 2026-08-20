@@ -70,7 +70,7 @@
 - **Vinkel:** kan bære flere kilo. Passer både for- og bagsæder. Klassisk "hvorfor har bilen ikke det fra fabrikken".
 - **Sæson:** hele året. Stærk i december (juleindkøb).
 
-### Bagagerum Krog · 50 kr (2 stk.) · `bagagerum-krog`
+### Bagagerum Krog · 60 kr (2 stk.) · `bagagerum-krog`
 - **Problem:** ting glider rundt i bagagerummet; ingen steder at hænge paraplyen.
 - **Vinkel:** monteres på Isofix-beslag, uden værktøj.
 
