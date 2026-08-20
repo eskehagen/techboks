@@ -562,7 +562,10 @@ function syncToAirtable(orderData, orderId) {
   const productRecordIds = findProductRecordIds(orderData.items || [], baseId, headers);
   Logger.log('Airtable produkter fundet: ' + productRecordIds.length);
 
-  // 3. Opret ordre-record
+  // 3. Slå den matchende Fragt-record op ud fra ordrens beregnede fragtpris
+  const fragtRecordId = findFragtRecordId(orderData, baseId, headers);
+
+  // 4. Opret ordre-record
   const orderFields = {
     'Ordre ID': orderId,
     'Kunde': [customerId],
@@ -576,6 +579,10 @@ function syncToAirtable(orderData, orderId) {
 
   if (productRecordIds.length > 0) {
     optionalFields['Produkter'] = productRecordIds;
+  }
+
+  if (fragtRecordId) {
+    optionalFields['Fragt'] = [fragtRecordId];
   }
 
   const aargang = collectOptionValues(items, 'Årgang');
@@ -771,6 +778,35 @@ function findProductRecordIds(items, baseId, headers) {
   }
 
   return recordIds;
+}
+
+/**
+ * Slå den matchende Fragt-record op ud fra ordrens beregnede fragtpris.
+ * Afhentning matches til posten med pris 0 (fx "Afhentes"); ellers matches der
+ * på selve prisen (webshoppens vægt-tier prissætter allerede ordren, se
+ * techboks-redesign/src/lib/shipping.ts). Returnerer Airtable record ID, eller
+ * null hvis ingen Fragt-post har den pris — sker fx for en tung ordre, hvis
+ * Fragt-tabellen ikke har alle vægttrin oprettet endnu.
+ */
+function findFragtRecordId(orderData, baseId, headers) {
+  const isPickup = orderData.shippingMethod === 'pickup';
+  const price = isPickup ? 0 : parseFloat(orderData.shippingCost);
+
+  if (isNaN(price)) return null;
+
+  const searchUrl = 'https://api.airtable.com/v0/' + baseId + '/Fragt?filterByFormula=' +
+    encodeURIComponent('({Price}=' + price + ')');
+  const resp = UrlFetchApp.fetch(searchUrl, { method: 'GET', headers: headers, muteHttpExceptions: true });
+  const result = JSON.parse(resp.getContentText());
+
+  if (result.records && result.records.length > 0) {
+    const match = result.records[0];
+    Logger.log('Fragt matchet: ' + price + ' kr → "' + (match.fields && match.fields['Name']) + '" (' + match.id + ')');
+    return match.id;
+  }
+
+  Logger.log('⚠ Ingen Fragt-record matcher prisen ' + price + ' kr');
+  return null;
 }
 
 /**
