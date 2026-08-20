@@ -56,6 +56,18 @@ export interface Product {
   modelPath?: string;
   specifications: ProductSpec[];
   options?: ProductOption[];
+  /**
+   * A product that belongs together with this one — an add-on, or the base
+   * product an add-on fits. Rendered under the description as a sentence with
+   * a link to the other product page. Both sides should point at each other.
+   */
+  relatedLink?: {
+    slug: string;
+    /** Sentence shown before the link — explains why the two belong together. */
+    text: string;
+    /** The clickable product name. */
+    linkLabel: string;
+  };
   featured: boolean;
 }
 
@@ -188,6 +200,11 @@ export const products: Product[] = [
       { label: "Anvendelse", value: "Placeres foran frontskærmen" },
     ],
     options: [colorOption4],
+    relatedLink: {
+      slug: "front-boks-mobil-mount",
+      text: "Boksen kan udvides med en mount til en almindelig mobilholder, så telefonen kommer op i synsfeltet:",
+      linkLabel: "Front Boks Mobil-mount",
+    },
     featured: true,
   },
   {
@@ -404,7 +421,7 @@ export const products: Product[] = [
     name: "Front Boks Mobil-mount",
     shortDescription: "Mount til mobilholder på front boksen",
     description:
-      "Tilbehør til Front Boksen: en mount der lader dig montere en almindelig mobilholder i synsfeltet.",
+      "Tilbehør til Front Boksen: en mount der lader dig montere en almindelig mobilholder i synsfeltet. Mounten sidder på Front Boksen, så du slipper for at sætte holderen på ruden eller i ventilationsgitteret.",
     category: "mustang-mach-e",
     price: 40,
     currency: "DKK",
@@ -416,6 +433,11 @@ export const products: Product[] = [
       { label: "Kompatibilitet", value: "Diverse mobilholdere kan monteres" },
       { label: "Montering", value: "Placeret på Front Boksen" },
     ],
+    relatedLink: {
+      slug: "front-boks",
+      text: "Mounten er tilbehør og forudsætter, at du har selve boksen:",
+      linkLabel: "Front Boks",
+    },
     featured: false,
   },
   {

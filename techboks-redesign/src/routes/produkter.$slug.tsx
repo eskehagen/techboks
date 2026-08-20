@@ -119,6 +119,19 @@ function ProductDetail({ product }: { product: Product }) {
             {product.description}
           </p>
 
+          {/* Cross-link to the product this one belongs with (box ↔ add-on). */}
+          {product.relatedLink && (
+            <p className="text-muted-foreground mt-3 text-base leading-relaxed">
+              {product.relatedLink.text}{" "}
+              <Link
+                to="/produkter/$slug"
+                params={{ slug: product.relatedLink.slug }}
+                className="text-ink font-medium underline underline-offset-4 hover:no-underline"
+              >
+                {product.relatedLink.linkLabel}
+              </Link>
+            </p>
+          )}
 
           {product.options?.map((option) => (
             <div key={option.label} className="mt-8">
