@@ -476,9 +476,8 @@ export const products: Product[] = [
     price: 70,
     currency: "DKK",
     images: [
-      img("gulvmattetemplate.jpg"),
-      img("gulvmattetemplate2.jpg"),
       img("gulvmattetemplate3.jpg"),
+      img("gulvmattetemplate2.jpg"),
     ],
     weight: 40,
     modelPath: "/models/gulvmattetemplate.stl",
