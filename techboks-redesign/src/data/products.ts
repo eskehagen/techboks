@@ -208,25 +208,6 @@ export const products: Product[] = [
     featured: true,
   },
   {
-    id: "tb-003",
-    slug: "vinter-cover",
-    name: "Vinter Cover",
-    shortDescription: "Beskyt ladeporten mod sne, is og skidt",
-    description:
-      "Et tætsluttende cover der beskytter din Mustang Mach-E's ladeport mod sne, is og vejsalt i vintermånederne.",
-    category: "mustang-mach-e",
-    price: 90,
-    currency: "DKK",
-    images: [img("vinterCover1.jpg"), img("vinterCover2.jpg")],
-    weight: 200,
-    modelPath: "/models/vinterdeksel.stl",
-    specifications: [
-      { label: "Materiale", value: "PETG (vejrbestandig)" },
-      { label: "Anvendelse", value: "Monteres i bilens ladeport" },
-    ],
-    featured: true,
-  },
-  {
     id: "tb-004",
     slug: "mustang-6-pack-daaseholder",
     name: "Mustang 6-pack til Dåser",
