@@ -7,14 +7,17 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 interface Model3DViewerProps {
   src: string;
   className?: string;
+  rotation?: [number, number, number];
 }
+
+const defaultRotation: [number, number, number] = [0, 0, 0];
 
 /**
  * Rotatable STL preview, presented as a lit studio shot: light satin model on a
  * dark stage, environment-mapped reflections, a soft contact shadow, and a mint
  * rim light picking out the silhouette.
  */
-export function Model3DViewer({ src, className }: Model3DViewerProps) {
+export function Model3DViewer({ src, className, rotation = defaultRotation }: Model3DViewerProps) {
   const canvasHostRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -113,6 +116,7 @@ export function Model3DViewer({ src, className }: Model3DViewerProps) {
           envMapIntensity: 0.32,
         });
         const mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.set(...rotation);
         mesh.scale.setScalar(scale);
         mesh.castShadow = true;
         scene.add(mesh);
@@ -177,7 +181,7 @@ export function Model3DViewer({ src, className }: Model3DViewerProps) {
         host.removeChild(renderer.domElement);
       }
     };
-  }, [src]);
+  }, [rotation, src]);
 
   return (
     <div className={`rounded-blob-lg bg-ink relative overflow-hidden ${className ?? ""}`}>

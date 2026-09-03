@@ -106,7 +106,13 @@ function ProductDetail({ product }: { product: Product }) {
             content push the column past the viewport on narrow screens. */}
         <div className="min-w-0">
           <ProductGallery images={product.images} alt={product.name} focus={focusImage} />
-          {modelPath && <Model3DViewer src={modelPath} className="mt-3 aspect-[4/3] w-full" />}
+          {modelPath && (
+            <Model3DViewer
+              src={modelPath}
+              rotation={product.slug === "slaebekrog-daeksel" ? [Math.PI, 0, 0] : undefined}
+              className="mt-3 aspect-[4/3] w-full"
+            />
+          )}
         </div>
 
         <div className="bg-surface rounded-blob-lg min-w-0 p-7 sm:p-9">

@@ -72,7 +72,7 @@ export interface Product {
 }
 
 
-const img = (file: string) => `https://www.techboks.dk/images/${file}`;
+const img = (file: string) => `/images/${file}`;
 
 export const categories: Category[] = [
   {
@@ -306,6 +306,31 @@ export const products: Product[] = [
       { label: "Anvendelse", value: "Monteres på trækkrogen" },
     ],
     options: [colorOption4],
+    featured: false,
+  },
+  {
+    id: "tb-017",
+    slug: "slaebekrog-daeksel",
+    name: "Slæbekrog Dæksel",
+    shortDescription: "Dæk hullet til slæbekrogens gevind",
+    description:
+      "Mangler du dækslet til hullet ind til slæbekrogens gevind bag bagende-kofangeren på din Mustang Mach-E? Dette dæksel holdes på plads af små lille plastclips, ligesom det originale. Har du mistet dit originale eller er det knækket, så køb denne reservedel. På indersiden er der et integreret Mustang-logo.",
+    category: "mustang-mach-e",
+    price: 40,
+    currency: "DKK",
+    images: [
+      img("slabekrogDeksel0.jpg"),
+      img("slabekrogDeksel1.jpg"),
+      img("slabekrogDeksel2.jpg"),
+      img("slabekrogDeksel3.jpg"),
+    ],
+    weight: 15,
+    modelPath: "/models/slabekrogDeksel.stl",
+    specifications: [
+      { label: "Materiale", value: "PETG (vejrbestandig)" },
+      { label: "Anvendelse", value: "Dækker hullet ind til slæbekrogens gevind" },
+      { label: "Detalje", value: "Integreret Mustang-logo på indersiden" },
+    ],
     featured: false,
   },
   {
