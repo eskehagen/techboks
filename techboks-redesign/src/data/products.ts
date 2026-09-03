@@ -162,7 +162,42 @@ export const products: Product[] = [
       { label: "Passer til", value: "Mach-E 2021-2024 og 2025+ — vælg årgang ovenfor" },
     ],
     options: [centerConsoleYearOption, colorOption4],
+    relatedLink: {
+      slug: "center-konsol-boks-ekstra-insats",
+      text: "Vil du dele rummet yderligere op? Tilføj den ekstra indsats med tre flytbare vægge:",
+      linkLabel: "Center Konsol Boks - Ekstra Insats",
+    },
     featured: true,
+  },
+  {
+    id: "tb-020",
+    slug: "center-konsol-boks-ekstra-insats",
+    name: "Center Konsol Boks - Ekstra Insats",
+    shortDescription: "Skab flere mindre rum i din Center Konsol Boks",
+    description:
+      "Denne ekstra indsats sættes ned i det mellemste rum i din Center Konsol Boks og deler det op i flere mindre rum. Der medfølger tre vægge, som kan monteres efter ønske. Indsatsen kan printes i den farve, du ønsker — skriv farven i feltet Bemærkninger til ordren ved bestilling.",
+    category: "mustang-mach-e",
+    price: 40,
+    currency: "DKK",
+    images: [
+      img("centerconsol-extra-insert3.png"),
+      img("centerconsol-extra-insert2.png"),
+      img("centerconsol-extra-insert.png"),
+    ],
+    weight: 77,
+    modelPath: "/models/centerconsol-extra-insert.stl",
+    specifications: [
+      { label: "Materiale", value: "PETG (varmebestandig)" },
+      { label: "Indhold", value: "Indsats med 3 vægge" },
+      { label: "Montering", value: "Sættes ned i det mellemste rum i Center Konsol Boks" },
+      { label: "Farve", value: "Vælg selv farve — skriv ønsket i ordrekommentaren" },
+    ],
+    relatedLink: {
+      slug: "center-konsol-boks",
+      text: "Indsatsen er et ekstra tilbehør til:",
+      linkLabel: "Center Konsol Boks",
+    },
+    featured: false,
   },
   {
     id: "tb-002",
@@ -314,7 +349,7 @@ export const products: Product[] = [
       img("slabekrogDeksel2.jpg"),
       img("slabekrogDeksel3.jpg"),
     ],
-    weight: 15,
+    weight: 10,
     modelPath: "/models/slabekrogDeksel.stl",
     specifications: [
       { label: "Materiale", value: "PETG (vejrbestandig)" },
