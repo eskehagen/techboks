@@ -111,16 +111,6 @@ const colorOption6: ProductOption = {
   values: ["Sort", "Hvid", "Grå", "Rød", "Blå", "Grøn"],
 };
 
-const sideOptionPlain: ProductOption = {
-  label: "Version",
-  values: ["Venstre", "Højre"],
-};
-
-const sideOptionCar: ProductOption = {
-  label: "Version",
-  values: ["Venstre (førersiden)", "Højre (passagersiden)"],
-};
-
 /**
  * The Mach-E's centre console changed shape with the 2025 model year, so the box
  * ships in two fits. Kept product-local rather than shared: the image map names
@@ -354,11 +344,11 @@ export const products: Product[] = [
   },
   {
     id: "tb-009",
-    slug: "skraldespand-sidedoer",
-    name: "Skraldespand til Sidedør",
-    shortDescription: "Smart skraldespand til sidedøren",
+    slug: "skraldespand-sidedoer-venstre",
+    name: "Skraldespand til Sidedør (Venstre)",
+    shortDescription: "Smart skraldespand til venstre sidedør (førersiden)",
     description:
-      "En kompakt skraldespand der monteres i sidedørens lomme. Hold bilen ren og ryddelig uden løse poser.",
+      "En kompakt skraldespand der monteres i venstre sidedørs lomme (førersiden). Hold bilen ren og ryddelig uden løse poser.",
     category: "mustang-mach-e",
     price: 70,
     currency: "DKK",
@@ -372,10 +362,44 @@ export const products: Product[] = [
     modelPath: "/models/skraldespand.stl",
     specifications: [
       { label: "Materiale", value: "PETG (varmebestandig og holdbar)" },
-      { label: "Montering", value: "Monteres nemt direkte i sidedrørens udformning" },
+      { label: "Montering", value: "Monteres nemt direkte i venstre sidedørs udformning (førersiden)" },
       { label: "Kapacitet", value: "Optimal størrelse til hverdagsaffald" },
     ],
-    options: [sideOptionCar],
+    relatedLink: {
+      slug: "skraldespand-sidedoer-hojre",
+      text: "Skraldespanden findes også i en højrevendt version til passagersidens dør:",
+      linkLabel: "Skraldespand til Sidedør (Højre)",
+    },
+    featured: false,
+  },
+  {
+    id: "tb-018",
+    slug: "skraldespand-sidedoer-hojre",
+    name: "Skraldespand til Sidedør (Højre)",
+    shortDescription: "Smart skraldespand til højre sidedør (passagersiden)",
+    description:
+      "En kompakt skraldespand der monteres i højre sidedørs lomme (passagersiden). Hold bilen ren og ryddelig uden løse poser.",
+    category: "mustang-mach-e",
+    price: 70,
+    currency: "DKK",
+    images: [
+      img("trashBin1.jpg"),
+      img("trashBin2.jpg"),
+      img("trashBin3.jpg"),
+      img("trashBin4.jpg"),
+    ],
+    weight: 135,
+    modelPath: "/models/skraldespand.stl",
+    specifications: [
+      { label: "Materiale", value: "PETG (varmebestandig og holdbar)" },
+      { label: "Montering", value: "Monteres nemt direkte i højre sidedørs udformning (passagersiden)" },
+      { label: "Kapacitet", value: "Optimal størrelse til hverdagsaffald" },
+    ],
+    relatedLink: {
+      slug: "skraldespand-sidedoer-venstre",
+      text: "Skraldespanden findes også i en venstrevendt version til førersidens dør:",
+      linkLabel: "Skraldespand til Sidedør (Venstre)",
+    },
     featured: false,
   },
   {
@@ -473,11 +497,11 @@ export const products: Product[] = [
   },
   {
     id: "tb-014",
-    slug: "hattehylde-ophaengskrog",
-    name: "Hattehylde Ophængskrog",
-    shortDescription: "Reservedel — hvis din originale er knækket",
+    slug: "hattehylde-ophaengskrog-venstre",
+    name: "Hattehylde Ophængskrog (Venstre)",
+    shortDescription: "Reservedel til venstre side — hvis din originale er knækket",
     description:
-      "Forstærket ophængskrog til hattehylden. En direkte erstatning for den originale, hvis den er knækket.",
+      "Forstærket ophængskrog til hattehyldens venstre side. En direkte erstatning for den originale, hvis den er knækket.",
     category: "mustang-mach-e",
     price: 80,
     currency: "DKK",
@@ -487,10 +511,40 @@ export const products: Product[] = [
     specifications: [
       { label: "Materiale", value: "PETG (robust og holdbar)" },
       { label: "Funktion", value: "Ophæng hattehylden sikkert" },
-      { label: "Kompatibilitet", value: "Passer til Mustang Mach-E's hattehylde" },
+      { label: "Kompatibilitet", value: "Passer til Mustang Mach-E's hattehylde, venstre side" },
       { label: "Montering", value: "Nem montering via klik-system og skruer" },
     ],
-    options: [sideOptionPlain],
+    relatedLink: {
+      slug: "hattehylde-ophaengskrog-hojre",
+      text: "Kroget findes også til hattehyldens højre side:",
+      linkLabel: "Hattehylde Ophængskrog (Højre)",
+    },
+    featured: false,
+  },
+  {
+    id: "tb-019",
+    slug: "hattehylde-ophaengskrog-hojre",
+    name: "Hattehylde Ophængskrog (Højre)",
+    shortDescription: "Reservedel til højre side — hvis din originale er knækket",
+    description:
+      "Forstærket ophængskrog til hattehyldens højre side. En direkte erstatning for den originale, hvis den er knækket.",
+    category: "mustang-mach-e",
+    price: 80,
+    currency: "DKK",
+    images: [img("hattehyldeMount.jpg")],
+    weight: 30,
+    modelPath: "/models/hattehyldekrogmount.stl",
+    specifications: [
+      { label: "Materiale", value: "PETG (robust og holdbar)" },
+      { label: "Funktion", value: "Ophæng hattehylden sikkert" },
+      { label: "Kompatibilitet", value: "Passer til Mustang Mach-E's hattehylde, højre side" },
+      { label: "Montering", value: "Nem montering via klik-system og skruer" },
+    ],
+    relatedLink: {
+      slug: "hattehylde-ophaengskrog-venstre",
+      text: "Kroget findes også til hattehyldens venstre side:",
+      linkLabel: "Hattehylde Ophængskrog (Venstre)",
+    },
     featured: false,
   },
   {
