@@ -1,10 +1,12 @@
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
-import { ArrowLeft, Check, Minus, Plus } from "lucide-react";
+import { Check, Minus, Plus } from "lucide-react";
 import { useState } from "react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Model3DViewer } from "@/components/Model3DViewer";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductGallery } from "@/components/ProductGallery";
 import {
+  CATEGORY_PATHS,
   formatPrice,
   getCategory,
   getProductByVariantSlug,
@@ -27,6 +29,16 @@ function productOgImage(product: Product) {
   const src = product.images[0]!;
   const size = IMAGE_SIZES[src] ?? { w: 1200, h: 900 };
   return { src, alt, width: size.w, height: size.h };
+}
+
+/**
+ * Kun Center Konsol Boks afhænger af årgangen (den har et "Årgang"-valg). Alt
+ * andet Mach-E-tilbehør passer til alle årgange — bekræftet af ejeren.
+ */
+function specificationsWithFit(product: Product) {
+  const hasYearChoice = product.options?.some((o) => o.label === "Årgang");
+  if (product.category !== "mustang-mach-e" || hasYearChoice) return product.specifications;
+  return [...product.specifications, { label: "Årgange", value: "Alle årgange af Mustang Mach-E" }];
 }
 
 export const Route = createFileRoute("/produkter/$slug")({
@@ -52,6 +64,7 @@ export const Route = createFileRoute("/produkter/$slug")({
     }
     const { product } = loaderData;
     const path = productPath(product);
+    const category = getCategory(product.category);
     return pageHead({
       path,
       title: product.seoTitle,
@@ -70,7 +83,7 @@ export const Route = createFileRoute("/produkter/$slug")({
         }),
         breadcrumbList(path, [
           { name: "Forside", path: "/" },
-          { name: "Produkter", path: "/produkter" },
+          { name: category?.name ?? "Produkter", path: CATEGORY_PATHS[product.category] },
           { name: product.name, path },
         ]),
         productNode(product),
@@ -141,13 +154,13 @@ function ProductDetail({ product }: { product: Product }) {
 
   return (
     <div className="container-tb py-10 lg:py-14">
-      <Link
-        to="/produkter"
-        search={{ kategori: "alle", q: "" }}
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-ink"
-      >
-        <ArrowLeft className="h-4 w-4" /> Alle produkter
-      </Link>
+      <Breadcrumbs
+        items={[
+          { name: "Forside", to: "/" },
+          { name: category?.name ?? "Produkter", to: CATEGORY_PATHS[product.category] },
+          { name: product.name },
+        ]}
+      />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
         {/* min-w-0: grid items default to min-width:auto, which lets the
@@ -252,7 +265,7 @@ function ProductDetail({ product }: { product: Product }) {
           <div className="rounded-blob bg-canvas mt-10 overflow-hidden">
             <h2 className="eyebrow border-ink/10 border-b px-5 py-3.5">Specifikationer</h2>
             <dl className="divide-ink/10 divide-y">
-              {product.specifications.map((spec) => (
+              {specificationsWithFit(product).map((spec) => (
                 <div key={spec.label} className="grid grid-cols-[9rem_1fr] gap-4 px-5 py-3.5">
                   <dt className="text-muted-foreground text-sm">{spec.label}</dt>
                   <dd className="text-ink text-sm font-medium">{spec.value}</dd>

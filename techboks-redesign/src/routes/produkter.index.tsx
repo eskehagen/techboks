@@ -1,4 +1,4 @@
-import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
+import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { LayoutGrid, Rows3, Search, X } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
@@ -91,6 +91,17 @@ function Catalogue() {
           <h1 className="font-display text-ink mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
             Alle produkter
           </h1>
+          <p className="text-muted-foreground mt-3 max-w-xl text-sm leading-relaxed">
+            {counts["mustang-mach-e"]} produkter til{" "}
+            <Link to="/mustang-mach-e" className="text-ink link-underline">
+              Ford Mustang Mach-E
+            </Link>{" "}
+            og {counts["hjemmet"]} til{" "}
+            <Link to="/hjemmet" className="text-ink link-underline">
+              hjemmet
+            </Link>
+            , designet og 3D-printet i Danmark.
+          </p>
         </div>
         <div className="flex w-full items-center justify-between gap-4 sm:w-auto">
           <p className="text-muted-foreground text-sm">

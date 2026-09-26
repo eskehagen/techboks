@@ -158,6 +158,15 @@ export function productNode(product: Product): Node {
     ...(material ? { material } : {}),
     brand: { "@type": "Brand", name: SITE.name },
     manufacturer: ref(IDS.business),
+    ...(product.category === "mustang-mach-e"
+      ? {
+          isAccessoryOrSparePartFor: {
+            "@type": "Car",
+            name: "Ford Mustang Mach-E",
+            brand: { "@type": "Brand", name: "Ford" },
+          },
+        }
+      : {}),
     offers: {
       "@type": "Offer",
       url,
@@ -197,4 +206,22 @@ export function productList(path: string, products: Product[]): Node {
 
 export function jsonLd(nodes: Node[], options?: { withEmail?: boolean }) {
   return { "@context": "https://schema.org", "@graph": [...baseGraph(options), ...nodes] };
+}
+
+/** FAQPage built from the same data as the visible questions on /faq. */
+export function faqPage(
+  base: Node,
+  categories: { items: { q: string; a: string }[] }[],
+): Node {
+  return {
+    ...base,
+    "@type": "FAQPage",
+    mainEntity: categories.flatMap((c) =>
+      c.items.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: { "@type": "Answer", text: item.a },
+      })),
+    ),
+  };
 }

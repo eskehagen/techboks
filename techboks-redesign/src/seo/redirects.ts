@@ -28,8 +28,8 @@ const OLD_PRODUCT_PAGES: Record<string, string> = {
 
 const OLD_PAGES: Record<string, string> = {
   "/index.html": "/",
-  "/mustang-mach-e.html": "/produkter?kategori=mustang-mach-e",
-  "/hjemmet.html": "/produkter?kategori=hjemmet",
+  "/mustang-mach-e.html": "/mustang-mach-e",
+  "/hjemmet.html": "/hjemmet",
   "/kontakt.html": "/kontakt",
   "/handelsbetingelser.html": "/handelsbetingelser",
   "/cart.html": "/kurv",

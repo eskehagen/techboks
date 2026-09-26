@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { useMounted } from "@/hooks/use-mounted";
 import heroImage from "@/assets/hero-workshop.webp";
 import heroImage800 from "@/assets/hero-workshop-800.webp";
-import { categories, formatPrice, products } from "@/data/products";
+import { CATEGORY_PATHS, categories, formatPrice, products } from "@/data/products";
 import { Marquee } from "@/components/Marquee";
 import { Picture } from "@/components/Picture";
 import { Reveal } from "@/components/Reveal";
@@ -17,9 +17,10 @@ import { DEFAULT_OG_IMAGE } from "@/seo/site";
 export const Route = createFileRoute("/")({
   head: () => {
     const path = "/";
-    const title = "Tilbehør til Ford Mustang Mach-E, 3D-printet | TechBoks";
+    // Forsiden er brandets side; /mustang-mach-e er siden for "Mach-E tilbehør".
+    const title = "TechBoks – 3D-printet tilbehør til Mach-E";
     const cheapest = Math.min(...products.map((p) => p.price));
-    const description = `3D-printet tilbehør til Ford Mustang Mach-E, designet og printet i Danmark: center konsol boks, front boks, kroge og ladekabel-ophæng. Fra ${cheapest} kr.`;
+    const description = `TechBoks er en dansk webshop med 3D-printet tilbehør til Ford Mustang Mach-E og smarte løsninger til hjemmet, designet og printet i små serier. Fra ${cheapest} kr.`;
     return pageHead({
       path,
       title,
@@ -216,8 +217,7 @@ function StackedCategories() {
         {categories.map((c, i) => (
           <MergeCard key={c.id} index={i}>
             <Link
-              to="/produkter"
-              search={{ kategori: c.slug, q: "" }}
+              to={CATEGORY_PATHS[c.id]}
               className="rounded-blob-lg bg-surface group grid overflow-hidden lg:grid-cols-2"
             >
               <div className="bg-muted aspect-[16/11] overflow-hidden lg:aspect-auto lg:h-full">

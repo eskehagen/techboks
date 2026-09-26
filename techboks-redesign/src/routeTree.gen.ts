@@ -11,10 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BestilRouteImport } from './routes/bestil'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as HandelsbetingelserRouteImport } from './routes/handelsbetingelser'
+import { Route as HjemmetRouteImport } from './routes/hjemmet'
 import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as KurvRouteImport } from './routes/kurv'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
+import { Route as MustangMachERouteImport } from './routes/mustang-mach-e'
 import { Route as OmRouteImport } from './routes/om'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProdukterIndexRouteImport } from './routes/produkter.index'
@@ -30,9 +33,19 @@ const BestilRoute = BestilRouteImport.update({
   path: '/bestil',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HandelsbetingelserRoute = HandelsbetingelserRouteImport.update({
   id: '/handelsbetingelser',
   path: '/handelsbetingelser',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HjemmetRoute = HjemmetRouteImport.update({
+  id: '/hjemmet',
+  path: '/hjemmet',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontaktRoute = KontaktRouteImport.update({
@@ -48,6 +61,11 @@ const KurvRoute = KurvRouteImport.update({
 const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
   id: '/llms.txt',
   path: '/llms.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MustangMachERoute = MustangMachERouteImport.update({
+  id: '/mustang-mach-e',
+  path: '/mustang-mach-e',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OmRoute = OmRouteImport.update({
@@ -74,10 +92,13 @@ const ProdukterSlugRoute = ProdukterSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
+  '/faq': typeof FaqRoute
   '/handelsbetingelser': typeof HandelsbetingelserRoute
+  '/hjemmet': typeof HjemmetRoute
   '/kontakt': typeof KontaktRoute
   '/kurv': typeof KurvRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/mustang-mach-e': typeof MustangMachERoute
   '/om': typeof OmRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/produkter/$slug': typeof ProdukterSlugRoute
@@ -86,10 +107,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
+  '/faq': typeof FaqRoute
   '/handelsbetingelser': typeof HandelsbetingelserRoute
+  '/hjemmet': typeof HjemmetRoute
   '/kontakt': typeof KontaktRoute
   '/kurv': typeof KurvRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/mustang-mach-e': typeof MustangMachERoute
   '/om': typeof OmRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/produkter/$slug': typeof ProdukterSlugRoute
@@ -99,10 +123,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
+  '/faq': typeof FaqRoute
   '/handelsbetingelser': typeof HandelsbetingelserRoute
+  '/hjemmet': typeof HjemmetRoute
   '/kontakt': typeof KontaktRoute
   '/kurv': typeof KurvRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/mustang-mach-e': typeof MustangMachERoute
   '/om': typeof OmRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/produkter/$slug': typeof ProdukterSlugRoute
@@ -113,10 +140,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/bestil'
+    | '/faq'
     | '/handelsbetingelser'
+    | '/hjemmet'
     | '/kontakt'
     | '/kurv'
     | '/llms.txt'
+    | '/mustang-mach-e'
     | '/om'
     | '/sitemap.xml'
     | '/produkter/$slug'
@@ -125,10 +155,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/bestil'
+    | '/faq'
     | '/handelsbetingelser'
+    | '/hjemmet'
     | '/kontakt'
     | '/kurv'
     | '/llms.txt'
+    | '/mustang-mach-e'
     | '/om'
     | '/sitemap.xml'
     | '/produkter/$slug'
@@ -137,10 +170,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/bestil'
+    | '/faq'
     | '/handelsbetingelser'
+    | '/hjemmet'
     | '/kontakt'
     | '/kurv'
     | '/llms.txt'
+    | '/mustang-mach-e'
     | '/om'
     | '/sitemap.xml'
     | '/produkter/$slug'
@@ -150,10 +186,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BestilRoute: typeof BestilRoute
+  FaqRoute: typeof FaqRoute
   HandelsbetingelserRoute: typeof HandelsbetingelserRoute
+  HjemmetRoute: typeof HjemmetRoute
   KontaktRoute: typeof KontaktRoute
   KurvRoute: typeof KurvRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
+  MustangMachERoute: typeof MustangMachERoute
   OmRoute: typeof OmRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ProdukterSlugRoute: typeof ProdukterSlugRoute
@@ -176,11 +215,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BestilRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/handelsbetingelser': {
       id: '/handelsbetingelser'
       path: '/handelsbetingelser'
       fullPath: '/handelsbetingelser'
       preLoaderRoute: typeof HandelsbetingelserRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hjemmet': {
+      id: '/hjemmet'
+      path: '/hjemmet'
+      fullPath: '/hjemmet'
+      preLoaderRoute: typeof HjemmetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kontakt': {
@@ -202,6 +255,13 @@ declare module '@tanstack/react-router' {
       path: '/llms.txt'
       fullPath: '/llms.txt'
       preLoaderRoute: typeof LlmsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mustang-mach-e': {
+      id: '/mustang-mach-e'
+      path: '/mustang-mach-e'
+      fullPath: '/mustang-mach-e'
+      preLoaderRoute: typeof MustangMachERouteImport
       parentRoute: typeof rootRouteImport
     }
     '/om': {
@@ -238,10 +298,13 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BestilRoute: BestilRoute,
+  FaqRoute: FaqRoute,
   HandelsbetingelserRoute: HandelsbetingelserRoute,
+  HjemmetRoute: HjemmetRoute,
   KontaktRoute: KontaktRoute,
   KurvRoute: KurvRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
+  MustangMachERoute: MustangMachERoute,
   OmRoute: OmRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ProdukterSlugRoute: ProdukterSlugRoute,

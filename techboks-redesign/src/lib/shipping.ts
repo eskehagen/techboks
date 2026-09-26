@@ -7,7 +7,7 @@
 
 export type ShippingMethod = "pickup" | "delivery";
 
-const TIERS: { maxGrams: number; price: number }[] = [
+export const TIERS: { maxGrams: number; price: number }[] = [
   { maxGrams: 900, price: 45 },
   { maxGrams: 2850, price: 55 },
   { maxGrams: 4800, price: 65 },

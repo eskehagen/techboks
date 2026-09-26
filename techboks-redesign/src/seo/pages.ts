@@ -19,6 +19,9 @@ export interface SitePage {
 export const STATIC_PAGES: SitePage[] = [
   { path: "/", name: "Forside", lastmod: SITE.updated },
   { path: "/produkter", name: "Alle produkter", lastmod: SITE.updated },
+  { path: "/mustang-mach-e", name: "Tilbehør til Ford Mustang Mach-E", lastmod: SITE.updated },
+  { path: "/hjemmet", name: "Smarte løsninger til hjemmet", lastmod: SITE.updated },
+  { path: "/faq", name: "Spørgsmål og svar", lastmod: SITE.updated },
   { path: "/om", name: "Om TechBoks", lastmod: SITE.updated },
   { path: "/kontakt", name: "Kontakt", lastmod: SITE.updated },
   { path: "/handelsbetingelser", name: "Handelsbetingelser", lastmod: SITE.updated },
