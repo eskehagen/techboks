@@ -54,14 +54,14 @@
 - **Vinkel:** lydproblem = det mest irriterende problem i en ellers lydløs elbil. Stærk vinkel: "Elbilen er stille — indtil hattehylden rasler."
 - **Sæson:** hele året.
 
-### Hattehylde Ophængskrog · 80 kr · `hattehylde-ophaengskrog-venstre` / `hattehylde-ophaengskrog-hojre`
+### Hattehylde Ophængskrog · 80 kr · `hattehylde-ophaengskrog`
 - **Problem:** den originale krog er knækket.
 - **Vinkel:** **reservedel** — ikke gadget. Rent søgedrevet salg: folk googler efter det, når det er gået i stykker. Prioritér SEO og gruppeopslag ("min krog knækkede — her er en forstærket").
-- Sælges som to separate produkter — venstre og højre side — så det bestilte produkt altid registreres korrekt i Airtable. Forstærket i forhold til originalen.
+- Ét produkt, hvor kunden skal vælge venstre eller højre side på produktsiden, før det kan lægges i kurven. Forstærket i forhold til originalen.
 
-### Skraldespand til Sidedør · 70 kr · `skraldespand-sidedoer-venstre` (fører) / `skraldespand-sidedoer-hojre` (passager)
+### Skraldespand til Sidedør · 70 kr · `skraldespand-sidedoer`
 - **Problem:** ingen skraldespand i bilen; løse poser der vælter.
-- **Vinkel:** familiebilen. Sælges som to separate produkter — venstre (førersiden) og højre (passagersiden) — så det bestilte produkt altid registreres korrekt i Airtable.
+- **Vinkel:** familiebilen. Ét produkt, hvor kunden skal vælge venstre (førersiden) eller højre (passagersiden) på produktsiden, før det kan lægges i kurven.
 - **Målgruppe:** børnefamilier, pendlere, dem der spiser i bilen.
 - **Sæson:** hele året, spids ved sommerferie-road trips.
 

@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { ArrowLeft, Check, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { Model3DViewer } from "@/components/Model3DViewer";
@@ -7,6 +7,7 @@ import { ProductGallery } from "@/components/ProductGallery";
 import {
   formatPrice,
   getCategory,
+  getProductByVariantSlug,
   getRelatedProducts,
   products,
   type Product,
@@ -16,8 +17,14 @@ import { useCart } from "@/lib/cart";
 export const Route = createFileRoute("/produkter/$slug")({
   loader: ({ params }) => {
     const product = products.find((p) => p.slug === params.slug);
-    if (!product) throw notFound();
-    return { product };
+    if (product) return { product };
+    // Left/right versions had their own pages for a while (Sept 2026) — send
+    // those links to the combined product instead of a 404.
+    const combined = getProductByVariantSlug(params.slug);
+    if (combined) {
+      throw redirect({ to: "/produkter/$slug", params: { slug: combined.slug }, statusCode: 301 });
+    }
+    throw notFound();
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -56,7 +63,9 @@ export const Route = createFileRoute("/produkter/$slug")({
 
 function ProductDetailRoute() {
   const { product } = Route.useLoaderData();
-  return <ProductDetail product={product} />;
+  // Keyed so choices made on one product don't carry over when navigating to
+  // another (e.g. via "Relaterede produkter").
+  return <ProductDetail key={product.id} product={product} />;
 }
 
 function ProductDetail({ product }: { product: Product }) {
@@ -64,10 +73,16 @@ function ProductDetail({ product }: { product: Product }) {
   const related = getRelatedProducts(product);
   const { add } = useCart();
   const [selections, setSelections] = useState<Record<string, string>>(() =>
-    Object.fromEntries((product.options ?? []).map((o) => [o.label, o.values[0]!])),
+    Object.fromEntries(
+      (product.options ?? []).filter((o) => !o.required).map((o) => [o.label, o.values[0]!]),
+    ),
   );
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+
+  // A required option (left/right) has no default, so nothing goes in the cart
+  // until the customer has actively picked one.
+  const missingOption = product.options?.find((o) => !selections[o.label]);
 
   const variant = product.options?.length
     ? product.options.map((o) => selections[o.label]).join(" · ")
@@ -86,6 +101,7 @@ function ProductDetail({ product }: { product: Product }) {
   const modelPath = selectedAsset("modelByValue") ?? product.modelPath;
 
   const handleAdd = () => {
+    if (missingOption) return;
     add(product.id, quantity, variant, selections);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 2000);
@@ -184,12 +200,15 @@ function ProductDetail({ product }: { product: Product }) {
             <button
               type="button"
               onClick={handleAdd}
-              className="inline-flex h-12 flex-1 min-w-48 items-center justify-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              disabled={!!missingOption}
+              className="inline-flex h-12 flex-1 min-w-48 items-center justify-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-primary-foreground transition-opacity enabled:hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {added ? (
                 <>
                   <Check className="h-4 w-4" /> Lagt i kurven
                 </>
+              ) : missingOption ? (
+                `Vælg ${missingOption.label.toLowerCase()} først`
               ) : (
                 "Læg i kurv"
               )}

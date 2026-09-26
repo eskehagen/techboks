@@ -38,6 +38,19 @@ export interface ProductOption {
    * Falls back to the product's own `modelPath` when a value isn't listed.
    */
   modelByValue?: Record<string, string>;
+  /**
+   * No value is preselected — the customer has to pick one before the product
+   * can go in the cart. For choices where a silent default would ship the wrong
+   * part (left vs right).
+   */
+  required?: boolean;
+  /**
+   * Optional value → order slug. The order line's slug is what Airtable's
+   * Produkter lookup ("Website ID") matches on, so when the choice is a
+   * physically different part it gets its own row there, not just a note in
+   * Ordrelinjer. See `getOrderSlug`.
+   */
+  slugByValue?: Record<string, string>;
 }
 
 export interface Product {
@@ -132,6 +145,30 @@ const centerConsoleYearOption: ProductOption = {
 const patternOption: ProductOption = {
   label: "Mønster",
   values: ["Honeycomb", "Triangles", "Rectangles", "Cross Zag (45 grader)"],
+};
+
+/**
+ * Left and right are mirror-image parts, so they're one product on the site but
+ * separate rows in Airtable — the slug map keeps orders pointing at the right one.
+ */
+const trashBinSideOption: ProductOption = {
+  label: "Version",
+  values: ["Venstre (førersiden)", "Højre (passagersiden)"],
+  required: true,
+  slugByValue: {
+    "Venstre (førersiden)": "skraldespand-sidedoer-venstre",
+    "Højre (passagersiden)": "skraldespand-sidedoer-hojre",
+  },
+};
+
+const hatShelfHookSideOption: ProductOption = {
+  label: "Version",
+  values: ["Venstre", "Højre"],
+  required: true,
+  slugByValue: {
+    Venstre: "hattehylde-ophaengskrog-venstre",
+    Højre: "hattehylde-ophaengskrog-hojre",
+  },
 };
 
 export const products: Product[] = [
@@ -379,11 +416,11 @@ export const products: Product[] = [
   },
   {
     id: "tb-009",
-    slug: "skraldespand-sidedoer-venstre",
-    name: "Skraldespand til Sidedør (Venstre)",
-    shortDescription: "Smart skraldespand til venstre sidedør (førersiden)",
+    slug: "skraldespand-sidedoer",
+    name: "Skraldespand til Sidedør",
+    shortDescription: "Smart skraldespand til sidedøren",
     description:
-      "En kompakt skraldespand der monteres i venstre sidedørs lomme (førersiden). Hold bilen ren og ryddelig uden løse poser.",
+      "En kompakt skraldespand der monteres i sidedørens lomme. Hold bilen ren og ryddelig uden løse poser. Fås til både venstre og højre sidedør — husk at vælge version, så den passer til den rigtige dør.",
     category: "mustang-mach-e",
     price: 70,
     currency: "DKK",
@@ -397,44 +434,11 @@ export const products: Product[] = [
     modelPath: "/models/skraldespand.stl",
     specifications: [
       { label: "Materiale", value: "PETG (varmebestandig og holdbar)" },
-      { label: "Montering", value: "Monteres nemt direkte i venstre sidedørs udformning (førersiden)" },
+      { label: "Montering", value: "Monteres nemt direkte i sidedørens udformning" },
       { label: "Kapacitet", value: "Optimal størrelse til hverdagsaffald" },
+      { label: "Version", value: "Venstre (førersiden) eller højre (passagersiden) — vælg ovenfor" },
     ],
-    relatedLink: {
-      slug: "skraldespand-sidedoer-hojre",
-      text: "Skraldespanden findes også i en højrevendt version til passagersidens dør:",
-      linkLabel: "Skraldespand til Sidedør (Højre)",
-    },
-    featured: false,
-  },
-  {
-    id: "tb-018",
-    slug: "skraldespand-sidedoer-hojre",
-    name: "Skraldespand til Sidedør (Højre)",
-    shortDescription: "Smart skraldespand til højre sidedør (passagersiden)",
-    description:
-      "En kompakt skraldespand der monteres i højre sidedørs lomme (passagersiden). Hold bilen ren og ryddelig uden løse poser.",
-    category: "mustang-mach-e",
-    price: 70,
-    currency: "DKK",
-    images: [
-      img("trashBin1.jpg"),
-      img("trashBin2.jpg"),
-      img("trashBin3.jpg"),
-      img("trashBin4.jpg"),
-    ],
-    weight: 135,
-    modelPath: "/models/skraldespand.stl",
-    specifications: [
-      { label: "Materiale", value: "PETG (varmebestandig og holdbar)" },
-      { label: "Montering", value: "Monteres nemt direkte i højre sidedørs udformning (passagersiden)" },
-      { label: "Kapacitet", value: "Optimal størrelse til hverdagsaffald" },
-    ],
-    relatedLink: {
-      slug: "skraldespand-sidedoer-venstre",
-      text: "Skraldespanden findes også i en venstrevendt version til førersidens dør:",
-      linkLabel: "Skraldespand til Sidedør (Venstre)",
-    },
+    options: [trashBinSideOption],
     featured: false,
   },
   {
@@ -532,11 +536,11 @@ export const products: Product[] = [
   },
   {
     id: "tb-014",
-    slug: "hattehylde-ophaengskrog-venstre",
-    name: "Hattehylde Ophængskrog (Venstre)",
-    shortDescription: "Reservedel til venstre side — hvis din originale er knækket",
+    slug: "hattehylde-ophaengskrog",
+    name: "Hattehylde Ophængskrog",
+    shortDescription: "Reservedel — hvis din originale er knækket",
     description:
-      "Forstærket ophængskrog til hattehyldens venstre side. En direkte erstatning for den originale, hvis den er knækket.",
+      "Forstærket ophængskrog til hattehylden. En direkte erstatning for den originale, hvis den er knækket. Fås til både venstre og højre side — husk at vælge version.",
     category: "mustang-mach-e",
     price: 80,
     currency: "DKK",
@@ -546,40 +550,11 @@ export const products: Product[] = [
     specifications: [
       { label: "Materiale", value: "PETG (robust og holdbar)" },
       { label: "Funktion", value: "Ophæng hattehylden sikkert" },
-      { label: "Kompatibilitet", value: "Passer til Mustang Mach-E's hattehylde, venstre side" },
+      { label: "Kompatibilitet", value: "Passer til Mustang Mach-E's hattehylde" },
       { label: "Montering", value: "Nem montering via klik-system og skruer" },
+      { label: "Version", value: "Venstre eller højre side — vælg ovenfor" },
     ],
-    relatedLink: {
-      slug: "hattehylde-ophaengskrog-hojre",
-      text: "Kroget findes også til hattehyldens højre side:",
-      linkLabel: "Hattehylde Ophængskrog (Højre)",
-    },
-    featured: false,
-  },
-  {
-    id: "tb-019",
-    slug: "hattehylde-ophaengskrog-hojre",
-    name: "Hattehylde Ophængskrog (Højre)",
-    shortDescription: "Reservedel til højre side — hvis din originale er knækket",
-    description:
-      "Forstærket ophængskrog til hattehyldens højre side. En direkte erstatning for den originale, hvis den er knækket.",
-    category: "mustang-mach-e",
-    price: 80,
-    currency: "DKK",
-    images: [img("hattehyldeMount.jpg")],
-    weight: 30,
-    modelPath: "/models/hattehyldekrogmount.stl",
-    specifications: [
-      { label: "Materiale", value: "PETG (robust og holdbar)" },
-      { label: "Funktion", value: "Ophæng hattehylden sikkert" },
-      { label: "Kompatibilitet", value: "Passer til Mustang Mach-E's hattehylde, højre side" },
-      { label: "Montering", value: "Nem montering via klik-system og skruer" },
-    ],
-    relatedLink: {
-      slug: "hattehylde-ophaengskrog-venstre",
-      text: "Kroget findes også til hattehyldens venstre side:",
-      linkLabel: "Hattehylde Ophængskrog (Venstre)",
-    },
+    options: [hatShelfHookSideOption],
     featured: false,
   },
   {
@@ -637,6 +612,25 @@ export async function getProducts(): Promise<Product[]> {
 
 export async function getProduct(slug: string): Promise<Product | undefined> {
   return products.find((p) => p.slug === slug);
+}
+
+/**
+ * The slug an order line is registered under in Airtable — the chosen value's
+ * own slug when an option defines one (left/right parts), else the product's.
+ */
+export function getOrderSlug(product: Product, options?: Record<string, string>): string {
+  for (const option of product.options ?? []) {
+    const slug = option.slugByValue?.[options?.[option.label] ?? ""];
+    if (slug) return slug;
+  }
+  return product.slug;
+}
+
+/** The product that sells a variant slug as one of its option values, if any. */
+export function getProductByVariantSlug(slug: string): Product | undefined {
+  return products.find((p) =>
+    p.options?.some((o) => Object.values(o.slugByValue ?? {}).includes(slug)),
+  );
 }
 
 export function getCategory(id: CategoryId): Category | undefined {

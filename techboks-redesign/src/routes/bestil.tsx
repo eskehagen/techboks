@@ -4,7 +4,7 @@ import { ArrowRight, Check, Loader2, Package, Truck } from "lucide-react";
 import { useCallback, useState, type FormEvent } from "react";
 import { OrderProgressOverlay } from "@/components/OrderProgressOverlay";
 import type { SubmitOverlayPhase } from "@/components/SubmitProgressOverlay";
-import { formatPrice } from "@/data/products";
+import { formatPrice, getOrderSlug } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { submitOrder, type OrderCustomer } from "@/lib/orders";
 import { getDeliveryPrice, type ShippingMethod } from "@/lib/shipping";
@@ -83,7 +83,7 @@ function OrderPage() {
         customer,
         lines: lines.map((l) => ({
           productId: l.productId,
-          slug: l.product.slug,
+          slug: getOrderSlug(l.product, l.options),
           name: l.product.name,
           variant: l.variant,
           options: l.options,

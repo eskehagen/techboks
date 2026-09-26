@@ -41,13 +41,33 @@ const STORAGE_KEY = "techboks-cart-v1";
 const sameLine = (l: CartLine, productId: string, variant?: string) =>
   l.productId === productId && (l.variant ?? "") === (variant ?? "");
 
+/**
+ * For a few weeks in Sept 2026 the left/right parts were separate products
+ * (tb-009/tb-014 = venstre, tb-018/tb-019 = højre) before being merged back into
+ * one product with a required Version choice. Carts saved then are folded into
+ * the merged product so the side is neither lost nor silently dropped.
+ */
+const splitSideLines: Record<string, { productId: string; side: string }> = {
+  "tb-009": { productId: "tb-009", side: "Venstre (førersiden)" },
+  "tb-018": { productId: "tb-009", side: "Højre (passagersiden)" },
+  "tb-014": { productId: "tb-014", side: "Venstre" },
+  "tb-019": { productId: "tb-014", side: "Højre" },
+};
+
+function migrateSplitSideLine(line: CartLine): CartLine {
+  const split = splitSideLines[line.productId];
+  // A line that already carries a side came from the merged product.
+  if (!split || line.variant) return line;
+  return { ...line, productId: split.productId, variant: split.side, options: { Version: split.side } };
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
 
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) setLines(JSON.parse(raw) as CartLine[]);
+      if (raw) setLines((JSON.parse(raw) as CartLine[]).map(migrateSplitSideLine));
     } catch {
       /* ignore */
     }
