@@ -44,7 +44,7 @@ export interface OrderResult {
 }
 
 const orderEndpoint =
-  import.meta.env.VITE_ORDER_ENDPOINT ??
+  import.meta.env["VITE_ORDER_ENDPOINT"] ??
   "https://script.google.com/macros/s/AKfycbxqL2a7yE_ahmjKlFURzXJC0qzPumTYhj4r9-mWinLJRO5SQLEJ0gC5alCnM2CR3UEk/exec";
 
 function buildLegacyPayload(payload: OrderPayload) {

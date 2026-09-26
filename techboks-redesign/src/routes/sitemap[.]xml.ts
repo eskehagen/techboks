@@ -1,56 +1,43 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { products } from "@/data/products";
+import { indexablePages } from "@/seo/pages";
+import { productPath } from "@/seo/schema";
+import { absoluteUrl } from "@/seo/site";
 
-const BASE_URL = "https://www.techboks.dk";
+const escapeXml = (value: string) =>
+  value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-interface SitemapEntry {
-  path: string;
-  lastmod?: string;
-  changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
-  priority?: string;
-}
+/** Produktbilleder med i sitemappet, så de kan findes i Google Billeder. */
+const imagesByPath = new Map(
+  products.map((p) => [productPath(p), p.images.map((src) => absoluteUrl(src))]),
+);
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const entries: SitemapEntry[] = [
-          { path: "/", changefreq: "weekly", priority: "1.0" },
-          { path: "/produkter", changefreq: "weekly", priority: "0.9" },
-          { path: "/om", changefreq: "monthly", priority: "0.7" },
-          { path: "/kontakt", changefreq: "monthly", priority: "0.7" },
-          { path: "/kurv", changefreq: "monthly", priority: "0.5" },
-          { path: "/bestil", changefreq: "monthly", priority: "0.5" },
-          ...products.map((p) => ({
-            path: `/produkter/${p.slug}`,
-            changefreq: "weekly" as const,
-            priority: "0.8",
-          })),
-        ];
-
-        const urls = entries.map((e) =>
+        const urls = indexablePages().map((page) =>
           [
             `  <url>`,
-            `    <loc>${BASE_URL}${e.path}</loc>`,
-            e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
-            e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
-            e.priority ? `    <priority>${e.priority}</priority>` : null,
+            `    <loc>${escapeXml(absoluteUrl(page.path))}</loc>`,
+            `    <lastmod>${page.lastmod}</lastmod>`,
+            ...(imagesByPath.get(page.path) ?? []).map(
+              (src) => `    <image:image><image:loc>${escapeXml(src)}</image:loc></image:image>`,
+            ),
             `  </url>`,
-          ]
-            .filter(Boolean)
-            .join("\n"),
+          ].join("\n"),
         );
 
         const xml = [
           `<?xml version="1.0" encoding="UTF-8"?>`,
-          `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+          `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">`,
           ...urls,
           `</urlset>`,
         ].join("\n");
 
         return new Response(xml, {
           headers: {
-            "Content-Type": "application/xml",
+            "Content-Type": "application/xml; charset=utf-8",
             "Cache-Control": "public, max-age=3600",
           },
         });

@@ -28,7 +28,7 @@ export function CategoryFilter({ active, onChange, counts, total }: Props) {
             }`}
           >
             {o.name}
-            <span className={isActive ? "text-primary-foreground/60" : "text-muted-foreground/70"}>
+            <span className={isActive ? "text-primary-foreground/60" : "text-muted-foreground"}>
               {o.count}
             </span>
           </button>

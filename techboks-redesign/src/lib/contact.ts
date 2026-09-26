@@ -5,6 +5,8 @@
  * from the order script in orders.ts) which emails the shop owner directly.
  */
 
+import { SITE } from "@/seo/site";
+
 export interface ContactPayload {
   name: string;
   email: string;
@@ -19,7 +21,7 @@ export interface ContactResult {
   ok: boolean;
 }
 
-const contactEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT ?? "";
+const contactEndpoint = import.meta.env["VITE_CONTACT_ENDPOINT"] ?? "";
 
 function buildPayload(payload: ContactPayload) {
   return {
@@ -36,7 +38,7 @@ function buildPayload(payload: ContactPayload) {
 
 export async function submitContactMessage(payload: ContactPayload): Promise<ContactResult> {
   if (!contactEndpoint) {
-    throw new Error("Kontaktformularen er ikke sat op endnu. Skriv til info@techboks.dk i stedet.");
+    throw new Error(`Kontaktformularen er ikke sat op endnu. Skriv til ${SITE.email} i stedet.`);
   }
 
   const response = await fetch(contactEndpoint, {

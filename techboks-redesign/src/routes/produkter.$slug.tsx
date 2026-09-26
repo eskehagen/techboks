@@ -13,6 +13,21 @@ import {
   type Product,
 } from "@/data/products";
 import { useCart } from "@/lib/cart";
+import { OG_IMAGES, IMAGE_SIZES } from "@/data/imageSizes";
+import { pageHead } from "@/seo/head";
+import { breadcrumbList, productNode, productPath, webPage } from "@/seo/schema";
+import { absoluteUrl } from "@/seo/site";
+
+/** Produktets eget 1200×630-billede, ellers dets første foto. */
+function productOgImage(product: Product) {
+  const alt = `${product.name} fra TechBoks`;
+  if (OG_IMAGES.has(product.slug)) {
+    return { src: `/images/og/${product.slug}.jpg`, alt, width: 1200, height: 630 };
+  }
+  const src = product.images[0]!;
+  const size = IMAGE_SIZES[src] ?? { w: 1200, h: 900 };
+  return { src, alt, width: size.w, height: size.h };
+}
 
 export const Route = createFileRoute("/produkter/$slug")({
   loader: ({ params }) => {
@@ -29,21 +44,38 @@ export const Route = createFileRoute("/produkter/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Produkt ikke fundet — TechBoks" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Produktet findes ikke | TechBoks" },
+          { name: "robots", content: "noindex, follow" },
+        ],
       };
     }
     const { product } = loaderData;
-    const title = `${product.name} — TechBoks`;
-    return {
-      meta: [
-        { title },
-        { name: "description", content: product.shortDescription },
-        { property: "og:title", content: title },
-        { property: "og:description", content: product.shortDescription },
-        { property: "og:image", content: product.images[0]! },
-        { name: "twitter:image", content: product.images[0]! },
+    const path = productPath(product);
+    return pageHead({
+      path,
+      title: product.seoTitle,
+      description: product.seoDescription,
+      ogType: "product",
+      image: productOgImage(product),
+      graph: [
+        webPage({
+          path,
+          title: product.seoTitle,
+          description: product.seoDescription,
+          type: "ItemPage",
+          image: product.images[0],
+          breadcrumb: true,
+          mainEntity: `${absoluteUrl(path)}#product`,
+        }),
+        breadcrumbList(path, [
+          { name: "Forside", path: "/" },
+          { name: "Produkter", path: "/produkter" },
+          { name: product.name, path },
+        ]),
+        productNode(product),
       ],
-    };
+    });
   },
   component: ProductDetailRoute,
   errorComponent: ({ error }) => (
@@ -163,6 +195,7 @@ function ProductDetail({ product }: { product: Product }) {
                   <button
                     key={value}
                     type="button"
+                    aria-pressed={selections[option.label] === value}
                     onClick={() => setSelections((s) => ({ ...s, [option.label]: value }))}
                     className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                       selections[option.label] === value

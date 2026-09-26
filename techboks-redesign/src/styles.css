@@ -2,6 +2,44 @@
 @source "../src";
 @import "tw-animate-css";
 
+/*
+ * Selvhostede fonte (tidligere Google Fonts): kun latin og latin-ext, som dækker
+ * æ, ø og å. Variable fonte — én fil pr. subset dækker alle vægte.
+ * De to latin-filer preloades i src/routes/__root.tsx.
+ */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("@fontsource-variable/inter/files/inter-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Space Grotesk Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 700;
+  src: url("@fontsource-variable/space-grotesk/files/space-grotesk-latin-ext-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Space Grotesk Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 700;
+  src: url("@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /*
@@ -64,8 +102,8 @@
   --color-surface: var(--surface);
   --color-accent-mint: var(--accent-mint);
   --color-accent-mint-foreground: var(--accent-mint-foreground);
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --shadow-card: 0 1px 2px oklch(0.2 0.02 250 / 0.04), 0 12px 32px -18px oklch(0.2 0.02 250 / 0.28);
   --shadow-lift: 0 2px 4px oklch(0.2 0.02 250 / 0.05), 0 28px 56px -28px oklch(0.2 0.02 250 / 0.4);
 }
@@ -281,5 +319,51 @@
   }
   body {
     background-color: var(--color-canvas);
+  }
+}
+
+/*
+ * Indgangsanimationer over folden. Ren CSS i stedet for motion's `initial`,
+ * så server-HTML'en ikke får style="opacity:0" — teksten står synligt i
+ * kilden for crawlere og for besøgende uden JavaScript (se Reveal.tsx).
+ * Forsinkelse sættes med fx [animation-delay:400ms].
+ */
+@keyframes tb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@keyframes tb-line {
+  from {
+    transform: translateY(110%);
+  }
+}
+
+@keyframes tb-bloom {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@utility anim-rise {
+  animation: tb-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility anim-line {
+  animation: tb-line 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility anim-bloom {
+  animation: tb-bloom 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-rise,
+  .anim-line,
+  .anim-bloom {
+    animation: none;
   }
 }

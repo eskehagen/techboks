@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import type { Product } from "@/data/products";
 import { ProductCard } from "./ProductCard";
 
@@ -28,17 +28,21 @@ export function ProductGrid({
           : "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
       }
     >
-      {products.map((product, i) => (
-        <motion.div
-          key={product.id}
-          layout
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: Math.min(i, 5) * 0.05, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <ProductCard product={product} index={i} compact={compact} />
-        </motion.div>
-      ))}
+      {/* initial={false}: the cards on the first render (and in the server
+          HTML) are simply there. Cards that appear when filtering still fade in. */}
+      <AnimatePresence initial={false}>
+        {products.map((product, i) => (
+          <motion.div
+            key={product.id}
+            layout
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: Math.min(i, 5) * 0.05, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <ProductCard product={product} index={i} compact={compact} headingLevel="h2" />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 }

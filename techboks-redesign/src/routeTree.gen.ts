@@ -14,6 +14,7 @@ import { Route as BestilRouteImport } from './routes/bestil'
 import { Route as HandelsbetingelserRouteImport } from './routes/handelsbetingelser'
 import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as KurvRouteImport } from './routes/kurv'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as OmRouteImport } from './routes/om'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProdukterIndexRouteImport } from './routes/produkter.index'
@@ -44,6 +45,11 @@ const KurvRoute = KurvRouteImport.update({
   path: '/kurv',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OmRoute = OmRouteImport.update({
   id: '/om',
   path: '/om',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/kontakt': typeof KontaktRoute
   '/kurv': typeof KurvRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/om': typeof OmRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/produkter/$slug': typeof ProdukterSlugRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/kontakt': typeof KontaktRoute
   '/kurv': typeof KurvRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/om': typeof OmRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/produkter/$slug': typeof ProdukterSlugRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/kontakt': typeof KontaktRoute
   '/kurv': typeof KurvRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/om': typeof OmRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/produkter/$slug': typeof ProdukterSlugRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/handelsbetingelser'
     | '/kontakt'
     | '/kurv'
+    | '/llms.txt'
     | '/om'
     | '/sitemap.xml'
     | '/produkter/$slug'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/handelsbetingelser'
     | '/kontakt'
     | '/kurv'
+    | '/llms.txt'
     | '/om'
     | '/sitemap.xml'
     | '/produkter/$slug'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/handelsbetingelser'
     | '/kontakt'
     | '/kurv'
+    | '/llms.txt'
     | '/om'
     | '/sitemap.xml'
     | '/produkter/$slug'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   HandelsbetingelserRoute: typeof HandelsbetingelserRoute
   KontaktRoute: typeof KontaktRoute
   KurvRoute: typeof KurvRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   OmRoute: typeof OmRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ProdukterSlugRoute: typeof ProdukterSlugRoute
@@ -184,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KurvRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/om': {
       id: '/om'
       path: '/om'
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   HandelsbetingelserRoute: HandelsbetingelserRoute,
   KontaktRoute: KontaktRoute,
   KurvRoute: KurvRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   OmRoute: OmRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ProdukterSlugRoute: ProdukterSlugRoute,

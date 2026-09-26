@@ -1,31 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowUpRight, Check, Instagram, Loader2, MapPin } from "lucide-react";
+import { ArrowUpRight, Check, Instagram, Loader2, Mail, MapPin } from "lucide-react";
 import { useCallback, useState } from "react";
 import { z } from "zod";
 import { ContactProgressOverlay } from "@/components/ContactProgressOverlay";
 import { Reveal } from "@/components/Reveal";
 import type { SubmitOverlayPhase } from "@/components/SubmitProgressOverlay";
 import { submitContactMessage } from "@/lib/contact";
+import { pageHead } from "@/seo/head";
+import { SITE } from "@/seo/site";
+import { IDS, webPage } from "@/seo/schema";
 
 export const Route = createFileRoute("/kontakt")({
-  head: () => ({
-    meta: [
-      { title: "Kontakt TechBoks — skriv, bestil eller hent i Aarhus N" },
-      {
-        name: "description",
-        content:
-          "Kontakt TechBoks om bestilling, specialønsker eller levering. Skriv via formularen eller Instagram — svar inden for 24 timer.",
-      },
-      { property: "og:title", content: "Kontakt TechBoks" },
-      {
-        property: "og:description",
-        content: "Skriv til TechBoks om bestilling og specialønsker. Svar inden for 24 timer.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => {
+    const path = "/kontakt";
+    const title = "Kontakt TechBoks – skriv, bestil eller hent i Aarhus N";
+    const description =
+      "Kontakt Eske Hagen Sinding fra TechBoks om bestilling, specialønsker eller levering. Skriv via formularen, på mail eller Instagram. Svar inden 24 timer.";
+    return pageHead({
+      path,
+      title,
+      description,
+      withEmail: true,
+      graph: [webPage({ path, title, description, type: "ContactPage", mainEntity: IDS.business })],
+    });
+  },
   component: ContactPage,
 });
 
@@ -41,10 +40,17 @@ type Field = keyof z.infer<typeof contactSchema>;
 
 const channels = [
   {
+    icon: Mail,
+    label: "E-mail",
+    text: SITE.email,
+    href: `mailto:${SITE.email}`,
+    cta: "Skriv en mail",
+  },
+  {
     icon: Instagram,
     label: "Instagram",
     text: "Send en Instagram besked",
-    href: "https://www.instagram.com/3design_by_eske",
+    href: SITE.instagram,
     cta: "Åbn Instagram",
   },
 ];
@@ -121,49 +127,40 @@ function ContactPage() {
       <ContactProgressOverlay phase={overlayPhase} onFinished={showConfirmation} />
       {/* Hero */}
       <section className="rounded-blob-lg bg-ink text-canvas relative mt-3 overflow-hidden px-6 py-16 sm:px-12 sm:py-24">
-        <motion.div
+        <div
           aria-hidden
-          initial={{ scale: 0.6, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="bg-accent-mint/25 pointer-events-none absolute -top-40 -right-24 h-[26rem] w-[26rem] rounded-full blur-3xl"
+          className="anim-bloom bg-accent-mint/25 pointer-events-none absolute -top-40 -right-24 h-[26rem] w-[26rem] rounded-full blur-3xl"
         />
         <div className="relative max-w-3xl">
           <span className="text-canvas/50 text-[11px] tracking-[0.25em] uppercase">Kontakt</span>
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display mt-5 text-5xl leading-[0.95] font-semibold tracking-tight sm:text-7xl"
+          <h1
+            className="anim-rise font-display mt-5 text-5xl leading-[0.95] font-semibold tracking-tight sm:text-7xl"
           >
             Er du i tvivl om noget
             <br />
             kontakt mig endelig
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="text-canvas/60 mt-6 max-w-xl text-base leading-relaxed"
+          </h1>
+          <p
+            className="anim-rise [animation-delay:150ms] text-canvas/60 mt-6 max-w-xl text-base leading-relaxed"
           >
-            Har du spørgsmål til mine produkter — eller har du et specialønske? Skriv en besked, så
-            vender jeg tilbage inden for 24 timer.
-          </motion.p>
+            Jeg hedder {SITE.owner.name} og står bag TechBoks. Har du spørgsmål til mine produkter
+            — eller har du et specialønske? Skriv en besked, så vender jeg tilbage inden for 24
+            timer.
+          </p>
         </div>
       </section>
 
       {/* Channels */}
-      <section className="mx-auto mt-3 grid max-w-[92rem] gap-3 md:grid-cols-2">
+      <section className="mx-auto mt-3 grid max-w-[92rem] gap-3 md:grid-cols-3">
         {channels.map((c, i) => (
           <Reveal key={c.label} delay={i * 0.08}>
             <a
               href={c.href}
-              target="_blank"
-              rel="noreferrer noopener"
+              {...(c.href.startsWith("http") ? { target: "_blank", rel: "noreferrer noopener" } : {})}
               className="rounded-blob bg-surface group flex h-full flex-col p-7 transition-transform hover:-translate-y-1"
             >
               <span className="bg-canvas text-ink grid h-12 w-12 place-items-center rounded-full">
-                <c.icon className="h-5 w-5" />
+                <c.icon className="h-5 w-5" aria-hidden="true" />
               </span>
               <h2 className="font-display text-ink mt-6 text-2xl font-semibold tracking-tight">
                 {c.label}
@@ -179,7 +176,7 @@ function ContactPage() {
         <Reveal delay={0.16}>
           <div className="rounded-blob bg-accent-mint text-accent-mint-foreground flex h-full flex-col p-7">
             <span className="bg-ink text-canvas grid h-12 w-12 place-items-center rounded-full">
-              <MapPin className="h-5 w-5" />
+              <MapPin className="h-5 w-5" aria-hidden="true" />
             </span>
             <h2 className="font-display mt-6 text-2xl font-semibold tracking-tight">Levering</h2>
             <p className="mt-2 text-sm opacity-80">

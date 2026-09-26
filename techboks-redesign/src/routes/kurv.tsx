@@ -3,22 +3,19 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/lib/cart";
+import { imageSources } from "@/lib/images";
+import { pageHead } from "@/seo/head";
 
 export const Route = createFileRoute("/kurv")({
-  head: () => ({
-    meta: [
-      { title: "Din kurv — TechBoks" },
-      {
-        name: "description",
-        content:
-          "Se din kurv hos TechBoks, justér antal og gå videre til ordreforespørgsel. Betaling foregår nemt via MobilePay bagefter.",
-      },
-      { property: "og:title", content: "Din kurv — TechBoks" },
-      { property: "og:description", content: "Gennemgå din kurv og send din ordreforespørgsel." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  // Kurven er personlig og tom for en crawler — den skal ikke i Google.
+  head: () =>
+    pageHead({
+      path: "/kurv",
+      title: "Din kurv | TechBoks",
+      description:
+        "Se din kurv hos TechBoks, justér antal og gå videre til ordreforespørgsel.",
+      noindex: true,
+    }),
   component: CartPage,
 });
 
@@ -27,11 +24,8 @@ function CartPage() {
 
   return (
     <div className="container-tb pt-10 pb-24">
-      <motion.header
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="rounded-blob-lg bg-ink text-canvas relative overflow-hidden p-8 sm:p-12"
+      <header
+        className="anim-rise rounded-blob-lg bg-ink text-canvas relative overflow-hidden p-8 sm:p-12"
       >
         <div className="bg-accent-mint/20 pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full blur-3xl" />
         <span className="text-canvas/50 text-xs tracking-[0.24em] uppercase">Trin 1 af 2</span>
@@ -43,15 +37,10 @@ function CartPage() {
             ? "Ingen varer endnu — find noget der løser et problem i hverdagen."
             : `${count} ${count === 1 ? "vare" : "varer"} klar til bestilling.`}
         </p>
-      </motion.header>
+      </header>
 
       {lines.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-          className="rounded-blob-lg border-ink/15 bg-surface mt-6 border border-dashed p-16 text-center"
-        >
+        <div className="anim-rise rounded-blob-lg border-ink/15 bg-surface mt-6 border border-dashed p-16 text-center [animation-delay:100ms]">
           <div className="bg-accent-mint text-accent-mint-foreground mx-auto grid h-14 w-14 place-items-center rounded-full">
             <ShoppingBag className="h-6 w-6" />
           </div>
@@ -66,7 +55,7 @@ function CartPage() {
           >
             Se produkter
           </Link>
-        </motion.div>
+        </div>
       ) : (
         <div className="mt-6 grid gap-5 lg:grid-cols-[1.6fr_1fr] lg:items-start">
           <ul className="space-y-3">
@@ -86,7 +75,8 @@ function CartPage() {
                   className="rounded-blob bg-surface group grid grid-cols-[5rem_minmax(0,1fr)] gap-4 p-4 transition-shadow hover:shadow-xl sm:grid-cols-[7rem_minmax(0,1fr)_auto] sm:items-center sm:p-5"
                 >
                   <img
-                    src={line.product.images[0]}
+                    {...imageSources(line.product.images[0]!)}
+                    sizes="(min-width: 640px) 112px, 80px"
                     alt={line.product.name}
                     loading="lazy"
                     className="h-20 w-20 shrink-0 rounded-2xl object-cover transition-transform duration-500 group-hover:scale-[1.04] sm:h-28 sm:w-28"

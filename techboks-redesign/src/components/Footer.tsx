@@ -38,9 +38,12 @@ export function Footer() {
           <Link to="/om" className="link-underline">
             Om TechBoks
           </Link>
+          <Link to="/kontakt" className="link-underline">
+            Kontakt
+          </Link>
         </nav>
 
-        <div className="border-canvas/15 text-canvas/45 mt-8 border-t pt-6 text-center text-xs">
+        <div className="border-canvas/15 text-canvas/50 mt-8 border-t pt-6 text-center text-xs">
           © {new Date().getFullYear()} TechBoks - Alle rettigheder forbeholdt. ·{" "}
           <Link to="/handelsbetingelser" className="link-underline">
             Handelsbetingelser

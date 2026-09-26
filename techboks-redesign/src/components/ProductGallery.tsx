@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion, type PanInfo } from "motion/
 import { ChevronLeft, ChevronRight, Expand, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { imageSources } from "@/lib/images";
 
 /**
  * Product image gallery.
@@ -10,6 +11,9 @@ import { createPortal } from "react-dom";
  * the main image lifts the same set into a full-screen lightbox that shares
  * the index, so the customer never loses their place between the two.
  */
+
+/** How wide the main gallery image is shown — picks the srcset candidate. */
+const GALLERY_SIZES = "(min-width: 1024px) 55vw, 95vw";
 
 /** Past this drag distance (px) or flick speed (px/s) a swipe counts as a page turn. */
 const SWIPE_DISTANCE = 60;
@@ -99,13 +103,26 @@ export function ProductGallery({
     if (focusIndex >= 0) goTo(focusIndex);
   }, [focusIndex, goTo]);
 
-  // Keep the neighbours warm so an arrow press swaps instantly.
+  // Keep the neighbours warm so an arrow press swaps instantly — but only once
+  // the page has loaded, so they don't compete with the first image, and in
+  // the size the gallery will actually show.
   useEffect(() => {
     if (!many || typeof window === "undefined") return;
-    for (const step of [1, -1]) {
-      const preload = new window.Image();
-      preload.src = images[(index + step + count) % count]!;
+    const warm = () => {
+      for (const step of [1, -1]) {
+        const image = imageSources(images[(index + step + count) % count]!);
+        const preload = new window.Image();
+        preload.sizes = GALLERY_SIZES;
+        if (image.srcSet) preload.srcset = image.srcSet;
+        preload.src = image.src;
+      }
+    };
+    if (document.readyState === "complete") {
+      warm();
+      return;
     }
+    window.addEventListener("load", warm, { once: true });
+    return () => window.removeEventListener("load", warm);
   }, [images, index, count, many]);
 
   if (count === 0) return null;
@@ -121,7 +138,9 @@ export function ProductGallery({
           <AnimatePresence initial={false} custom={direction}>
             <motion.img
               key={index}
-              src={src}
+              {...imageSources(src)}
+              sizes={GALLERY_SIZES}
+              fetchPriority={index === 0 ? "high" : undefined}
               alt={label}
               custom={direction}
               variants={variants}
@@ -277,7 +296,13 @@ function Thumbnails({
               active ? "" : "opacity-60 hover:opacity-100"
             }`}
           >
-            <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
+            <img
+              {...imageSources(src)}
+              sizes="80px"
+              alt=""
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
             {active && (
               <motion.span
                 layoutId={layoutId}
@@ -397,7 +422,8 @@ function Lightbox({
         <AnimatePresence initial={false} custom={direction}>
           <motion.img
             key={index}
-            src={images[index]}
+            {...imageSources(images[index]!)}
+            sizes="92vw"
             alt={many ? `${alt} — billede ${index + 1} af ${count}` : alt}
             custom={direction}
             variants={variants}

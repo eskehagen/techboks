@@ -40,7 +40,10 @@ export function Header() {
       <div className="bg-surface pointer-events-auto relative mx-auto flex max-w-[92rem] items-center gap-4 rounded-full py-2.5 pr-2.5 pl-5 shadow-[0_16px_40px_-30px_oklch(0.2_0.02_250/0.9)]">
         <Logo />
 
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex">
+        <nav
+          aria-label="Hovedmenu"
+          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex"
+        >
           {nav.map((item) => (
             <Link
               key={item.to}
@@ -61,10 +64,9 @@ export function Header() {
             type="button"
             onClick={() => setCartOpen((v) => !v)}
             aria-expanded={cartOpen}
-            aria-label="Vis indkøbskurv"
             className="bg-ink text-canvas flex h-11 items-center gap-2 rounded-full px-5 text-sm font-semibold transition-transform hover:scale-[1.03]"
           >
-            <ShoppingBag className="h-4 w-4" />
+            <ShoppingBag className="h-4 w-4" aria-hidden="true" />
             Kurv
             {count > 0 && (
               <motion.span
@@ -96,6 +98,8 @@ export function Header() {
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Luk menu" : "Åbn menu"}
+            aria-expanded={open}
+            aria-controls="mobilmenu"
             className="bg-canvas text-ink grid h-11 w-11 shrink-0 place-items-center rounded-full md:hidden"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -112,6 +116,8 @@ export function Header() {
       <AnimatePresence>
         {open && (
           <motion.nav
+            id="mobilmenu"
+            aria-label="Hovedmenu"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
