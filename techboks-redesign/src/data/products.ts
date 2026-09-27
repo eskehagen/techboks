@@ -8,12 +8,6 @@
 
 export type CategoryId = "mustang-mach-e" | "hjemmet";
 
-/**
- * Hvor i bilen et Mach-E-produkt hører til — grupperer produkterne på
- * /mustang-mach-e. Et Mach-E-produkt uden placering vises under "Øvrigt".
- */
-export type Placement = "midterkonsol" | "kabine" | "bagagerum" | "udvendigt";
-
 export interface Category {
   id: CategoryId;
   name: string;
@@ -76,7 +70,6 @@ export interface Product {
    */
   seoDescription: string;
   category: CategoryId;
-  placement?: Placement;
   price: number;
   currency: "DKK";
   images: string[];
@@ -206,7 +199,6 @@ export const products: Product[] = [
     description:
       "Organiser dine ting i midterkonsollen med denne specialdesignede boks til Mustang Mach-E. Den passer præcist ned i rummet under armlænet, og der medfølger en kortholder til fx ladekort og ladebrikker. \n Husk at vælge årgang, så den passer til din bil.",
     category: "mustang-mach-e",
-    placement: "midterkonsol",
     price: 90,
     currency: "DKK",
     images: [
@@ -244,7 +236,6 @@ export const products: Product[] = [
     description:
       "Denne ekstra indsats sættes ned i det mellemste rum i din Center Konsol Boks og deler det op i flere mindre rum. Der medfølger tre vægge, som kan monteres efter ønske. Indsatsen kan printes i den farve, du ønsker — skriv farven i feltet Bemærkninger til ordren ved bestilling.",
     category: "mustang-mach-e",
-    placement: "midterkonsol",
     price: 40,
     currency: "DKK",
     images: [
@@ -278,7 +269,6 @@ export const products: Product[] = [
     description:
       "Udnyt det ubrugte rum foran frontskærmen. Front Boksen giver dig et diskret opbevaringsrum til småting, som ellers ville rulle rundt i kabinen.",
     category: "mustang-mach-e",
-    placement: "midterkonsol",
     price: 90,
     currency: "DKK",
     images: [
@@ -315,7 +305,6 @@ export const products: Product[] = [
     description:
       "En holder til seks dåser med Mustang-detalje. Holder drikkevarerne på plads under kørsel og fungerer lige så godt som bordholder til grillaftenen.",
     category: "mustang-mach-e",
-    placement: "kabine",
     price: 150,
     currency: "DKK",
     images: [
@@ -348,7 +337,6 @@ export const products: Product[] = [
     description:
       "Hold ladekablet oppe fra gulvet og undgå snavs og knæk. Passer til standard ladekabler.",
     category: "mustang-mach-e",
-    placement: "udvendigt",
     price: 90,
     currency: "DKK",
     images: [
@@ -378,7 +366,6 @@ export const products: Product[] = [
     description:
       "Den store udgave af vores kabelophæng, dimensioneret til lange og tykke ladekabler.",
     category: "mustang-mach-e",
-    placement: "udvendigt",
     price: 150,
     currency: "DKK",
     images: [
@@ -407,7 +394,6 @@ export const products: Product[] = [
     description:
       "En prop med Mustang-motiv der beskytter anhængertrækkets kugle mod snavs — og giver et pænere udtryk.",
     category: "mustang-mach-e",
-    placement: "udvendigt",
     price: 40,
     currency: "DKK",
     images: [img("anhangerProp.jpg"), img("anhangerProp2.png")],
@@ -432,7 +418,6 @@ export const products: Product[] = [
     description:
       "Mangler du dækslet til hullet ind til slæbekrogens gevind bag bagende-kofangeren på din Mustang Mach-E? Dette dæksel holdes på plads af små lille plastclips, ligesom det originale. Har du mistet dit originale eller er det knækket, så køb denne reservedel. På indersiden er der et integreret Mustang-logo.",
     category: "mustang-mach-e",
-    placement: "udvendigt",
     price: 40,
     currency: "DKK",
     images: [
@@ -461,7 +446,6 @@ export const products: Product[] = [
     description:
       "Praktiske clips der holder hattehylden sikkert på plads, så den ikke rasler under kørsel. Sælges i sæt af to.",
     category: "mustang-mach-e",
-    placement: "bagagerum",
     price: 40,
     currency: "DKK",
     images: [img("hattehyldeClips1.jpg"), img("hattehyldeClips2.jpg")],
@@ -484,7 +468,6 @@ export const products: Product[] = [
     description:
       "En kompakt skraldespand der monteres i sidedørens lomme. Hold bilen ren og ryddelig uden løse poser. Fås til både venstre og højre sidedør — husk at vælge version, så den passer til den rigtige dør.",
     category: "mustang-mach-e",
-    placement: "kabine",
     price: 70,
     currency: "DKK",
     images: [
@@ -515,7 +498,6 @@ export const products: Product[] = [
     description:
       "Monteres på nakkestøttens stænger og giver et solidt ophæng til indkøbsposer, tasker eller bøjler.",
     category: "mustang-mach-e",
-    placement: "kabine",
     price: 40,
     currency: "DKK",
     images: [
@@ -543,7 +525,6 @@ export const products: Product[] = [
     description:
       "Hæng paraplyen op eller fastgør ting i bagagerummet. Sælges i sæt af to og monteres uden værktøj.",
     category: "mustang-mach-e",
-    placement: "bagagerum",
     price: 60,
     currency: "DKK",
     images: [img("bagagerumkrog.jpg")],
@@ -566,7 +547,6 @@ export const products: Product[] = [
     description:
       "Tilbehør til Front Boksen: en mount der lader dig montere en almindelig mobilholder i synsfeltet. Mounten sidder på Front Boksen, så du slipper for at sætte holderen på ruden eller i ventilationsgitteret.",
     category: "mustang-mach-e",
-    placement: "midterkonsol",
     price: 40,
     currency: "DKK",
     images: [img("frontBoxPhone.jpg")],
@@ -595,7 +575,6 @@ export const products: Product[] = [
     description:
       "Skillerum der deler bagagerummet op i faste zoner, så indkøbene ikke vælter rundt på vej hjem.",
     category: "mustang-mach-e",
-    placement: "bagagerum",
     price: 80,
     currency: "DKK",
     images: [
@@ -624,7 +603,6 @@ export const products: Product[] = [
     description:
       "Forstærket ophængskrog til hattehylden. En direkte erstatning for den originale, hvis den er knækket. Fås til både venstre og højre side — husk at vælge version.",
     category: "mustang-mach-e",
-    placement: "bagagerum",
     price: 80,
     currency: "DKK",
     images: [img("hattehyldeMount.jpg")],
@@ -651,7 +629,6 @@ export const products: Product[] = [
     description:
       "Skabelon med Mustang Mach-E logo — perfekt til at markere gulvmåtter eller andre projekter præcist.",
     category: "mustang-mach-e",
-    placement: "kabine",
     price: 70,
     currency: "DKK",
     images: [

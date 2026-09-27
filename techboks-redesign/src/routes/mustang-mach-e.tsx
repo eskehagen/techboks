@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ContactCta, OrderSteps } from "@/components/OrderSteps";
-import { ProductCard } from "@/components/ProductCard";
+import { ProductGrid } from "@/components/ProductGrid";
 import { Reveal } from "@/components/Reveal";
-import { CATEGORY_PATHS, products, type Placement, type Product } from "@/data/products";
+import { CATEGORY_PATHS, products } from "@/data/products";
 import { pageHead } from "@/seo/head";
 import { breadcrumbList, productList, webPage } from "@/seo/schema";
 import { SITE, absoluteUrl } from "@/seo/site";
@@ -11,36 +11,6 @@ import { SITE, absoluteUrl } from "@/seo/site";
 const PATH = CATEGORY_PATHS["mustang-mach-e"];
 const machE = products.filter((p) => p.category === "mustang-mach-e");
 const cheapest = Math.min(...machE.map((p) => p.price));
-
-/** Rækkefølge og tekst for grupperne. Produkternes `placement` bestemmer, hvor de står. */
-const GROUPS: { id: Placement | "oevrigt"; title: string; text: string }[] = [
-  {
-    id: "midterkonsol",
-    title: "Midterkonsol og instrumentbræt",
-    text: "Opbevaring, der passer ned i midterkonsollen under armlænet og i rummet foran frontskærmen.",
-  },
-  {
-    id: "kabine",
-    title: "Kabine og døre",
-    text: "Ting, der holder kabinen ryddelig: skraldespand til sidedøren, krog til nakkestøtten og holder til dåser.",
-  },
-  {
-    id: "bagagerum",
-    title: "Bagagerum og hattehylde",
-    text: "Kroge og skillerum til bagagerummet samt clips og reservekrog til hattehylden.",
-  },
-  {
-    id: "udvendigt",
-    title: "Udvendigt og opladning",
-    text: "Prop til anhængertrækket, dæksel til slæbekrogens gevind og vægophæng til ladekablet.",
-  },
-  { id: "oevrigt", title: "Øvrigt", text: "Mere tilbehør til Mustang Mach-E." },
-];
-
-const groups = GROUPS.map((g) => ({
-  ...g,
-  items: machE.filter((p: Product) => (p.placement ?? "oevrigt") === g.id),
-})).filter((g) => g.items.length > 0);
 
 const centerConsoleBox = products.find((p) => p.slug === "center-konsol-boks");
 
@@ -82,14 +52,6 @@ function MachEPage() {
         <h1 className="font-display text-ink mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
           Tilbehør til Ford Mustang Mach-E
         </h1>
-        {/* Svar-først: det afsnit, søgemaskiner og AI-assistenter citerer. */}
-        <p className="text-muted-foreground mt-5 text-base leading-relaxed sm:text-lg">
-          TechBoks laver 3D-printet tilbehør til Ford Mustang Mach-E: opbevaring til
-          midterkonsollen og instrumentbrættet, kroge, skraldespand, skillerum og ophæng til
-          ladekablet. Alt er designet, målt op efter bilen og printet i små serier i Danmark af{" "}
-          {SITE.owner.name}. Priserne starter ved {cheapest} kr., og ordrer sendes med DAO eller GLS
-          på {SITE.deliveryTime} eller afhentes i {SITE.pickup}.
-        </p>
         <ul className="mt-6 flex flex-wrap gap-2" aria-label="Kort fortalt">
           {[
             `${machE.length} produkter`,
@@ -105,26 +67,10 @@ function MachEPage() {
         </ul>
       </header>
 
-      {groups.map((group) => (
-        <section key={group.id} className="mt-20" aria-labelledby={`gruppe-${group.id}`}>
-          <Reveal>
-            <h2
-              id={`gruppe-${group.id}`}
-              className="font-display text-ink text-3xl font-semibold tracking-tight sm:text-4xl"
-            >
-              {group.title}
-            </h2>
-            <p className="text-muted-foreground mt-3 max-w-2xl text-base leading-relaxed">
-              {group.text}
-            </p>
-          </Reveal>
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {group.items.map((product, i) => (
-              <ProductCard key={product.id} product={product} index={i} />
-            ))}
-          </div>
-        </section>
-      ))}
+      {/* Alle Mach-E-produkter i én liste, i samme rækkefølge som i produktdata. */}
+      <div className="mt-12">
+        <ProductGrid products={machE} />
+      </div>
 
       <section className="mt-24" aria-labelledby="aargange">
         <Reveal>
