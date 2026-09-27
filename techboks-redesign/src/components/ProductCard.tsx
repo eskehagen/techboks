@@ -2,17 +2,22 @@ import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { formatPrice, getCategory, type Product } from "@/data/products";
+import { Picture } from "./Picture";
 
 export function ProductCard({
   product,
   index = 0,
   compact = false,
+  headingLevel = "h3",
 }: {
   product: Product;
   index?: number;
   compact?: boolean;
+  /** h2 in the catalogue (directly under the page's h1), h3 under a section heading. */
+  headingLevel?: "h2" | "h3";
 }) {
   const category = getCategory(product.category);
+  const Heading = headingLevel;
 
   return (
     <motion.div className="group relative h-full" data-index={index}>
@@ -24,10 +29,14 @@ export function ProductCard({
         <div
           className={`bg-muted relative overflow-hidden ${compact ? "aspect-square sm:aspect-[4/5]" : "aspect-[4/5]"}`}
         >
-          <img
-            src={product.images[0]}
+          <Picture
+            src={product.images[0]!}
             alt={product.name}
-            loading="lazy"
+            sizes={
+              compact
+                ? "(min-width: 1024px) 30vw, 45vw"
+                : "(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+            }
             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
           />
           <span
@@ -51,11 +60,11 @@ export function ProductCard({
           }
         >
           <div className="min-w-0">
-            <h3
+            <Heading
               className={`text-ink font-display truncate font-semibold tracking-tight ${compact ? "text-sm sm:text-lg" : "text-lg"}`}
             >
               {product.name}
-            </h3>
+            </Heading>
             <p
               className={`text-muted-foreground mt-1 line-clamp-2 leading-relaxed ${compact ? "hidden text-sm sm:block" : "text-sm"}`}
             >

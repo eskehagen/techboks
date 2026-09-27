@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, Minus, Plus } from "lucide-react";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/lib/cart";
+import { imageSources } from "@/lib/images";
 
 /** Unified cart card — used by the sticky product-page rail and the header dropdown. */
 export function CartPanel({ onNavigate }: { onNavigate?: () => void }) {
@@ -52,7 +53,8 @@ export function CartPanel({ onNavigate }: { onNavigate?: () => void }) {
                   className="bg-canvas rounded-blob flex items-center gap-3 p-2.5"
                 >
                   <img
-                    src={line.product.images[0]}
+                    {...imageSources(line.product.images[0]!)}
+                    sizes="56px"
                     alt={line.product.name}
                     className="h-14 w-14 shrink-0 rounded-2xl object-cover"
                     loading="lazy"

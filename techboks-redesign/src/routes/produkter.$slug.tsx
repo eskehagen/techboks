@@ -1,10 +1,12 @@
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
-import { ArrowLeft, Check, Minus, Plus } from "lucide-react";
+import { Check, Minus, Plus } from "lucide-react";
 import { useState } from "react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Model3DViewer } from "@/components/Model3DViewer";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductGallery } from "@/components/ProductGallery";
 import {
+  CATEGORY_PATHS,
   formatPrice,
   getCategory,
   getProductByVariantSlug,
@@ -13,6 +15,31 @@ import {
   type Product,
 } from "@/data/products";
 import { useCart } from "@/lib/cart";
+import { OG_IMAGES, IMAGE_SIZES } from "@/data/imageSizes";
+import { pageHead } from "@/seo/head";
+import { breadcrumbList, productNode, productPath, webPage } from "@/seo/schema";
+import { absoluteUrl } from "@/seo/site";
+
+/** Produktets eget 1200×630-billede, ellers dets første foto. */
+function productOgImage(product: Product) {
+  const alt = `${product.name} fra TechBoks`;
+  if (OG_IMAGES.has(product.slug)) {
+    return { src: `/images/og/${product.slug}.jpg`, alt, width: 1200, height: 630 };
+  }
+  const src = product.images[0]!;
+  const size = IMAGE_SIZES[src] ?? { w: 1200, h: 900 };
+  return { src, alt, width: size.w, height: size.h };
+}
+
+/**
+ * Kun Center Konsol Boks afhænger af årgangen (den har et "Årgang"-valg). Alt
+ * andet Mach-E-tilbehør passer til alle årgange — bekræftet af ejeren.
+ */
+function specificationsWithFit(product: Product) {
+  const hasYearChoice = product.options?.some((o) => o.label === "Årgang");
+  if (product.category !== "mustang-mach-e" || hasYearChoice) return product.specifications;
+  return [...product.specifications, { label: "Årgange", value: "Alle årgange af Mustang Mach-E" }];
+}
 
 export const Route = createFileRoute("/produkter/$slug")({
   loader: ({ params }) => {
@@ -29,21 +56,39 @@ export const Route = createFileRoute("/produkter/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Produkt ikke fundet — TechBoks" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Produktet findes ikke | TechBoks" },
+          { name: "robots", content: "noindex, follow" },
+        ],
       };
     }
     const { product } = loaderData;
-    const title = `${product.name} — TechBoks`;
-    return {
-      meta: [
-        { title },
-        { name: "description", content: product.shortDescription },
-        { property: "og:title", content: title },
-        { property: "og:description", content: product.shortDescription },
-        { property: "og:image", content: product.images[0]! },
-        { name: "twitter:image", content: product.images[0]! },
+    const path = productPath(product);
+    const category = getCategory(product.category);
+    return pageHead({
+      path,
+      title: product.seoTitle,
+      description: product.seoDescription,
+      ogType: "product",
+      image: productOgImage(product),
+      graph: [
+        webPage({
+          path,
+          title: product.seoTitle,
+          description: product.seoDescription,
+          type: "ItemPage",
+          image: product.images[0],
+          breadcrumb: true,
+          mainEntity: `${absoluteUrl(path)}#product`,
+        }),
+        breadcrumbList(path, [
+          { name: "Forside", path: "/" },
+          { name: category?.name ?? "Produkter", path: CATEGORY_PATHS[product.category] },
+          { name: product.name, path },
+        ]),
+        productNode(product),
       ],
-    };
+    });
   },
   component: ProductDetailRoute,
   errorComponent: ({ error }) => (
@@ -109,13 +154,13 @@ function ProductDetail({ product }: { product: Product }) {
 
   return (
     <div className="container-tb py-10 lg:py-14">
-      <Link
-        to="/produkter"
-        search={{ kategori: "alle", q: "" }}
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-ink"
-      >
-        <ArrowLeft className="h-4 w-4" /> Alle produkter
-      </Link>
+      <Breadcrumbs
+        items={[
+          { name: "Forside", to: "/" },
+          { name: category?.name ?? "Produkter", to: CATEGORY_PATHS[product.category] },
+          { name: product.name },
+        ]}
+      />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
         {/* min-w-0: grid items default to min-width:auto, which lets the
@@ -163,6 +208,7 @@ function ProductDetail({ product }: { product: Product }) {
                   <button
                     key={value}
                     type="button"
+                    aria-pressed={selections[option.label] === value}
                     onClick={() => setSelections((s) => ({ ...s, [option.label]: value }))}
                     className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                       selections[option.label] === value
@@ -219,7 +265,7 @@ function ProductDetail({ product }: { product: Product }) {
           <div className="rounded-blob bg-canvas mt-10 overflow-hidden">
             <h2 className="eyebrow border-ink/10 border-b px-5 py-3.5">Specifikationer</h2>
             <dl className="divide-ink/10 divide-y">
-              {product.specifications.map((spec) => (
+              {specificationsWithFit(product).map((spec) => (
                 <div key={spec.label} className="grid grid-cols-[9rem_1fr] gap-4 px-5 py-3.5">
                   <dt className="text-muted-foreground text-sm">{spec.label}</dt>
                   <dd className="text-ink text-sm font-medium">{spec.value}</dd>

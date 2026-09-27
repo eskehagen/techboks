@@ -1,24 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Check } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
+import { pageHead } from "@/seo/head";
+import { webPage } from "@/seo/schema";
 
 export const Route = createFileRoute("/handelsbetingelser")({
-  head: () => ({
-    meta: [
-      { title: "Handelsbetingelser — TechBoks" },
-      {
-        name: "description",
-        content: "Vilkår for køb, betaling, levering, fortrydelsesret og reklamation hos TechBoks.",
-      },
-      { property: "og:title", content: "Handelsbetingelser — TechBoks" },
-      {
-        property: "og:description",
-        content: "Læs om vilkår for køb og levering hos TechBoks.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => {
+    const path = "/handelsbetingelser";
+    const title = "Handelsbetingelser – levering og reklamation | TechBoks";
+    const description =
+      "TechBoks' handelsbetingelser: betaling med MobilePay eller bankoverførsel, levering på 3–7 hverdage, afhentning efter aftale, reklamation og persondata.";
+    return pageHead({ path, title, description, graph: [webPage({ path, title, description })] });
+  },
   component: TermsPage,
 });
 
@@ -90,6 +83,8 @@ const sections: { title: string; items: string[] }[] = [
       "Dine personoplysninger behandles fortroligt og kun til brug for ordrens gennemførelse.",
       "Kun nødvendige oplysninger (navn, adresse, email, telefon) opbevares og deles dem ikke med tredjeparter.",
       "Køber har ret til indsigt, rettelse og sletning af dine personoplysninger. Kontakt TechBoks for udøvelse af disse rettigheder.",
+      "Besøgsstatistik: Hjemmesiden tæller sidevisninger med Vercel Web Analytics. Det sker uden cookies og kun som anonym statistik, der ikke kan bruges til at identificere dig.",
+      "Din kurv og dit valg af visning i produktkataloget gemmes kun lokalt i din browser (localStorage). Intet sendes til TechBoks, før du selv sender en ordreforespørgsel.",
     ],
   },
   {

@@ -1,10 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { LayoutGrid, Rows3, Search, X } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { ProductGrid } from "@/components/ProductGrid";
 import { categories, products } from "@/data/products";
+import { pageHead } from "@/seo/head";
+import { productList, webPage } from "@/seo/schema";
+import { absoluteUrl } from "@/seo/site";
 
 
 export const Route = createFileRoute("/produkter/")({
@@ -12,21 +15,30 @@ export const Route = createFileRoute("/produkter/")({
     kategori: typeof search["kategori"] === "string" ? (search["kategori"] as string) : "alle",
     q: typeof search["q"] === "string" ? (search["q"] as string) : "",
   }),
-  head: () => ({
-    meta: [
-      { title: "Alle produkter — TechBoks 3D print" },
-      {
-        name: "description",
-        content:
-          "Browse alle TechBoks produkter: 3D printet tilbehør til Mustang Mach-E og smarte løsninger til hjemmet. Filtrér efter kategori og søg.",
-      },
-      { property: "og:title", content: "Alle produkter — TechBoks 3D print" },
-      {
-        property: "og:description",
-        content: "3D printet tilbehør til bil og hjem. Filtrér, søg og find det du mangler.",
-      },
-    ],
-  }),
+  // Standardværdierne skrives ikke i adressen. Ellers svarede /produkter med en
+  // redirect til /produkter?kategori=alle&q=, og hvert link pegede derhen.
+  search: { middlewares: [stripSearchParams({ kategori: "alle", q: "" })] },
+  head: () => {
+    const path = "/produkter";
+    const title = "Alle produkter: Mach-E tilbehør og mere | TechBoks";
+    const description =
+      "Alle TechBoks-produkter: 3D-printet tilbehør til Ford Mustang Mach-E og et cover til Homey Pro. Printet i Danmark og leveret på 3–7 hverdage.";
+    return pageHead({
+      path,
+      title,
+      description,
+      graph: [
+        webPage({
+          path,
+          title,
+          description,
+          type: "CollectionPage",
+          mainEntity: `${absoluteUrl(path)}#produkter`,
+        }),
+        productList(path, products),
+      ],
+    });
+  },
   component: Catalogue,
 });
 
@@ -79,6 +91,17 @@ function Catalogue() {
           <h1 className="font-display text-ink mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
             Alle produkter
           </h1>
+          <p className="text-muted-foreground mt-3 max-w-xl text-sm leading-relaxed">
+            {counts["mustang-mach-e"]} produkter til{" "}
+            <Link to="/mustang-mach-e" className="text-ink link-underline">
+              Ford Mustang Mach-E
+            </Link>{" "}
+            og {counts["hjemmet"]} til{" "}
+            <Link to="/hjemmet" className="text-ink link-underline">
+              hjemmet
+            </Link>
+            , designet og 3D-printet i Danmark.
+          </p>
         </div>
         <div className="flex w-full items-center justify-between gap-4 sm:w-auto">
           <p className="text-muted-foreground text-sm">

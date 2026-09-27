@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import logoMark from "@/assets/logo-mark-c.png";
+// 108 px-udgave (3x af de 36 px, logoet vises i). Originalen på 816 px og
+// 460 KB blev hentet på hver side. Laves af `npm run images`.
+import logoMark from "@/assets/logo-mark-108.png";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (

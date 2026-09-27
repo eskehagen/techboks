@@ -59,6 +59,16 @@ export interface Product {
   name: string;
   shortDescription: string;
   description: string;
+  /**
+   * Titel i Google og ved deling, højst 60 tegn inkl. " | TechBoks". Nævn
+   * Mustang Mach-E, når produktet er til bilen — det er det, kunderne søger på.
+   */
+  seoTitle: string;
+  /**
+   * Beskrivelse i Google, 140–155 tegn. Kun fakta, der også står på siden.
+   * Begge tjekkes af `npm run validate`.
+   */
+  seoDescription: string;
   category: CategoryId;
   price: number;
   currency: "DKK";
@@ -106,6 +116,12 @@ export const categories: Category[] = [
     image: img("homey_cover_collage.png"),
   },
 ];
+
+/** Kategorisidernes adresser (samme som kategoriens slug). */
+export const CATEGORY_PATHS = {
+  "mustang-mach-e": "/mustang-mach-e",
+  hjemmet: "/hjemmet",
+} as const satisfies Record<CategoryId, string>;
 
 const petg: ProductSpec[] = [
   { label: "Materiale", value: "PETG — varmebestandig" },
@@ -177,6 +193,9 @@ export const products: Product[] = [
     slug: "center-konsol-boks",
     name: "Center Konsol Boks",
     shortDescription: "Organiser din midterkonsol under armlænet",
+    seoTitle: "Center Konsol Boks til Mustang Mach-E | TechBoks",
+    seoDescription:
+      "Center Konsol Boks til Ford Mustang Mach-E: organiser rummet under armlænet. Med kortholder til ladekort. Fås til 2021-2024 og 2025+. 3D-printet i PETG.",
     description:
       "Organiser dine ting i midterkonsollen med denne specialdesignede boks til Mustang Mach-E. Den passer præcist ned i rummet under armlænet, og der medfølger en kortholder til fx ladekort og ladebrikker. \n Husk at vælge årgang, så den passer til din bil.",
     category: "mustang-mach-e",
@@ -211,6 +230,9 @@ export const products: Product[] = [
     slug: "center-konsol-boks-ekstra-insats",
     name: "Center Konsol Boks - Ekstra Insats",
     shortDescription: "Skab flere mindre rum i din Center Konsol Boks",
+    seoTitle: "Ekstra indsats til Center Konsol Boks, Mach-E | TechBoks",
+    seoDescription:
+      "Ekstra indsats til Center Konsol Boks til Mustang Mach-E. Deler det mellemste rum op med tre vægge, der monteres efter ønske. 3D-printet i valgfri farve.",
     description:
       "Denne ekstra indsats sættes ned i det mellemste rum i din Center Konsol Boks og deler det op i flere mindre rum. Der medfølger tre vægge, som kan monteres efter ønske. Indsatsen kan printes i den farve, du ønsker — skriv farven i feltet Bemærkninger til ordren ved bestilling.",
     category: "mustang-mach-e",
@@ -241,6 +263,9 @@ export const products: Product[] = [
     slug: "front-boks",
     name: "Front Boks",
     shortDescription: "Udnyt pladsen oppe foran frontskærmen",
+    seoTitle: "Front Boks til Mustang Mach-E | TechBoks",
+    seoDescription:
+      "Front Boks til Ford Mustang Mach-E: et diskret opbevaringsrum foran frontskærmen til småting, der ellers ruller rundt. 3D-printet i varmebestandig PETG.",
     description:
       "Udnyt det ubrugte rum foran frontskærmen. Front Boksen giver dig et diskret opbevaringsrum til småting, som ellers ville rulle rundt i kabinen.",
     category: "mustang-mach-e",
@@ -293,6 +318,9 @@ export const products: Product[] = [
     slug: "mustang-6-pack-daaseholder",
     name: "Mustang 6-pack til Dåser",
     shortDescription: "Unik 6-pack holder — ta' drikkevarerne med på farten",
+    seoTitle: "Mustang 6-pack dåseholder | TechBoks",
+    seoDescription:
+      "Holder til seks dåser med Mustang-detalje. Holder drikkevarerne på plads under kørsel i bilen og kan også bruges som bordholder. 3D-printet i stærk PETG.",
     description:
       "En holder til seks dåser med Mustang-detalje. Holder drikkevarerne på plads under kørsel og fungerer lige så godt som bordholder til grillaftenen.",
     category: "mustang-mach-e",
@@ -322,6 +350,9 @@ export const products: Product[] = [
     slug: "ladekabel-ophaeng-std",
     name: "Ladekabel Ophæng (Std)",
     shortDescription: "Ophæng til almindeligt ladekabel",
+    seoTitle: "Ophæng til ladekabel, standard | TechBoks",
+    seoDescription:
+      "Vægophæng til standard ladekabel til elbilen: hold kablet oppe fra gulvet og undgå snavs og knæk. Logo i valgfri farve. 3D-printet i vejrbestandig PETG.",
     description:
       "Hold ladekablet oppe fra gulvet og undgå snavs og knæk. Passer til standard ladekabler.",
     category: "mustang-mach-e",
@@ -348,6 +379,9 @@ export const products: Product[] = [
     slug: "ladekabel-ophaeng-large",
     name: "Ladekabel Ophæng (Large)",
     shortDescription: "Ophæng til langt ladekabel",
+    seoTitle: "Ophæng til langt ladekabel, large | TechBoks",
+    seoDescription:
+      "Stort vægophæng til lange og tykke ladekabler til elbilen. Hold kablet oppe fra gulvet og undgå snavs og knæk. Logo i valgfri farve. Printet i PETG.",
     description:
       "Den store udgave af vores kabelophæng, dimensioneret til lange og tykke ladekabler.",
     category: "mustang-mach-e",
@@ -373,6 +407,9 @@ export const products: Product[] = [
     slug: "anhaengertraek-prop",
     name: "Anhængertræk Prop",
     shortDescription: "Beskyt og pynt dit anhængertræk",
+    seoTitle: "Anhængertræk-prop med Mustang-motiv | TechBoks",
+    seoDescription:
+      "Prop med Mustang-motiv til anhængertrækket. Beskytter kuglen mod snavs og giver bagenden et pænere udtryk. 3D-printet i vejrbestandig og holdbar PETG.",
     description:
       "En prop med Mustang-motiv der beskytter anhængertrækkets kugle mod snavs — og giver et pænere udtryk.",
     category: "mustang-mach-e",
@@ -394,6 +431,9 @@ export const products: Product[] = [
     slug: "slaebekrog-daeksel",
     name: "Slæbekrog Dæksel",
     shortDescription: "Dæk hullet til slæbekrogens gevind",
+    seoTitle: "Slæbekrog-dæksel til Mustang Mach-E | TechBoks",
+    seoDescription:
+      "Reservedel til Mustang Mach-E: dæksel til hullet ved slæbekrogens gevind bag kofangeren. Holdes af plastclips som originalen. 3D-printet i PETG.",
     description:
       "Mangler du dækslet til hullet ind til slæbekrogens gevind bag bagende-kofangeren på din Mustang Mach-E? Dette dæksel holdes på plads af små lille plastclips, ligesom det originale. Har du mistet dit originale eller er det knækket, så køb denne reservedel. På indersiden er der et integreret Mustang-logo.",
     category: "mustang-mach-e",
@@ -419,6 +459,9 @@ export const products: Product[] = [
     slug: "hattehylde-clips",
     name: "Hattehylde Clips",
     shortDescription: "Fastgør hattehylden sikkert. Pris for 2 stk.",
+    seoTitle: "Hattehylde-clips til Mustang Mach-E | TechBoks",
+    seoDescription:
+      "Clips der holder hattehylden i Ford Mustang Mach-E på plads, så den ikke rasler under kørsel. Sælges i sæt med 2 stk. 3D-printet i varmebestandig PETG.",
     description:
       "Praktiske clips der holder hattehylden sikkert på plads, så den ikke rasler under kørsel. Sælges i sæt af to.",
     category: "mustang-mach-e",
@@ -438,6 +481,9 @@ export const products: Product[] = [
     slug: "skraldespand-sidedoer",
     name: "Skraldespand til Sidedør",
     shortDescription: "Smart skraldespand til sidedøren",
+    seoTitle: "Skraldespand til sidedør i Mustang Mach-E | TechBoks",
+    seoDescription:
+      "Kompakt skraldespand til sidedøren i Ford Mustang Mach-E, der holder bilen ren og ryddelig. Fås til førersiden og passagersiden. 3D-printet i PETG.",
     description:
       "En kompakt skraldespand der monteres i sidedørens lomme. Hold bilen ren og ryddelig uden løse poser. Fås til både venstre og højre sidedør — husk at vælge version, så den passer til den rigtige dør.",
     category: "mustang-mach-e",
@@ -465,6 +511,9 @@ export const products: Product[] = [
     slug: "nakkestoette-krog",
     name: "Nakkestøtte Krog",
     shortDescription: "Krog til tasker, bøjler og indkøbsposer",
+    seoTitle: "Nakkestøtte-krog til Mustang Mach-E | TechBoks",
+    seoDescription:
+      "Krog til nakkestøtten i Mustang Mach-E til indkøbsposer, tasker og bøjler. Sættes på nakkestøttens stænger foran og bagi. 3D-printet i stærk PETG.",
     description:
       "Monteres på nakkestøttens stænger og giver et solidt ophæng til indkøbsposer, tasker eller bøjler.",
     category: "mustang-mach-e",
@@ -489,6 +538,9 @@ export const products: Product[] = [
     slug: "bagagerum-krog",
     name: "Bagagerum Krog",
     shortDescription: "Praktisk krog til bagagerummet. Pris for 2 stk.",
+    seoTitle: "Bagagerumskrog til Mustang Mach-E, 2 stk. | TechBoks",
+    seoDescription:
+      "Kroge til bagagerummet i Mustang Mach-E til paraplyen og løse ting. Monteres på Isofix-beslaget uden værktøj. Sæt med 2 stk. 3D-printet i kraftig PETG.",
     description:
       "Hæng paraplyen op eller fastgør ting i bagagerummet. Sælges i sæt af to og monteres uden værktøj.",
     category: "mustang-mach-e",
@@ -508,6 +560,9 @@ export const products: Product[] = [
     slug: "front-boks-mobil-mount",
     name: "Front Boks Mobil-mount",
     shortDescription: "Mount til mobilholder på front boksen",
+    seoTitle: "Mobil-mount til Front Boks, Mustang Mach-E | TechBoks",
+    seoDescription:
+      "Mount til Front Boksen i Mustang Mach-E, så en almindelig mobilholder kommer op i synsfeltet – ikke på ruden eller i ventilationen. 3D-printet i PETG.",
     description:
       "Tilbehør til Front Boksen: en mount der lader dig montere en almindelig mobilholder i synsfeltet. Mounten sidder på Front Boksen, så du slipper for at sætte holderen på ruden eller i ventilationsgitteret.",
     category: "mustang-mach-e",
@@ -533,6 +588,9 @@ export const products: Product[] = [
     slug: "skillerum-bagagerum",
     name: "Skillerum til Bagagerum",
     shortDescription: "Hold tingene på plads i bagagerummet",
+    seoTitle: "Skillerum til bagagerum i Mustang Mach-E | TechBoks",
+    seoDescription:
+      "Skillerum der deler bagagerummet i Ford Mustang Mach-E op i faste zoner, så indkøbene ikke vælter. Placeres frit med velcro. 3D-printet i robust PETG.",
     description:
       "Skillerum der deler bagagerummet op i faste zoner, så indkøbene ikke vælter rundt på vej hjem.",
     category: "mustang-mach-e",
@@ -558,6 +616,9 @@ export const products: Product[] = [
     slug: "hattehylde-ophaengskrog",
     name: "Hattehylde Ophængskrog",
     shortDescription: "Reservedel — hvis din originale er knækket",
+    seoTitle: "Ophængskrog til hattehylde, Mustang Mach-E | TechBoks",
+    seoDescription:
+      "Reservedel til Mustang Mach-E: forstærket ophængskrog til hattehylden, hvis den originale er knækket. Fås til venstre og højre side. Printet i PETG.",
     description:
       "Forstærket ophængskrog til hattehylden. En direkte erstatning for den originale, hvis den er knækket. Fås til både venstre og højre side — husk at vælge version.",
     category: "mustang-mach-e",
@@ -581,6 +642,9 @@ export const products: Product[] = [
     slug: "mustang-logo-template",
     name: "Mustang Logo Template",
     shortDescription: "Skabelon med Mustang Mach-E logo",
+    seoTitle: "Mustang Mach-E logo-skabelon til gulvmåtter | TechBoks",
+    seoDescription:
+      "Skabelon med Mustang Mach-E-logo: læg den på gulvmåtten og børst hen over, så logoet træder frem. Kan bruges igen og igen. 3D-printet i holdbar PETG.",
     description:
       "Skabelon med Mustang Mach-E logo — perfekt til at markere gulvmåtter eller andre projekter præcist.",
     category: "mustang-mach-e",
@@ -604,6 +668,9 @@ export const products: Product[] = [
     slug: "homey-pro-cover",
     name: "Homey Pro Cover",
     shortDescription: "Cover til Homey Pro 23 og 26 — bedre luftcirkulation",
+    seoTitle: "Homey Pro cover til 2023 og 2026 | TechBoks",
+    seoDescription:
+      "Ventileret cover til Homey Pro (2023 og 2026), der forbedrer luftcirkulationen og holder enheden køligere. Vælg farve og mønster. 3D-printet i PETG.",
     description:
       "Et ventileret cover til Homey Pro (2023 og 2026), der forbedrer luftcirkulationen og holder enheden køligere — uden at gå på kompromis med udtrykket.",
     category: "hjemmet",

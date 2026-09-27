@@ -11,29 +11,43 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import spaceGroteskLatin from "@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "@/lib/cart";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SITE } from "@/seo/site";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
-        </div>
-      </div>
+    <div className="container-tb py-24 text-center sm:py-32">
+      <span className="eyebrow">Fejl 404</span>
+      <h1 className="display-lg text-ink mt-4">Siden findes ikke</h1>
+      <p className="text-muted-foreground mx-auto mt-5 max-w-md text-base leading-relaxed">
+        Adressen er måske skrevet forkert, eller siden er flyttet. Prøv en af disse i stedet:
+      </p>
+      <nav aria-label="Forslag" className="mt-8 flex flex-wrap justify-center gap-3">
+        <Link
+          to="/"
+          className="bg-ink text-canvas inline-flex h-12 items-center rounded-full px-6 text-sm font-semibold"
+        >
+          Forside
+        </Link>
+        <Link
+          to="/produkter"
+          search={{ kategori: "alle", q: "" }}
+          className="border-ink/20 text-ink inline-flex h-12 items-center rounded-full border px-6 text-sm font-semibold"
+        >
+          Alle produkter
+        </Link>
+        <Link
+          to="/kontakt"
+          className="border-ink/20 text-ink inline-flex h-12 items-center rounded-full border px-6 text-sm font-semibold"
+        >
+          Kontakt
+        </Link>
+      </nav>
     </div>
   );
 }
@@ -49,10 +63,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+          Siden kunne ikke indlæses
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+          Noget gik galt hos os. Prøv at genindlæse siden, eller gå til forsiden.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -62,13 +76,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Try again
+            Prøv igen
           </button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Go home
+            Til forsiden
           </a>
         </div>
       </div>
@@ -85,31 +99,33 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         // minimum-scale=1 blokerer udzoom under 100% — indzoom er stadig tilladt.
         content: "width=device-width, initial-scale=1, minimum-scale=1",
       },
-      { title: "TechBoks — Dansk designet 3D print tilbehør" },
-      {
-        name: "description",
-        content:
-          "TechBoks designer og 3D printer funktionelt tilbehør — til bilen, hjemmet og praktisk brug.",
-      },
-      { name: "author", content: "TechBoks" },
-      { property: "og:title", content: "TechBoks — Dansk designet 3D print tilbehør" },
-      {
-        property: "og:description",
-        content: "Funktionelt 3D printet tilbehør, designet og produceret i Danmark.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#f0efe9" },
+      { property: "og:site_name", content: SITE.name },
+      { property: "og:locale", content: "da_DK" },
+      // Fallback for adresser uden egen side (404). Alle rigtige sider sætter
+      // deres egen title og robots via pageHead() og overskriver disse.
+      { title: "Siden findes ikke | TechBoks" },
+      { name: "robots", content: "noindex, follow" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      // De to fonte, der bruges over folden. Resten hentes efter behov.
+      { rel: "preload", as: "font", type: "font/woff2", href: interLatin, crossOrigin: "anonymous" },
       {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap",
+        rel: "preload",
+        as: "font",
+        type: "font/woff2",
+        href: spaceGroteskLatin,
+        crossOrigin: "anonymous",
       },
-      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      // /favicon.ico ligger også i roden til browsere, der selv spørger efter den.
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "/favicon-192.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],
+    // Vercel Web Analytics: ingen cookies, ingen persondata. Kun på Vercel —
+    // lokalt findes scriptet ikke.
+    scripts: __ON_VERCEL__ ? [{ src: "/_vercel/insights/script.js", defer: true }] : [],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -137,9 +153,17 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
-        <div className="bg-canvas flex min-h-screen flex-col">
+        {/* overflow-x-clip: kort, der flyver ind fra siden, må ikke give vandret
+            scroll på mobil. clip (ikke hidden) bevarer den sticky header. */}
+        <div className="bg-canvas flex min-h-screen flex-col overflow-x-clip">
+          <a
+            href="#indhold"
+            className="bg-ink text-canvas sr-only z-[60] rounded-full px-5 py-3 text-sm font-semibold focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
+          >
+            Spring til indhold
+          </a>
           <Header />
-          <main className="flex-1">
+          <main id="indhold" className="flex-1">
             {/* Required: nested routes render here. */}
             <Outlet />
           </main>

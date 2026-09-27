@@ -8,25 +8,19 @@ import { formatPrice, getOrderSlug } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { submitOrder, type OrderCustomer } from "@/lib/orders";
 import { getDeliveryPrice, type ShippingMethod } from "@/lib/shipping";
+import { imageSources } from "@/lib/images";
+import { pageHead } from "@/seo/head";
 
 export const Route = createFileRoute("/bestil")({
-  head: () => ({
-    meta: [
-      { title: "Send ordreforespørgsel — TechBoks" },
-      {
-        name: "description",
-        content:
-          "Udfyld dine oplysninger og send din ordreforespørgsel til TechBoks. Vi bekræfter på mail, og betaling sker via MobilePay.",
-      },
-      { property: "og:title", content: "Send ordreforespørgsel — TechBoks" },
-      {
-        property: "og:description",
-        content: "Bestil dine 3D printede produkter — betaling via MobilePay efter bekræftelse.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  // Bestillingsformularen er et trin i købet, ikke en side man søger efter.
+  head: () =>
+    pageHead({
+      path: "/bestil",
+      title: "Send ordreforespørgsel | TechBoks",
+      description:
+        "Udfyld dine oplysninger og send din ordreforespørgsel til TechBoks. Du får en bekræftelse på mail, og betaling sker via MobilePay eller bankoverførsel.",
+      noindex: true,
+    }),
   component: OrderPage,
 });
 
@@ -166,11 +160,8 @@ function OrderPage() {
     <>
       {overlay}
       <div key="form" className="container-tb pt-10 pb-24">
-        <motion.header
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="rounded-blob-lg bg-ink text-canvas relative overflow-hidden p-8 sm:p-12"
+        <header
+          className="anim-rise rounded-blob-lg bg-ink text-canvas relative overflow-hidden p-8 sm:p-12"
         >
           <div className="bg-accent-mint/20 pointer-events-none absolute -right-16 -bottom-24 h-72 w-72 rounded-full blur-3xl" />
           <span className="text-canvas/50 text-xs tracking-[0.24em] uppercase">Trin 2 af 2</span>
@@ -181,19 +172,12 @@ function OrderPage() {
             Der er ingen online betaling. Udfyld dine oplysninger, så bekræfter vi ordren på mail
             med pris inkl. fragt og et MobilePay-nummer.
           </p>
-        </motion.header>
+        </header>
 
         <div className="mt-6 grid gap-5 lg:grid-cols-[1.5fr_1fr] lg:items-start">
-          <motion.form
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.5,
-              delay: 0.08,
-              ease: [0.22, 1, 0.36, 1],
-            }}
+          <form
             onSubmit={handleSubmit}
-            className="rounded-blob-lg bg-surface p-6 sm:p-8"
+            className="anim-rise rounded-blob-lg bg-surface p-6 sm:p-8 [animation-delay:80ms]"
           >
             <span className="text-muted-foreground text-xs tracking-[0.24em] uppercase">
               Dine oplysninger
@@ -325,17 +309,10 @@ function OrderPage() {
                 Din kurv er tom — tilføj produkter først.
               </p>
             )}
-          </motion.form>
+          </form>
 
-          <motion.aside
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.5,
-              delay: 0.16,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="rounded-blob-lg bg-surface sticky top-28 p-6 sm:p-7"
+          <aside
+            className="anim-rise rounded-blob-lg bg-surface sticky top-28 p-6 sm:p-7 [animation-delay:160ms]"
           >
             <span className="text-muted-foreground text-xs tracking-[0.24em] uppercase">
               Din ordre
@@ -347,7 +324,8 @@ function OrderPage() {
                   className="bg-canvas rounded-blob flex items-center gap-3 p-3"
                 >
                   <img
-                    src={line.product.images[0]}
+                    {...imageSources(line.product.images[0]!)}
+                    sizes="56px"
                     alt={line.product.name}
                     loading="lazy"
                     className="h-14 w-14 shrink-0 rounded-2xl object-cover"
@@ -393,7 +371,7 @@ function OrderPage() {
                 Betaling via MobilePay, når ordren er bekræftet.
               </p>
             </div>
-          </motion.aside>
+          </aside>
         </div>
       </div>
     </>

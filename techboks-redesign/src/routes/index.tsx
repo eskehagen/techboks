@@ -2,31 +2,32 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "motion/react";
 import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Leaf, ShieldCheck } from "lucide-react";
 import { useRef } from "react";
-import heroImage from "@/assets/hero-workshop.jpg";
-import { categories, formatPrice, products } from "@/data/products";
+import { useMounted } from "@/hooks/use-mounted";
+import heroImage from "@/assets/hero-workshop.webp";
+import heroImage800 from "@/assets/hero-workshop-800.webp";
+import { CATEGORY_PATHS, categories, formatPrice, products } from "@/data/products";
 import { Marquee } from "@/components/Marquee";
+import { Picture } from "@/components/Picture";
 import { Reveal } from "@/components/Reveal";
 import { ScrollText } from "@/components/ScrollText";
+import { pageHead } from "@/seo/head";
+import { webPage } from "@/seo/schema";
+import { DEFAULT_OG_IMAGE } from "@/seo/site";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "TechBoks — Dansk designet 3D print tilbehør" },
-      {
-        name: "description",
-        content:
-          "TechBoks designer og 3D printer funktionelt tilbehør — til bilen, hjemmet og praktisk brug",
-      },
-      { property: "og:title", content: "TechBoks — Dansk designet 3D print tilbehør" },
-      {
-        property: "og:description",
-        content:
-          "Funktionelt 3D printet tilbehør, designet og produceret i Danmark. Se produkterne.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => {
+    const path = "/";
+    // Forsiden er brandets side; /mustang-mach-e er siden for "Mach-E tilbehør".
+    const title = "TechBoks – 3D-printet tilbehør til Mach-E";
+    const cheapest = Math.min(...products.map((p) => p.price));
+    const description = `TechBoks er en dansk webshop med 3D-printet tilbehør til Ford Mustang Mach-E og smarte løsninger til hjemmet, designet og printet i små serier. Fra ${cheapest} kr.`;
+    return pageHead({
+      path,
+      title,
+      description,
+      graph: [webPage({ path, title, description, image: DEFAULT_OG_IMAGE.src })],
+    });
+  },
   component: Home,
 });
 
@@ -51,6 +52,7 @@ function Hero() {
   const veil = useTransform(scrollYProgress, [0, 0.85], [0, 1]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const mounted = useMounted();
 
   return (
     <section className="px-3 pt-3">
@@ -59,62 +61,57 @@ function Hero() {
         className="bg-surface rounded-blob relative aspect-[3/4] w-full overflow-hidden sm:aspect-[4/3] lg:aspect-[992/541]"
       >
 
+        {/* AI-genereret stemningsbillede bag overskriften — dekorativt, derfor tom alt. */}
         <img
           src={heroImage}
-          alt="Sort Ford Mustang Mach-E i et værksted med 3D printere"
+          srcSet={`${heroImage800} 800w, ${heroImage} 1600w`}
+          sizes="100vw"
+          width={1600}
+          height={1200}
+          alt=""
+          fetchPriority="high"
           className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
         />
         <div className="from-surface via-surface/90 sm:via-surface/70 absolute inset-0 bg-gradient-to-r to-transparent to-85% sm:via-45%" />
-        <motion.div
-          style={{ opacity: veil }}
-          className="bg-canvas pointer-events-none absolute inset-0 z-20"
-        />
+        {/* The veil is fully transparent until you scroll, so it only needs to
+            exist once scroll tracking runs — not as opacity:0 in the HTML. */}
+        {mounted && (
+          <motion.div
+            style={{ opacity: veil }}
+            aria-hidden="true"
+            className="bg-canvas pointer-events-none absolute inset-0 z-20"
+          />
+        )}
 
         <motion.div
-          style={{ opacity: contentOpacity, y: contentY }}
+          style={mounted ? { opacity: contentOpacity, y: contentY } : {}}
           className="relative flex h-full flex-col justify-start p-6 pt-10 sm:p-12 lg:p-16"
         >
 
-          <motion.span
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="text-muted-foreground text-xs tracking-[0.24em] uppercase"
-          >
-            Designet og printet i Danmark
-          </motion.span>
-
-          <h1 className="display-xl text-ink mt-5 max-w-3xl">
-            {["Tilbehør der er", "tegnet til at passe."].map((line, i) => (
-              <span key={line} className="block overflow-hidden">
-                <motion.span
-                  className="block pb-[0.09em]"
-                  initial={{ y: "110%" }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 0.95, delay: 0.1 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  {line}
-                </motion.span>
-              </span>
-            ))}
+          {/* h1 er overlinjen: den siger, hvad sitet sælger. Den store linje
+              nedenunder er slogan og står som <p>, så den ikke skygger for den. */}
+          <h1 className="anim-rise text-muted-foreground font-sans text-xs tracking-[0.24em] uppercase">
+            3D-printet tilbehør til Ford Mustang Mach-E
           </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-muted-foreground mt-6 max-w-md text-base leading-relaxed"
-          >
-            Små serier, præcise mål og funktionelt design — tegnet fra bunden eget
-            værksted.
-          </motion.p>
+          <p className="display-xl text-ink mt-5 max-w-3xl">
+            {["Tilbehør der er", "tegnet til at passe."].map((line, i) => (
+              <span key={line} className="block overflow-hidden">
+                <span
+                  className={`anim-line block pb-[0.09em] ${i === 0 ? "[animation-delay:100ms]" : "[animation-delay:220ms]"}`}
+                >
+                  {line}
+                </span>
+              </span>
+            ))}
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-7 flex flex-wrap items-center gap-4"
-          >
+          <p className="anim-rise text-muted-foreground mt-6 max-w-md text-base leading-relaxed [animation-delay:400ms]">
+            Designet og printet i Danmark. Små serier, præcise mål og funktionelt design — tegnet
+            fra bunden i eget værksted.
+          </p>
+
+          <div className="anim-rise mt-7 flex flex-wrap items-center gap-4 [animation-delay:500ms]">
             <Link
               to="/produkter"
               search={{ kategori: "alle", q: "" }}
@@ -137,7 +134,7 @@ function Hero() {
                 <ArrowDown className="h-5 w-5" />
               </motion.span>
             </a>
-          </motion.div>
+          </div>
         </motion.div>
 
       </div>
@@ -220,15 +217,14 @@ function StackedCategories() {
         {categories.map((c, i) => (
           <MergeCard key={c.id} index={i}>
             <Link
-              to="/produkter"
-              search={{ kategori: c.slug, q: "" }}
+              to={CATEGORY_PATHS[c.id]}
               className="rounded-blob-lg bg-surface group grid overflow-hidden lg:grid-cols-2"
             >
               <div className="bg-muted aspect-[16/11] overflow-hidden lg:aspect-auto lg:h-full">
-                <img
+                <Picture
                   src={c.image}
                   alt={c.name}
-                  loading="lazy"
+                  sizes="(min-width: 1024px) 45vw, 95vw"
                   className="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.07]"
                 />
               </div>
@@ -266,9 +262,14 @@ function MergeCard({ children, index }: { children: React.ReactNode; index: numb
   const scale = useTransform(scrollYProgress, [0, 1], [0.88, 1]);
   const opacity = useTransform(scrollYProgress, [0, 0.6], [0, 1]);
 
+  const mounted = useMounted();
+
   return (
     <div ref={ref}>
-      <motion.div style={{ x, rotate, scale, opacity }} className="will-change-transform">
+      <motion.div
+        style={mounted ? { x, rotate, scale, opacity } : {}}
+        className="will-change-transform"
+      >
         {children}
       </motion.div>
     </div>
@@ -298,10 +299,10 @@ function ProductStrip() {
               className="rounded-blob bg-surface group block h-full overflow-hidden"
             >
               <div className="bg-muted aspect-[4/3] overflow-hidden">
-                <img
-                  src={p.images[0]}
+                <Picture
+                  src={p.images[0]!}
                   alt={p.name}
-                  loading="lazy"
+                  sizes="(min-width: 1024px) 18vw, (min-width: 640px) 45vw, 90vw"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
@@ -356,10 +357,12 @@ function FlyInCard({
   const scale = useTransform(scrollYProgress, [0, 1], [0.82, 1]);
   const opacity = useTransform(scrollYProgress, [0, 0.85], [0, 1]);
 
+  const mounted = useMounted();
+
   return (
     <div ref={ref} className={className}>
       <motion.div
-        style={{ x, y, rotate, scale, opacity }}
+        style={mounted ? { x, y, rotate, scale, opacity } : {}}
         className="h-full will-change-transform"
       >
         {children}
@@ -473,10 +476,12 @@ function FanCard({
   const scale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
   const opacity = useTransform(scrollYProgress, [0.05, 0.55], [0, 1]);
 
+  const mounted = useMounted();
+
   return (
     <div ref={ref} className={className}>
       <motion.div
-        style={{ x, y, rotate, scale, opacity }}
+        style={mounted ? { x, y, rotate, scale, opacity } : {}}
         className="h-full origin-bottom will-change-transform"
       >
         {children}
