@@ -6,7 +6,7 @@ import { Reveal } from "@/components/Reveal";
 import { CATEGORY_PATHS, getCategory, products } from "@/data/products";
 import { pageHead } from "@/seo/head";
 import { breadcrumbList, productList, webPage } from "@/seo/schema";
-import { SITE, absoluteUrl } from "@/seo/site";
+import { absoluteUrl } from "@/seo/site";
 
 const PATH = CATEGORY_PATHS.hjemmet;
 const category = getCategory("hjemmet");
@@ -59,13 +59,6 @@ function HomePage() {
         <h1 className="font-display text-ink mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
           Smarte løsninger til hjemmet
         </h1>
-        {/* Svar-først: det afsnit, søgemaskiner og AI-assistenter citerer. */}
-        <p className="text-muted-foreground mt-5 text-base leading-relaxed sm:text-lg">
-          Ud over tilbehør til Ford Mustang Mach-E laver TechBoks små, funktionelle produkter til
-          hjemmet, designet og 3D-printet i Danmark af {SITE.owner.name}. Blandt andet et
-          ventileret cover til Homey Pro (2023 og 2026), der forbedrer luftcirkulationen og holder
-          enheden køligere.
-        </p>
       </header>
 
       <section className="mt-16" aria-labelledby="produkter-hjemmet">
