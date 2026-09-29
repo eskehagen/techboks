@@ -9,12 +9,12 @@ const steps = [
     text: "Vælg farve og de andre muligheder på produktsiden, og læg produktet i kurven.",
   },
   {
-    title: "Send en ordreforespørgsel",
+    title: "Send din bestilling",
     text: `Udfyld dine oplysninger, og vælg forsendelse eller afhentning i ${SITE.pickup}. Der er ingen online betaling.`,
   },
   {
-    title: "Bekræft og betal",
-    text: `Du får en bekræftelse på mail med pris inkl. fragt. Betal med ${SITE.payment}. Leveringstiden er ${SITE.deliveryTime}.`,
+    title: "Få bekræftelsen og betal",
+    text: `Du får straks en ordrebekræftelse på mail med pris inkl. fragt. Betal med ${SITE.payment}. Leveringstiden er ${SITE.deliveryTime}.`,
   },
 ];
 

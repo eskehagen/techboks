@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { CATEGORY_PATHS, categories } from "@/data/products";
+import { WITHDRAWAL_LINK_LABEL } from "@/lib/withdrawal";
 import { SITE } from "@/seo/site";
 import { Logo } from "./Logo";
 
@@ -40,6 +41,14 @@ export function Footer() {
           <Link to="/kontakt" className="link-underline">
             Kontakt
           </Link>
+          {/* Forbrugeraftaleloven § 20 a: fortrydelsesfunktionen skal være fremtrædende,
+              så linket er stylet anderledes end de andre links. */}
+          <Link
+            to="/fortryd"
+            className="border-canvas/40 text-canvas hover:bg-canvas/10 inline-flex items-center rounded-full border px-4 py-1.5 font-semibold transition-colors"
+          >
+            {WITHDRAWAL_LINK_LABEL}
+          </Link>
         </nav>
 
         <p className="text-canvas/55 mt-6 text-sm">
@@ -51,6 +60,10 @@ export function Footer() {
           © {new Date().getFullYear()} TechBoks - Alle rettigheder forbeholdt. ·{" "}
           <Link to="/handelsbetingelser" className="link-underline">
             Handelsbetingelser
+          </Link>{" "}
+          ·{" "}
+          <Link to="/privatlivspolitik" className="link-underline">
+            Privatlivspolitik
           </Link>
         </div>
       </div>

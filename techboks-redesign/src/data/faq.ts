@@ -13,6 +13,8 @@
  */
 
 import { products } from "@/data/products";
+import { ORDER_BUTTON_LABEL } from "@/lib/orders";
+import { WITHDRAWAL_LINK_LABEL } from "@/lib/withdrawal";
 import { TIERS } from "@/lib/shipping";
 import { SITE } from "@/seo/site";
 
@@ -42,15 +44,15 @@ export const FAQ: FaqCategory[] = [
     items: [
       {
         q: "Hvordan bestiller jeg?",
-        a: "Læg produkterne i kurven, og send en ordreforespørgsel med dine oplysninger. Der er ingen online betaling. Du får en bekræftelse på mail med den samlede pris inkl. fragt, og ordren er først bindende, når TechBoks har bekræftet den.",
+        a: `Læg produkterne i kurven, udfyld dine oplysninger, og tryk »${ORDER_BUTTON_LABEL}«. Der er ingen online betaling. Du får straks en ordrebekræftelse på mail med den samlede pris inkl. fragt og betalingsoplysningerne.`,
       },
       {
         q: "Hvordan betaler jeg?",
-        a: `Du betaler med ${SITE.payment}, når du har fået ordrebekræftelsen på mail. Betalingen skal være modtaget, før ordren sendes eller kan afhentes.`,
+        a: `Du betaler med ${SITE.payment}, når du har fået ordrebekræftelsen på mail. Skal ordren sendes, skal betalingen være modtaget, før den sendes. Henter du ordren, kan du også betale ved afhentning.`,
       },
       {
         q: "Hvad koster produkterne?",
-        a: `Priserne står på hver produktside i danske kroner og starter ved ${cheapest} kr. Fragten kommer oveni og afhænger af pakkens vægt, mens afhentning i ${SITE.pickup} er gratis.`,
+        a: `Priserne står på hver produktside i danske kroner og starter ved ${cheapest} kr. TechBoks er ikke momsregistreret, så der er ingen moms i priserne. Fragten kommer oveni og afhænger af pakkens vægt, mens afhentning i ${SITE.pickup} er gratis.`,
       },
     ],
   },
@@ -60,15 +62,15 @@ export const FAQ: FaqCategory[] = [
     items: [
       {
         q: "Hvor lang er leveringstiden?",
-        a: `Leveringstiden er ${SITE.deliveryTime}. Alle produkter printes efter bestilling, så tiden kan variere med produktets kompleksitet.`,
+        a: `Leveringstiden er ${SITE.deliveryTime} fra ordrebekræftelsen. Skal ordren sendes, regnes den fra den dag, betalingen er modtaget. Alle produkter printes efter bestilling.`,
       },
       {
         q: "Hvad koster fragten?",
-        a: `Fragten afhænger af pakkens samlede vægt: ${tierList}. Ordrer over ${weight(heaviest)} kan kun afhentes. Du ser fragtprisen, før du sender din ordreforespørgsel.`,
+        a: `Fragten afhænger af pakkens samlede vægt: ${tierList}. Ordrer over ${weight(heaviest)} kan kun afhentes. Du ser fragtprisen, før du bestiller.`,
       },
       {
         q: "Kan jeg hente min ordre?",
-        a: `Ja. Vælg afhentning, når du sender ordreforespørgslen, så aftaler vi et tidspunkt for afhentning i ${SITE.pickup}. Afhentning er gratis.`,
+        a: `Ja. Vælg afhentning, når du bestiller, så aftaler vi et tidspunkt for afhentning i ${SITE.pickup}. Afhentning er gratis.`,
       },
       {
         q: "Sender TechBoks til hele Danmark?",
@@ -104,11 +106,15 @@ export const FAQ: FaqCategory[] = [
   },
   {
     id: "kontakt",
-    title: "Reklamation og kontakt",
+    title: "Fortrydelse, reklamation og kontakt",
     items: [
       {
+        q: "Kan jeg fortryde mit køb?",
+        a: `Ja. Du har 14 dages fortrydelsesret fra den dag, du modtager eller henter varen. Brug »${WITHDRAWAL_LINK_LABEL}« nederst på siden, inden fristen udløber, så får du straks en kvittering på mail. Send varen retur senest 14 dage efter, at du har givet besked; du betaler selv returfragten og får hele købsbeløbet tilbage inkl. den oprindelige fragt. Varer lavet efter dine egne mål, med din egen tekst eller dit eget design er undtaget.`,
+      },
+      {
         q: "Hvad gør jeg, hvis et produkt er defekt?",
-        a: "Kontakt TechBoks, så findes der en løsning i form af ombytning eller refusion. Der er 2 års reklamationsret på produktfejl og mangler efter købeloven.",
+        a: "Skriv til TechBoks, beskriv fejlen, og send gerne et billede. Du vælger selv, om du vil have varen repareret eller få en ny, og kan fejlen ikke rettes, kan du få afslag i prisen eller pengene tilbage. Der er 2 års reklamationsret efter købeloven, og reklamerer du inden 2 måneder efter, at du har opdaget fejlen, er det altid rettidigt.",
       },
       {
         q: "Hvordan kontakter jeg TechBoks?",
@@ -117,6 +123,20 @@ export const FAQ: FaqCategory[] = [
       {
         q: "Hvem står bag TechBoks?",
         a: `TechBoks drives af ${SITE.owner.name}, som selv tegner, måler op og 3D-printer alle produkterne i små serier i Danmark.`,
+      },
+    ],
+  },
+  {
+    id: "privatliv",
+    title: "Privatliv og cookies",
+    items: [
+      {
+        q: "Bruger techboks.dk cookies?",
+        a: "Nej. Sitet sætter ingen cookies, og der er ingen cookie-pop-up. Kurven gemmes kun i din egen browser, og besøgsstatistikken tæller sidevisninger uden cookies.",
+      },
+      {
+        q: "Hvad bruger TechBoks mine oplysninger til?",
+        a: "Kun til at behandle din ordre og svare på dine beskeder. Oplysningerne bliver aldrig solgt eller brugt til markedsføring. Du kan læse mere i privatlivspolitikken.",
       },
     ],
   },

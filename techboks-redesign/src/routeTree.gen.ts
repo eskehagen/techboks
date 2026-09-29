@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BestilRouteImport } from './routes/bestil'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FortrydRouteImport } from './routes/fortryd'
 import { Route as HandelsbetingelserRouteImport } from './routes/handelsbetingelser'
 import { Route as HjemmetRouteImport } from './routes/hjemmet'
 import { Route as KontaktRouteImport } from './routes/kontakt'
@@ -19,6 +20,7 @@ import { Route as KurvRouteImport } from './routes/kurv'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as MustangMachERouteImport } from './routes/mustang-mach-e'
 import { Route as OmRouteImport } from './routes/om'
+import { Route as PrivatlivspolitikRouteImport } from './routes/privatlivspolitik'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProdukterIndexRouteImport } from './routes/produkter.index'
 import { Route as ProdukterSlugRouteImport } from './routes/produkter.$slug'
@@ -36,6 +38,11 @@ const BestilRoute = BestilRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FortrydRoute = FortrydRouteImport.update({
+  id: '/fortryd',
+  path: '/fortryd',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HandelsbetingelserRoute = HandelsbetingelserRouteImport.update({
@@ -73,6 +80,11 @@ const OmRoute = OmRouteImport.update({
   path: '/om',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivatlivspolitikRoute = PrivatlivspolitikRouteImport.update({
+  id: '/privatlivspolitik',
+  path: '/privatlivspolitik',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -93,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
   '/faq': typeof FaqRoute
+  '/fortryd': typeof FortrydRoute
   '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/hjemmet': typeof HjemmetRoute
   '/kontakt': typeof KontaktRoute
@@ -100,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/llms.txt': typeof LlmsDottxtRoute
   '/mustang-mach-e': typeof MustangMachERoute
   '/om': typeof OmRoute
+  '/privatlivspolitik': typeof PrivatlivspolitikRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/produkter/$slug': typeof ProdukterSlugRoute
   '/produkter/': typeof ProdukterIndexRoute
@@ -108,6 +122,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
   '/faq': typeof FaqRoute
+  '/fortryd': typeof FortrydRoute
   '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/hjemmet': typeof HjemmetRoute
   '/kontakt': typeof KontaktRoute
@@ -115,6 +130,7 @@ export interface FileRoutesByTo {
   '/llms.txt': typeof LlmsDottxtRoute
   '/mustang-mach-e': typeof MustangMachERoute
   '/om': typeof OmRoute
+  '/privatlivspolitik': typeof PrivatlivspolitikRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/produkter/$slug': typeof ProdukterSlugRoute
   '/produkter': typeof ProdukterIndexRoute
@@ -124,6 +140,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
   '/faq': typeof FaqRoute
+  '/fortryd': typeof FortrydRoute
   '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/hjemmet': typeof HjemmetRoute
   '/kontakt': typeof KontaktRoute
@@ -131,6 +148,7 @@ export interface FileRoutesById {
   '/llms.txt': typeof LlmsDottxtRoute
   '/mustang-mach-e': typeof MustangMachERoute
   '/om': typeof OmRoute
+  '/privatlivspolitik': typeof PrivatlivspolitikRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/produkter/$slug': typeof ProdukterSlugRoute
   '/produkter/': typeof ProdukterIndexRoute
@@ -141,6 +159,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bestil'
     | '/faq'
+    | '/fortryd'
     | '/handelsbetingelser'
     | '/hjemmet'
     | '/kontakt'
@@ -148,6 +167,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/mustang-mach-e'
     | '/om'
+    | '/privatlivspolitik'
     | '/sitemap.xml'
     | '/produkter/$slug'
     | '/produkter/'
@@ -156,6 +176,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bestil'
     | '/faq'
+    | '/fortryd'
     | '/handelsbetingelser'
     | '/hjemmet'
     | '/kontakt'
@@ -163,6 +184,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/mustang-mach-e'
     | '/om'
+    | '/privatlivspolitik'
     | '/sitemap.xml'
     | '/produkter/$slug'
     | '/produkter'
@@ -171,6 +193,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bestil'
     | '/faq'
+    | '/fortryd'
     | '/handelsbetingelser'
     | '/hjemmet'
     | '/kontakt'
@@ -178,6 +201,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/mustang-mach-e'
     | '/om'
+    | '/privatlivspolitik'
     | '/sitemap.xml'
     | '/produkter/$slug'
     | '/produkter/'
@@ -187,6 +211,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BestilRoute: typeof BestilRoute
   FaqRoute: typeof FaqRoute
+  FortrydRoute: typeof FortrydRoute
   HandelsbetingelserRoute: typeof HandelsbetingelserRoute
   HjemmetRoute: typeof HjemmetRoute
   KontaktRoute: typeof KontaktRoute
@@ -194,6 +219,7 @@ export interface RootRouteChildren {
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   MustangMachERoute: typeof MustangMachERoute
   OmRoute: typeof OmRoute
+  PrivatlivspolitikRoute: typeof PrivatlivspolitikRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ProdukterSlugRoute: typeof ProdukterSlugRoute
   ProdukterIndexRoute: typeof ProdukterIndexRoute
@@ -220,6 +246,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fortryd': {
+      id: '/fortryd'
+      path: '/fortryd'
+      fullPath: '/fortryd'
+      preLoaderRoute: typeof FortrydRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/handelsbetingelser': {
@@ -271,6 +304,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OmRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privatlivspolitik': {
+      id: '/privatlivspolitik'
+      path: '/privatlivspolitik'
+      fullPath: '/privatlivspolitik'
+      preLoaderRoute: typeof PrivatlivspolitikRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -299,6 +339,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BestilRoute: BestilRoute,
   FaqRoute: FaqRoute,
+  FortrydRoute: FortrydRoute,
   HandelsbetingelserRoute: HandelsbetingelserRoute,
   HjemmetRoute: HjemmetRoute,
   KontaktRoute: KontaktRoute,
@@ -306,6 +347,7 @@ const rootRouteChildren: RootRouteChildren = {
   LlmsDottxtRoute: LlmsDottxtRoute,
   MustangMachERoute: MustangMachERoute,
   OmRoute: OmRoute,
+  PrivatlivspolitikRoute: PrivatlivspolitikRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ProdukterSlugRoute: ProdukterSlugRoute,
   ProdukterIndexRoute: ProdukterIndexRoute,
