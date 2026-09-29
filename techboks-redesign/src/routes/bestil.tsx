@@ -2,23 +2,25 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, Check, Loader2, Package, Truck } from "lucide-react";
 import { useCallback, useState, type FormEvent } from "react";
+import { TextLink } from "@/components/LegalPage";
 import { OrderProgressOverlay } from "@/components/OrderProgressOverlay";
 import type { SubmitOverlayPhase } from "@/components/SubmitProgressOverlay";
 import { formatPrice, getOrderSlug } from "@/data/products";
 import { useCart } from "@/lib/cart";
-import { submitOrder, type OrderCustomer } from "@/lib/orders";
+import { ORDER_BUTTON_LABEL, submitOrder, type OrderCustomer } from "@/lib/orders";
 import { getDeliveryPrice, type ShippingMethod } from "@/lib/shipping";
 import { imageSources } from "@/lib/images";
 import { pageHead } from "@/seo/head";
+import { SITE } from "@/seo/site";
 
 export const Route = createFileRoute("/bestil")({
   // Bestillingsformularen er et trin i købet, ikke en side man søger efter.
   head: () =>
     pageHead({
       path: "/bestil",
-      title: "Send ordreforespørgsel | TechBoks",
+      title: "Bestilling | TechBoks",
       description:
-        "Udfyld dine oplysninger og send din ordreforespørgsel til TechBoks. Du får en bekræftelse på mail, og betaling sker via MobilePay eller bankoverførsel.",
+        "Udfyld dine oplysninger og bestil hos TechBoks. Du får en ordrebekræftelse på mail, og du betaler med MobilePay eller bankoverførsel. 14 dages fortrydelsesret.",
       noindex: true,
     }),
   component: OrderPage,
@@ -62,6 +64,8 @@ function OrderPage() {
   const effectiveShippingMethod = deliveryAvailable ? shippingMethod : "pickup";
   const shippingCost = effectiveShippingMethod === "delivery" ? (deliveryPrice ?? 0) : 0;
   const orderTotal = total + shippingCost;
+  // Adressen bruges kun til forsendelse. Ved afhentning må den gerne mangle.
+  const needsAddress = effectiveShippingMethod === "delivery";
 
   const update = (key: keyof OrderCustomer, value: string) =>
     setCustomer((c) => ({ ...c, [key]: value }));
@@ -137,8 +141,8 @@ function OrderPage() {
               Tak for din ordre
             </h1>
             <p className="text-canvas/60 relative mx-auto mt-5 max-w-md text-sm leading-relaxed">
-              Vi har modtaget din ordre og vender tilbage på mail med en bekræftelse samt et
-              MobilePay-nummer til betaling.
+              Vi har modtaget din ordre. Om et øjeblik får du en ordrebekræftelse på mail med den
+              samlede pris og et MobilePay-nummer til betaling.
             </p>
             <Link
               to="/produkter"
@@ -205,23 +209,28 @@ function OrderPage() {
               />
               <Field
                 label="Adresse"
-                required
+                required={needsAddress}
                 value={customer.address}
                 onChange={(v) => update("address", v)}
               />
               <Field
                 label="Postnummer"
-                required
+                required={needsAddress}
                 value={customer.postalCode}
                 onChange={(v) => update("postalCode", v)}
               />
               <Field
                 label="By"
-                required
+                required={needsAddress}
                 value={customer.city}
                 onChange={(v) => update("city", v)}
               />
             </div>
+            {!needsAddress && (
+              <p className="text-muted-foreground mt-3 text-xs">
+                Ved afhentning behøver du ikke udfylde adresse, postnummer og by.
+              </p>
+            )}
 
             <div className="mt-5">
               <label className="text-ink block text-sm font-medium" htmlFor="notes">
@@ -232,7 +241,7 @@ function OrderPage() {
                 rows={4}
                 value={customer.notes}
                 onChange={(e) => update("notes", e.target.value)}
-                placeholder="Ønsker du en særlig farve, tekst eller tilpasning? Skriv det her."
+                placeholder="Har du et farveønske eller en besked til ordren? Skriv det her. Egen tekst, egne mål og andre specialønsker aftaler vi via kontaktsiden, før du bestiller."
                 className="bg-canvas text-ink placeholder:text-muted-foreground focus:ring-ink/20 mt-2 w-full rounded-3xl border-0 px-5 py-4 text-sm outline-none focus:ring-2"
               />
             </div>
@@ -263,10 +272,45 @@ function OrderPage() {
               )}
             </div>
 
+            {/* Forbrugeraftaleloven § 12: varer og samlet pris lige over knappen,
+                uden anden tekst imellem. */}
+            {lines.length > 0 && (
+              <div className="bg-canvas mt-8 rounded-3xl px-5 py-4">
+                <span className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
+                  Du bestiller
+                </span>
+                <ul className="mt-3 space-y-1.5 text-sm">
+                  {lines.map((line) => (
+                    <li
+                      key={`${line.productId}-${line.variant ?? ""}`}
+                      className="flex justify-between gap-4"
+                    >
+                      <span className="text-ink min-w-0">
+                        {line.quantity} × {line.product.name}
+                        {line.variant ? ` (${line.variant})` : ""}
+                      </span>
+                      <span className="text-ink shrink-0">{formatPrice(line.lineTotal)}</span>
+                    </li>
+                  ))}
+                  <li className="flex justify-between gap-4">
+                    <span className="text-muted-foreground">
+                      {effectiveShippingMethod === "delivery" ? "Fragt" : "Afhentning"}
+                    </span>
+                    <span className="text-ink shrink-0">{formatPrice(shippingCost)}</span>
+                  </li>
+                </ul>
+                <div className="border-ink/10 mt-3 flex items-baseline justify-between border-t pt-3">
+                  <span className="text-ink text-sm font-semibold">I alt</span>
+                  <span className="font-display text-ink text-xl font-semibold">
+                    {formatPrice(orderTotal)}
+                  </span>
+                </div>
+              </div>
+            )}
             <button
               type="submit"
               disabled={lines.length === 0 || isPending}
-              className="bg-ink text-canvas group relative mt-8 flex h-14 w-full items-center justify-between overflow-hidden rounded-full pr-2 pl-6 text-sm font-semibold transition-transform hover:scale-[1.01] disabled:scale-100 disabled:opacity-40 disabled:hover:scale-100"
+              className={`bg-ink text-canvas group relative flex h-14 w-full items-center justify-between overflow-hidden rounded-full pr-2 pl-6 text-sm font-semibold transition-transform hover:scale-[1.01] disabled:scale-100 disabled:opacity-40 disabled:hover:scale-100 ${lines.length > 0 ? "mt-4" : "mt-8"}`}
             >
               {isPending && (
                 <motion.span
@@ -281,7 +325,7 @@ function OrderPage() {
                 />
               )}
               <span className="relative">
-                {isPending ? "Sender ordre…" : "Send ordreforespørgsel"}
+                {isPending ? "Sender ordre…" : ORDER_BUTTON_LABEL}
               </span>
               <span className="bg-accent-mint text-accent-mint-foreground relative grid h-10 w-10 place-items-center rounded-full transition-transform group-hover:translate-x-1">
                 {isPending ? (
@@ -291,6 +335,17 @@ function OrderPage() {
                 )}
               </span>
             </button>
+            <p className="text-muted-foreground mt-4 text-center text-xs leading-relaxed">
+              Du har 14 dages fortrydelsesret. Når du bestiller, accepterer du{" "}
+              <TextLink to="/handelsbetingelser" newTab>
+                handelsbetingelserne
+              </TextLink>
+              , og dine oplysninger behandles som beskrevet i{" "}
+              <TextLink to="/privatlivspolitik" newTab>
+                privatlivspolitikken
+              </TextLink>
+              .
+            </p>
             <AnimatePresence>
               {errorMessage && (
                 <motion.p
@@ -368,7 +423,7 @@ function OrderPage() {
                 </span>
               </div>
               <p className="text-canvas/50 mt-3 text-[11px] leading-relaxed">
-                Betaling via MobilePay, når ordren er bekræftet.
+                Du betaler med {SITE.payment}, når du har fået ordrebekræftelsen.
               </p>
             </div>
           </aside>

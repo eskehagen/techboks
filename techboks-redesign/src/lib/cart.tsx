@@ -73,9 +73,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // Gem kun en kurv med indhold. En tom kurv fjernes, så besøgende, der aldrig
+  // lægger noget i kurven, ikke får noget gemt i browseren (se /privatlivspolitik).
   useEffect(() => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lines));
+      if (lines.length > 0) window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lines));
+      else window.localStorage.removeItem(STORAGE_KEY);
     } catch {
       /* ignore */
     }

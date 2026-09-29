@@ -8,9 +8,10 @@
  * Kun bekræftede fakta. Der er med vilje ingen:
  *  - anmeldelser/AggregateRating (der er ingen at vise),
  *  - priceRange (der er rigtige priser på hvert produkt i stedet),
- *  - CVR/vatID (butikken har intet CVR-nummer),
- *  - returpolitik: TODO EJER — afklar fortrydelsesretten i handelsbetingelserne,
- *    før hasMerchantReturnPolicy tilføjes.
+ *  - CVR/vatID (butikken har intet CVR-nummer).
+ *
+ * Returpolitikken (hasMerchantReturnPolicy) følger handelsbetingelserne: 14 dages
+ * fortrydelsesret, retur med post, kunden betaler returfragten.
  */
 
 import { getCategory, type Product } from "@/data/products";
@@ -52,6 +53,15 @@ export function baseGraph({ withEmail = false }: { withEmail?: boolean } = {}): 
       },
       areaServed: { "@type": "Country", name: SITE.country.name },
       knowsLanguage: "da",
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: SITE.country.code,
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 14,
+        returnMethod: "https://schema.org/ReturnByMail",
+        returnFees: "https://schema.org/ReturnFeesCustomerResponsibility",
+        merchantReturnLink: absoluteUrl("/handelsbetingelser#fortrydelsesret"),
+      },
       sameAs: [SITE.instagram],
       // E-mailen må kun stå på kontaktsiden.
       ...(withEmail

@@ -15,6 +15,7 @@
  *  4. Interne links og filer findes
  *  5. robots.txt, sitemap.xml, llms.txt, 404 og redirects fra gamle adresser
  *  6. Ejerens regler: telefon, e-mail, navne, footer-link
+ *  7. Juridisk: privatlivspolitik, bestillingsknap, fortrydelsesfunktion, sælgeradresse
  */
 
 import { spawn } from "node:child_process";
@@ -226,12 +227,12 @@ robots.includes(`Sitemap: ${SITE.url}/sitemap.xml`) ? ok("robots.txt peger på s
 
 const lastmods = (sitemap.match(/<lastmod>/g) ?? []).length;
 lastmods === sitemapUrls.length ? ok(`sitemap: ${sitemapUrls.length} sider, alle med <lastmod>`) : fail(`sitemap: ${lastmods} af ${sitemapUrls.length} har <lastmod>`);
-for (const noindexPath of ["/kurv", "/bestil"]) {
+for (const noindexPath of ["/kurv", "/bestil", "/fortryd"]) {
   const html = await (await get(noindexPath)).text();
   if (!/noindex/.test(meta(html, "robots"))) fail(`${noindexPath} mangler noindex`);
   if (sitemapUrls.includes(SITE.url + noindexPath)) fail(`${noindexPath} står i sitemap`);
 }
-ok("/kurv og /bestil er noindex og står ikke i sitemap");
+ok("/kurv, /bestil og /fortryd er noindex og står ikke i sitemap");
 
 const llms = await get("/llms.txt");
 const llmsText = await llms.text();
@@ -279,6 +280,28 @@ for (const path of ["/om", "/kontakt"]) {
 const noFooterLink = all.filter((p) => !/<footer[\s\S]*href="\/kontakt"[\s\S]*<\/footer>/.test(p.html)).map((p) => p.path);
 noFooterLink.length ? fail(`footer uden link til kontakt: ${noFooterLink.join(", ")}`) : ok("footeren linker til /kontakt på alle sider");
 all.some((p) => p.html.includes("fonts.googleapis.com")) ? fail("Google Fonts hentes stadig") : ok("ingen fonte fra Google (selvhostet)");
+
+/* 7. Juridisk */
+section("7. Juridiske oplysninger");
+const noPrivacyLink = all.filter((p) => !/<footer[\s\S]*href="\/privatlivspolitik"[\s\S]*<\/footer>/.test(p.html)).map((p) => p.path);
+noPrivacyLink.length ? fail(`footer uden link til privatlivspolitik: ${noPrivacyLink.join(", ")}`) : ok("footeren linker til /privatlivspolitik på alle sider");
+// Forbrugeraftaleloven § 12: knappen, der gør ordren bindende, skal nævne betalingspligten.
+const orderHtml = await (await get("/bestil")).text();
+const submitButton = orderHtml.match(/<button[^>]*type="submit"[^>]*>([\s\S]*?)<\/button>/)?.[1] ?? "";
+/betalingspligt|betalingsforpligtelse/i.test(visibleText(`<body>${submitButton}</body>`)) ? ok("bestillingsknappen nævner betalingspligt") : fail("bestillingsknappen på /bestil nævner ikke betalingspligt");
+const orderMain = orderHtml.replace(/<footer[\s\S]*<\/footer>/, "");
+/href="\/handelsbetingelser"/.test(orderMain) && /href="\/privatlivspolitik"/.test(orderMain) ? ok("/bestil linker til handelsbetingelser og privatlivspolitik ved knappen") : fail("/bestil mangler links til handelsbetingelser og privatlivspolitik ved knappen");
+// Forbrugeraftaleloven § 20 a (fra 19. juni 2026): »Fortryd aftale« skal være let at finde,
+// og knappen på /fortryd skal hedde »Bekræft fortrydelse«.
+const noWithdrawalLink = all
+  .filter((p) => !/<footer[\s\S]*<a\b[^>]*href="\/fortryd"[^>]*>Fortryd aftale<\/a>[\s\S]*<\/footer>/.test(p.html))
+  .map((p) => p.path);
+noWithdrawalLink.length ? fail(`footer uden »Fortryd aftale«-link: ${noWithdrawalLink.join(", ")}`) : ok("footeren har »Fortryd aftale« (/fortryd) på alle sider");
+const withdrawalHtml = await (await get("/fortryd")).text();
+const withdrawalButton = withdrawalHtml.match(/<button[^>]*type="submit"[^>]*>([\s\S]*?)<\/button>/)?.[1] ?? "";
+/Bekræft fortrydelse/.test(visibleText(`<body>${withdrawalButton}</body>`)) ? ok("/fortryd har knappen »Bekræft fortrydelse«") : fail("/fortryd mangler knappen »Bekræft fortrydelse«");
+// E-handelsloven § 7 og forbrugeraftaleloven § 8: fysisk adresse før køb.
+SITE.address ? ok(`sælgeradresse: ${SITE.address}`) : warn("SITE.address er tom: e-handelsloven kræver en fysisk adresse på sitet (src/seo/site.ts)");
 
 console.log(`\n${"─".repeat(64)}`);
 console.log(`${pages.length} sider kontrolleret — ${failures} fejl, ${warnings} advarsler\n`);

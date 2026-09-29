@@ -5,6 +5,7 @@ import { formatPrice } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { imageSources } from "@/lib/images";
 import { pageHead } from "@/seo/head";
+import { SITE } from "@/seo/site";
 
 export const Route = createFileRoute("/kurv")({
   // Kurven er personlig og tom for en crawler — den skal ikke i Google.
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/kurv")({
       path: "/kurv",
       title: "Din kurv | TechBoks",
       description:
-        "Se din kurv hos TechBoks, justér antal og gå videre til ordreforespørgsel.",
+        "Se din kurv hos TechBoks, justér antal og gå videre til bestilling.",
       noindex: true,
     }),
   component: CartPage,
@@ -134,7 +135,7 @@ function CartPage() {
               </div>
               <div className="flex justify-between">
                 <dt className="text-canvas/60">Fragt</dt>
-                <dd className="text-canvas/60">Beregnes ved bekræftelse</dd>
+                <dd className="text-canvas/60">Beregnes i næste trin</dd>
               </div>
             </dl>
             <div className="border-canvas/15 mt-6 flex items-baseline justify-between border-t pt-6">
@@ -165,8 +166,8 @@ function CartPage() {
               Fortsæt med at handle
             </Link>
             <p className="text-canvas/50 mt-5 text-[11px] leading-relaxed">
-              Du betaler ikke online. Vi bekræfter din ordre på mail, og betalingen sker via
-              MobilePay.
+              Du betaler ikke online. Du får straks en ordrebekræftelse på mail og betaler med{" "}
+              {SITE.payment}.
             </p>
           </motion.aside>
         </div>

@@ -4,6 +4,7 @@ import { ArrowUpRight, Check, Instagram, Loader2, Mail, MapPin } from "lucide-re
 import { useCallback, useState } from "react";
 import { z } from "zod";
 import { ContactProgressOverlay } from "@/components/ContactProgressOverlay";
+import { TextLink } from "@/components/LegalPage";
 import { Reveal } from "@/components/Reveal";
 import type { SubmitOverlayPhase } from "@/components/SubmitProgressOverlay";
 import { submitContactMessage } from "@/lib/contact";
@@ -275,6 +276,13 @@ function ContactPage() {
                     <span className="relative">{isPending ? "Sender besked…" : "Send besked"}</span>
                     {isPending && <Loader2 className="relative h-4 w-4 animate-spin" />}
                   </button>
+                  <p className="text-muted-foreground mt-3 text-xs leading-relaxed">
+                    Jeg bruger kun dine oplysninger til at svare dig. Læs mere i{" "}
+                    <TextLink to="/privatlivspolitik" newTab>
+                      privatlivspolitikken
+                    </TextLink>
+                    .
+                  </p>
                   <AnimatePresence>
                     {errorMessage && (
                       <motion.p

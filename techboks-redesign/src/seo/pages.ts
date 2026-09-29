@@ -25,6 +25,7 @@ export const STATIC_PAGES: SitePage[] = [
   { path: "/om", name: "Om TechBoks", lastmod: SITE.updated },
   { path: "/kontakt", name: "Kontakt", lastmod: SITE.updated },
   { path: "/handelsbetingelser", name: "Handelsbetingelser", lastmod: SITE.updated },
+  { path: "/privatlivspolitik", name: "Privatlivspolitik", lastmod: SITE.updated },
 ];
 
 export function indexablePages(): SitePage[] {

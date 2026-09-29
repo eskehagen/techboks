@@ -92,14 +92,17 @@ Alt marketing kan hænges op på ét af disse. Bekræft med Eske hvis du er i tv
 - Anhængertrækkets kugle står bar og bliver snavset
 - Ingen god mobilholder-placering i synsfeltet
 
-## ⚠️ Uoverensstemmelse der skal afklares
+## Leveringstid
 
-Forsiden og produktspecifikationerne siger **3–7 hverdages levering**. Handelsbetingelserne siger **7–10 dage**. De to ting kan ikke begge stå. **Spørg Eske hvilken der gælder, før du skriver leveringstid i noget markedsføringsmateriale** — det er et løfte, kunder holder ham op på.
+Sitet, handelsbetingelserne og ordrebekræftelsesmailen siger **3–7 hverdage** (`SITE.deliveryTime`), regnet fra ordrebekræftelsen, eller fra betalingen er modtaget, hvis ordren skal sendes. **Spørg Eske, før du lover noget andet.** Det er et løfte, kunder holder ham op på.
 
 ## Juridisk
 
 - Ford, Mustang og Mach-E er Ford Motor Companys varemærker. TechBoks er ikke tilknyttet Ford. Formulér altid som "**passer til** Ford Mustang Mach-E".
-- Produkterne er specialfremstillede, så **fortrydelsesretten er som udgangspunkt frafaldet** (forbrugeraftaleloven § 18, stk. 2, nr. 3). Lov derfor aldrig "fuld returret" i en annonce.
-- Der er **2 års reklamationsret** på fejl og mangler jf. købeloven. Det må gerne fremhæves — det er reelt et salgsargument.
-- Reklamation skal ske inden for 14 dage efter modtagelse.
+- Der er **14 dages fortrydelsesret** fra modtagelsen på alle varer fra kataloget. Farve-, årgangs- og udgavevalg gør ikke en vare til en specialvare. Kun ægte specialopgaver efter kundens egne mål, tekst eller design er undtaget (forbrugeraftaleloven § 18, stk. 2, nr. 3). Lov aldrig "gratis retur": kunden betaler selv returfragten.
+- Der er **2 års reklamationsret** på fejl og mangler jf. købeloven. Fortrydelses- og reklamationsret må nævnes som oplysning, men **aldrig fremhæves som en særlig fordel ved TechBoks**, fordi det er rettigheder, kunden altid har (markedsføringslovens bilag 1, nr. 10).
+- Reklamation inden 2 måneder efter, at kunden har opdaget fejlen, er altid rettidig. Skriv aldrig en kortere frist.
+- Kunder fortryder med **»Fortryd aftale«** på techboks.dk/fortryd (link i footeren på alle sider) eller på mail. Henvis dertil, hvis nogen spørger, hvordan man fortryder.
+- TechBoks er ikke momsregistreret. Skriv aldrig "inkl. moms".
+- Sitet sætter ingen cookies. Det må gerne nævnes, men lov ikke mere end privatlivspolitikken siger.
 - Markedsføringsloven: sammenlignende reklame skal være korrekt og dokumenterbar. Undlad direkte konkurrentsammenligninger.

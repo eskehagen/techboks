@@ -8,6 +8,14 @@
 
 import type { ShippingMethod } from "./shipping";
 
+/**
+ * Teksten på bestillingsknappen. Ordrebekræftelsen sendes automatisk, så et
+ * tryk på knappen gør aftalen bindende. Forbrugeraftaleloven § 12 kræver da, at
+ * knappen siger "ordre med betalingsforpligtelse" eller noget lige så tydeligt,
+ * ellers er kunden ikke bundet. Handelsbetingelserne citerer den samme tekst.
+ */
+export const ORDER_BUTTON_LABEL = "Bestil med betalingspligt";
+
 export interface OrderCustomer {
   name: string;
   email: string;
@@ -43,9 +51,13 @@ export interface OrderResult {
   reference: string;
 }
 
-const orderEndpoint =
+/** Apps Script-webappen, der modtager ordrer og fortrydelser (se withdrawal.ts). */
+export const ORDER_ENDPOINT: string =
   import.meta.env["VITE_ORDER_ENDPOINT"] ??
   "https://script.google.com/macros/s/AKfycbxqL2a7yE_ahmjKlFURzXJC0qzPumTYhj4r9-mWinLJRO5SQLEJ0gC5alCnM2CR3UEk/exec";
+
+/** Skal matche SECURITY_TOKEN i mail_scripts/google-apps-script-updated.gs. */
+export const ORDER_TOKEN = "TB-8472-SECURE-991";
 
 function buildLegacyPayload(payload: OrderPayload) {
   const address = [payload.customer.address, payload.customer.postalCode, payload.customer.city]
@@ -54,7 +66,7 @@ function buildLegacyPayload(payload: OrderPayload) {
   const total = payload.subtotal + payload.shipping.cost;
 
   return {
-    token: "TB-8472-SECURE-991",
+    token: ORDER_TOKEN,
     botField: "",
     customerName: payload.customer.name,
     customerEmail: payload.customer.email,
@@ -82,7 +94,7 @@ function buildLegacyPayload(payload: OrderPayload) {
 }
 
 export async function submitOrder(payload: OrderPayload): Promise<OrderResult> {
-  const response = await fetch(orderEndpoint, {
+  const response = await fetch(ORDER_ENDPOINT, {
     method: "POST",
     headers: {
       "Content-Type": "text/plain;charset=utf-8",

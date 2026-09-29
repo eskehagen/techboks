@@ -21,6 +21,13 @@ export const SITE = {
   email: "eskehagen@gmail.com",
   instagram: "https://www.instagram.com/3design_by_eske",
   country: { name: "Danmark", code: "DK" },
+  /**
+   * Fysisk adresse, fx "Gadenavn 1, 8200 Aarhus N". E-handelsloven § 7 og
+   * forbrugeraftaleloven § 8 kræver den på sitet, før kunden bestiller. Står
+   * den her, vises den i handelsbetingelserne og privatlivspolitikken.
+   * TODO EJER: udfyld. `npm run validate` advarer, så længe den mangler.
+   */
+  address: null as string | null,
   /** Afhentning efter aftale. */
   pickup: "Aarhus N",
   delivery: "Sendes med DAO eller GLS, eller afhentes i Aarhus N efter aftale",
@@ -30,7 +37,7 @@ export const SITE = {
    * Senest opdateret — bruges som <lastmod> i sitemap og dateModified i
    * JSON-LD for sider uden egen dato. Ret den, når du ændrer tekst på sitet.
    */
-  updated: "2026-09-26",
+  updated: "2026-09-29",
 } as const;
 
 export const DEFAULT_OG_IMAGE = {

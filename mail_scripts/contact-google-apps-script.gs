@@ -164,19 +164,19 @@ function sendContactEmailToShop(data) {
               <div class="info-grid">
                 <div class="info-item">
                   <div class="info-label">Navn</div>
-                  <div class="info-value">${sanitizeText(data.name)}</div>
+                  <div class="info-value">${escapeHtml(sanitizeText(data.name))}</div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">Email</div>
-                  <div class="info-value">${sanitizeText(data.email)}</div>
+                  <div class="info-value">${escapeHtml(sanitizeText(data.email))}</div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">Telefon</div>
-                  <div class="info-value">${sanitizeText(data.phone) || '—'}</div>
+                  <div class="info-value">${escapeHtml(sanitizeText(data.phone)) || 'ikke oplyst'}</div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">Emne</div>
-                  <div class="info-value">${sanitizeText(data.subject)}</div>
+                  <div class="info-value">${escapeHtml(sanitizeText(data.subject))}</div>
                 </div>
               </div>
             </div>
