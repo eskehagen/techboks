@@ -673,25 +673,6 @@ function sendOrderEmailToCustomer(orderData, orderId) {
                 <p style="font-size: 13px; margin: 8px 0 0 0; color: rgba(255,255,255,0.7);">Betal før forsendelse eller ved afhentning. Vil du hellere betale med bankoverførsel, så svar på denne mail.</p>
               </div>
 
-              <div class="callout" style="background: #f7f8f9;">
-                <h3>Dine rettigheder</h3>
-                <p style="font-size: 13px; margin: 0 0 8px 0; color: #25292f;"><strong>Fortrydelsesret:</strong> Du har 14 dages fortrydelsesret fra den dag, du modtager eller henter varerne. Vil du fortryde, så brug <a href="https://www.techboks.dk/fortryd" style="color: #13181d;">»Fortryd aftale« på techboks.dk/fortryd</a>, inden fristen udløber, så får du straks en kvittering. Du kan også svare på denne mail. Send varerne retur senest 14 dage efter, at du har givet besked. Du betaler selv returfragten og får hele beløbet tilbage inkl. den oprindelige fragt. Varer lavet efter dine egne mål, med din egen tekst eller dit eget design er undtaget.</p>
-                <p style="font-size: 13px; margin: 0 0 8px 0; color: #25292f;"><strong>Reklamation:</strong> Du har 2 års reklamationsret efter købeloven. Reklamerer du inden 2 måneder efter, at du har opdaget en fejl, er det altid rettidigt.</p>
-                <p style="font-size: 13px; margin: 0 0 8px 0; color: #25292f;"><strong>Klage:</strong> Kan vi ikke blive enige, kan du klage til Nævnenes Hus, Mæglingsteamet for Forbrugerklager, Toldboden 2, 8800 Viborg, <a href="https://naevneneshus.dk" style="color: #13181d;">naevneneshus.dk</a>.</p>
-                <p style="font-size: 13px; margin: 0; color: #25292f;">Læs de fulde <a href="https://www.techboks.dk/handelsbetingelser" style="color: #13181d;">handelsbetingelser</a> og <a href="https://www.techboks.dk/privatlivspolitik" style="color: #13181d;">privatlivspolitikken</a>.</p>
-                <div style="margin-top: 14px; padding: 14px 16px; border: 1px dashed #c9ccd0; border-radius: 14px; font-size: 12px; color: #25292f;">
-                  <p style="margin: 0 0 6px 0;"><strong>Standardfortrydelsesformular</strong><br>(denne formular udfyldes og returneres kun, hvis fortrydelsesretten gøres gældende)</p>
-                  <p style="margin: 0 0 6px 0;">Til: TechBoks v/ Eske Hagen Sinding${SELLER_ADDRESS ? ', ' + SELLER_ADDRESS : ''}, ${SHOP_EMAIL}</p>
-                  <p style="margin: 0 0 6px 0;">Jeg/vi (*) meddeler herved, at jeg/vi (*) ønsker at gøre fortrydelsesretten gældende i forbindelse med min/vores (*) købsaftale om følgende varer (*)/levering af følgende tjenesteydelser (*): ________</p>
-                  <p style="margin: 0 0 6px 0;">Bestilt den (*)/modtaget den (*): ________</p>
-                  <p style="margin: 0 0 6px 0;">Forbrugerens navn (Forbrugernes navne): ________</p>
-                  <p style="margin: 0 0 6px 0;">Forbrugerens adresse (Forbrugernes adresse): ________</p>
-                  <p style="margin: 0 0 6px 0;">Forbrugerens underskrift (Forbrugernes underskrifter) (kun hvis formularens indhold meddeles på papir): ________</p>
-                  <p style="margin: 0 0 6px 0;">Dato: ________</p>
-                  <p style="margin: 0; color: #676c73;">(*) Det ikke relevante udstreges</p>
-                </div>
-              </div>
-
               <div class="callout callout-mint" style="border-bottom: none;">
                 <h3>Spørgsmål?</h3>
                 <p style="font-size: 14px; margin: 0; color: #25292f;">Hvis du har spørgsmål til din ordre, kan du besvare denne mail. Jeg svarer hurtigst muligt!</p>
