@@ -139,7 +139,7 @@ export function TextLink({
   newTab = false,
   children,
 }: {
-  to: "/kontakt" | "/handelsbetingelser" | "/privatlivspolitik" | "/fortryd";
+  to: "/kontakt" | "/handelsbetingelser" | "/privatlivspolitik";
   hash?: string;
   newTab?: boolean;
   children: ReactNode;

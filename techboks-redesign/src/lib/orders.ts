@@ -51,7 +51,7 @@ export interface OrderResult {
   reference: string;
 }
 
-/** Apps Script-webappen, der modtager ordrer og fortrydelser (se withdrawal.ts). */
+/** Apps Script-webappen, der modtager ordrer. */
 export const ORDER_ENDPOINT: string =
   import.meta.env["VITE_ORDER_ENDPOINT"] ??
   "https://script.google.com/macros/s/AKfycbxqL2a7yE_ahmjKlFURzXJC0qzPumTYhj4r9-mWinLJRO5SQLEJ0gC5alCnM2CR3UEk/exec";

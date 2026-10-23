@@ -9,7 +9,6 @@ import {
   TextLink,
 } from "@/components/LegalPage";
 import { ORDER_BUTTON_LABEL } from "@/lib/orders";
-import { WITHDRAWAL_LINK_LABEL } from "@/lib/withdrawal";
 import { pageHead } from "@/seo/head";
 import { webPage } from "@/seo/schema";
 import { SITE } from "@/seo/site";
@@ -119,11 +118,9 @@ function TermsPage() {
             "Du har 14 dages fortrydelsesret, når du køber på techboks.dk. Fristen løber fra den dag, du modtager eller henter varen. Får du varer fra samme ordre på forskellige dage, løber fristen fra den dag, du får den sidste.",
             "Du kan også fortryde, før du har fået varen.",
             <>
-              Vil du fortryde, så brug <TextLink to="/fortryd">»{WITHDRAWAL_LINK_LABEL}«</TextLink>,
-              som du finder nederst på alle sider, inden fristen udløber. Så får du straks en
-              kvittering på mail. Du kan også give {SITE.name} besked på anden tydelig måde, fx på
-              e-mail via <TextLink to="/kontakt">kontaktsiden</TextLink>, eller bruge
-              fortrydelsesformularen herunder. Det er ikke nok bare at sende varen retur uden at
+              Vil du fortryde, så giv {SITE.name} besked, inden fristen udløber, fx på e-mail via{" "}
+              <TextLink to="/kontakt">kontaktsiden</TextLink>, eller brug fortrydelsesformularen
+              herunder. Det er ikke nok bare at sende varen retur uden at
               give besked.
             </>,
             `Send varen retur senest 14 dage efter, at du har givet besked. Du betaler selv returfragten og skal pakke varen forsvarligt. Bor du i nærheden, kan du i stedet aflevere den i ${SITE.pickup} efter aftale.`,

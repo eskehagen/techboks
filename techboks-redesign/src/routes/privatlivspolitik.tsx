@@ -128,7 +128,7 @@ function PrivacyPage() {
             {
               label: "Oplysninger",
               value:
-                "Navn, e-mail, ordrenummer, de varer, du fortryder, og tidspunktet for din fortrydelse. Det gælder både »Fortryd aftale« på sitet og fortrydelser på e-mail.",
+                "Navn, e-mail, ordrenummer, de varer, du fortryder, og tidspunktet for din fortrydelse. Fortrydelsen sker på e-mail.",
             },
             {
               label: "Formål",

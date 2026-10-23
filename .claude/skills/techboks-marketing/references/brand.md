@@ -102,7 +102,7 @@ Sitet, handelsbetingelserne og ordrebekræftelsesmailen siger **3–7 hverdage**
 - Der er **14 dages fortrydelsesret** fra modtagelsen på alle varer fra kataloget. Farve-, årgangs- og udgavevalg gør ikke en vare til en specialvare. Kun ægte specialopgaver efter kundens egne mål, tekst eller design er undtaget (forbrugeraftaleloven § 18, stk. 2, nr. 3). Lov aldrig "gratis retur": kunden betaler selv returfragten.
 - Der er **2 års reklamationsret** på fejl og mangler jf. købeloven. Fortrydelses- og reklamationsret må nævnes som oplysning, men **aldrig fremhæves som en særlig fordel ved TechBoks**, fordi det er rettigheder, kunden altid har (markedsføringslovens bilag 1, nr. 10).
 - Reklamation inden 2 måneder efter, at kunden har opdaget fejlen, er altid rettidig. Skriv aldrig en kortere frist.
-- Kunder fortryder med **»Fortryd aftale«** på techboks.dk/fortryd (link i footeren på alle sider) eller på mail. Henvis dertil, hvis nogen spørger, hvordan man fortryder.
+- Kunder fortryder ved at skrive til TechBoks på mail eller via kontaktsiden. Henvis dertil, hvis nogen spørger, hvordan man fortryder.
 - TechBoks er ikke momsregistreret. Skriv aldrig "inkl. moms".
 - Sitet sætter ingen cookies. Det må gerne nævnes, men lov ikke mere end privatlivspolitikken siger.
 - Markedsføringsloven: sammenlignende reklame skal være korrekt og dokumenterbar. Undlad direkte konkurrentsammenligninger.

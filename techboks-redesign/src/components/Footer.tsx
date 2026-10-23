@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { CATEGORY_PATHS, categories } from "@/data/products";
-import { WITHDRAWAL_LINK_LABEL } from "@/lib/withdrawal";
 import { SITE } from "@/seo/site";
 import { Logo } from "./Logo";
 
@@ -40,14 +39,6 @@ export function Footer() {
           </Link>
           <Link to="/kontakt" className="link-underline">
             Kontakt
-          </Link>
-          {/* Forbrugeraftaleloven § 20 a: fortrydelsesfunktionen skal være fremtrædende,
-              så linket er stylet anderledes end de andre links. */}
-          <Link
-            to="/fortryd"
-            className="border-canvas/40 text-canvas hover:bg-canvas/10 inline-flex items-center rounded-full border px-4 py-1.5 font-semibold transition-colors"
-          >
-            {WITHDRAWAL_LINK_LABEL}
           </Link>
         </nav>
 

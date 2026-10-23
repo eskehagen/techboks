@@ -29,7 +29,7 @@ export function buildLlmsTxt(): string {
     `- Levering: ${SITE.delivery}. Leveringstid ${SITE.deliveryTime}.`,
     `- Betaling: ${SITE.payment}. Man bestiller på sitet uden online betaling og får straks en ordrebekræftelse på mail med betalingsoplysninger.`,
     `- Priser: i danske kroner, ekskl. fragt. ${SITE.name} er ikke momsregistreret, så der er ingen moms i priserne.`,
-    `- Fortrydelsesret: 14 dage fra modtagelsen af varen. Man fortryder med »Fortryd aftale« på ${absoluteUrl("/fortryd")} og får straks en kvittering på mail. Reklamationsret: 2 år efter købeloven.`,
+    `- Fortrydelsesret: 14 dage fra modtagelsen af varen. Man fortryder ved at skrive til TechBoks via kontaktsiden eller på e-mail. Reklamationsret: 2 år efter købeloven.`,
     "- Privatliv: sitet sætter ingen cookies, og kundeoplysninger bruges kun til ordrer og svar på henvendelser.",
     "- Materialer: PETG til dele, der skal tåle varme, kulde og vibrationer, og bionedbrydeligt PLA til dele, der skal være simple og præcise. Produktionen bruger grøn strøm.",
     "- Tilpasning: farver, mål og detaljer kan tilpasses efter aftale.",

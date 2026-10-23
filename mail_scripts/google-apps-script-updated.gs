@@ -41,11 +41,6 @@ function doPost(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // Fortrydelse fra techboks.dk/fortryd (forbrugeraftaleloven § 20 a)
-    if (data.formType === 'withdrawal') {
-      return handleWithdrawal(data);
-    }
-
     // Basal input validering
     if (!data.customerEmail || !isValidEmail(data.customerEmail)) {
       throw new Error('Ugyldig email: ' + (data.customerEmail || 'tom'));
@@ -136,164 +131,6 @@ function h(text) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
-}
-
-/**
- * Tidspunkt i dansk tid, fx '29.09.2026 kl. 10:45:12'.
- */
-function danishTimestamp(date) {
-  return Utilities.formatDate(date, 'Europe/Copenhagen', "dd.MM.yyyy 'kl.' HH:mm:ss");
-}
-
-/**
- * Fortrydelsesfunktionen på techboks.dk/fortryd (forbrugeraftaleloven § 20 a,
- * gælder fra 19. juni 2026). Mailer ejeren og sender derefter kunden en
- * kvittering med det indsendte og tidspunktet for modtagelsen. Loven kræver
- * kvitteringen "uden unødig forsinkelse" og på et varigt medium, altså mail.
- *
- * Sitet sender kundens e-mail som `email` (ikke `customerEmail`), så en ældre
- * version af scriptet uden denne gren afviser kaldet i stedet for at oprette en
- * ordre. Opdater derfor scriptet, lige når sitet med /fortryd er gået live.
- */
-function handleWithdrawal(data) {
-  const withdrawal = {
-    name: sanitizeText(String(data.name || '')).slice(0, 100),
-    email: sanitizeText(String(data.email || '')).slice(0, 150),
-    orderRef: sanitizeText(String(data.orderRef || '')).slice(0, 100),
-    items: sanitizeText(String(data.items || '')).slice(0, 1000),
-    receivedAt: danishTimestamp(new Date())
-  };
-
-  if (!withdrawal.name) {
-    throw new Error('Navn mangler');
-  }
-  if (!withdrawal.email || !isValidEmail(withdrawal.email)) {
-    throw new Error('Ugyldig email: ' + (withdrawal.email || 'tom'));
-  }
-  if (!withdrawal.orderRef) {
-    throw new Error('Ordrenummer mangler');
-  }
-
-  // Samme værn som ved ordrer: én fortrydelse pr. email pr. 5 minutter og højst 30 i timen.
-  const cache = CacheService.getScriptCache();
-  const emailKey = 'withdrawal_' + Utilities.base64Encode(withdrawal.email);
-  if (cache.get(emailKey)) {
-    throw new Error('Der er netop sendt en fortrydelse fra denne email. Vent venligst 5 minutter.');
-  }
-  const globalKey = 'global_withdrawal_count';
-  const globalCount = parseInt(cache.get(globalKey) || '0');
-  if (globalCount >= 30) {
-    throw new Error('Systemet har midlertidigt travlt. Prøv igen om lidt.');
-  }
-
-  // Ejeren først: fejler kvitteringen bagefter, ved Eske alligevel, at kunden har fortrudt.
-  sendWithdrawalEmailToShop(withdrawal);
-  sendWithdrawalReceipt(withdrawal);
-
-  cache.put(emailKey, 'true', 300);
-  cache.put(globalKey, (globalCount + 1).toString(), 3600);
-
-  return ContentService.createTextOutput(JSON.stringify({
-    success: true,
-    message: 'Fortrydelse modtaget og kvittering sendt',
-    receivedAt: withdrawal.receivedAt
-  })).setMimeType(ContentService.MimeType.JSON);
-}
-
-/**
- * Tabel med det, kunden sendte. Bruges i begge fortrydelsesmails.
- */
-function withdrawalTableHtml(w) {
-  const rows = [
-    ['Modtaget', w.receivedAt],
-    ['Navn', w.name],
-    ['E-mail', w.email],
-    ['Ordre', w.orderRef],
-    ['Varer', w.items || 'Hele ordren']
-  ];
-  const cells = rows.map(function (row) {
-    return '<tr>' +
-      '<td style="padding: 9px 12px 9px 0; border-bottom: 1px solid #eef0f2; font-size: 11px; color: #676c73; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; vertical-align: top;">' + row[0] + '</td>' +
-      '<td style="padding: 9px 0; border-bottom: 1px solid #eef0f2; font-size: 13.5px; color: #13181d;">' + h(row[1]) + '</td>' +
-      '</tr>';
-  }).join('');
-  return '<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">' + cells + '</table>';
-}
-
-/**
- * Fælles ramme om fortrydelsesmails i samme stil som ordremailene.
- */
-function withdrawalEmailHtml(eyebrow, title, bodyHtml) {
-  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>' +
-    '<body style="margin: 0; padding: 24px 12px; background: #f0efeb; font-family: Inter, \'Segoe UI\', Helvetica, Arial, sans-serif; color: #13181d; line-height: 1.6;">' +
-    '<div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; border: 1px solid #dde0e3;">' +
-    '<div style="background: #13181d; color: #ffffff; padding: 32px 28px; text-align: center;">' +
-    '<div style="font-size: 19px; font-weight: 700; letter-spacing: -0.02em;">Tech<span style="color: #3bd8a9;">Boks</span></div>' +
-    '<span style="display: inline-block; margin-top: 16px; background: #3bd8a9; color: #091d16; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 7px 16px; border-radius: 999px;">' + eyebrow + '</span>' +
-    '<h1 style="margin: 16px 0 0 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">' + title + '</h1>' +
-    '</div>' +
-    '<div style="padding: 24px 28px; font-size: 14px; color: #25292f;">' + bodyHtml + '</div>' +
-    '<div style="background: #13181d; color: rgba(255,255,255,0.65); padding: 20px; text-align: center; font-size: 11.5px;">' +
-    '<p style="margin: 3px 0;"><strong style="color: #ffffff;">TechBoks.dk</strong></p>' +
-    '<p style="margin: 3px 0;">Eske Hagen Sinding</p>' +
-    (SELLER_ADDRESS ? '<p style="margin: 3px 0;">' + h(SELLER_ADDRESS) + '</p>' : '') +
-    '</div>' +
-    '</div></body></html>';
-}
-
-/**
- * Besked til ejeren om en ny fortrydelse. Svar går direkte til kunden.
- */
-function sendWithdrawalEmailToShop(w) {
-  try {
-    const subject = 'Fortrydelse [' + w.orderRef + '] - ' + w.name;
-    const body =
-      '<p style="margin: 0;">En kunde har fortrudt via techboks.dk/fortryd og får en kvittering på mail.</p>' +
-      withdrawalTableHtml(w) +
-      '<p style="margin: 0 0 8px 0;"><strong>Husk:</strong> Betal pengene tilbage senest 14 dage efter ' + h(w.receivedAt) + ', også fragten, hvis kunden betalte for forsendelse. Du må vente, til varen er kommet retur, eller kunden har vist, at den er sendt.</p>' +
-      '<p style="margin: 0;">Er ordren ikke sendt endnu, så send den ikke. Svar på denne mail for at skrive til kunden.</p>';
-
-    GmailApp.sendEmail(SHOP_EMAIL, subject, '', {
-      htmlBody: withdrawalEmailHtml('Fortrydelse', 'Ny fortrydelse', body),
-      replyTo: w.email
-    });
-    Logger.log('✓ Fortrydelse sendt til butikkejer');
-  } catch (error) {
-    Logger.log('❌ FEJL ved fortrydelsesmail til butikkejer: ' + error.toString());
-    throw new Error('Kunne ikke sende fortrydelsen til butikkejer: ' + error.toString());
-  }
-}
-
-/**
- * Kvittering til kunden med det indsendte og tidspunktet (forbrugeraftaleloven § 20 a).
- */
-function sendWithdrawalReceipt(w) {
-  try {
-    // Fast emne: alt, kunden har skrevet, står escapet i selve mailen.
-    const subject = 'Kvittering for din fortrydelse - TechBoks.dk';
-    const returnAddress = SELLER_ADDRESS
-      ? 'Send den til TechBoks v/ Eske Hagen Sinding, ' + h(SELLER_ADDRESS) + '.'
-      : 'Svar på denne mail, så får du returadressen.';
-    const body =
-      '<p style="margin: 0 0 8px 0;">Hej ' + h(w.name) + '</p>' +
-      '<p style="margin: 0;">Her er din kvittering for, at TechBoks har modtaget din fortrydelse. Det er det, du sendte:</p>' +
-      withdrawalTableHtml(w) +
-      '<p style="margin: 0 0 8px 0; font-weight: 700;">Hvad sker der nu?</p>' +
-      '<ul style="margin: 0 0 16px 0; padding-left: 20px;">' +
-      '<li style="margin-bottom: 6px;">Er ordren ikke sendt endnu, bliver den ikke sendt.</li>' +
-      '<li style="margin-bottom: 6px;">Har du fået varen, så send den retur senest 14 dage efter, at du har givet besked. Du betaler selv returfragten og skal pakke varen forsvarligt. ' + returnAddress + ' Bor du i nærheden, kan du i stedet aflevere den i Aarhus N efter aftale.</li>' +
-      '<li style="margin-bottom: 6px;">Du får pengene tilbage senest 14 dage efter, at du har givet besked, også den fragt, du betalte for at få varen sendt. TechBoks må vente, til varen er kommet retur, eller du har vist, at den er sendt. Pengene sendes samme vej, som du betalte, medmindre vi aftaler andet.</li>' +
-      '</ul>' +
-      '<p style="margin: 0;">Har du spørgsmål, så svar på denne mail. Læs mere i <a href="https://www.techboks.dk/handelsbetingelser#fortrydelsesret" style="color: #13181d;">handelsbetingelserne</a>.</p>';
-
-    GmailApp.sendEmail(w.email, subject, '', {
-      htmlBody: withdrawalEmailHtml('Kvittering', 'Vi har modtaget din fortrydelse', body)
-    });
-    Logger.log('✓ Kvittering for fortrydelse sendt til kunde');
-  } catch (error) {
-    Logger.log('❌ FEJL ved kvittering til kunde: ' + error.toString());
-    throw new Error('Kunne ikke sende kvittering til kunde: ' + error.toString());
-  }
 }
 
 /**
@@ -671,25 +508,6 @@ function sendOrderEmailToCustomer(orderData, orderId) {
                 <p style="font-size: 14px; margin: 0;">Betal venligst via <strong>MobilePay</strong> til:</p>
                 <p class="payment-number" style="margin-top: 6px;">50935952</p>
                 <p style="font-size: 13px; margin: 8px 0 0 0; color: rgba(255,255,255,0.7);">Betal før forsendelse eller ved afhentning. Vil du hellere betale med bankoverførsel, så svar på denne mail.</p>
-              </div>
-
-              <div class="callout" style="background: #f7f8f9;">
-                <h3>Dine rettigheder</h3>
-                <p style="font-size: 13px; margin: 0 0 8px 0; color: #25292f;"><strong>Fortrydelsesret:</strong> Du har 14 dages fortrydelsesret fra den dag, du modtager eller henter varerne. Vil du fortryde, så brug <a href="https://www.techboks.dk/fortryd" style="color: #13181d;">»Fortryd aftale« på techboks.dk/fortryd</a>, inden fristen udløber, så får du straks en kvittering. Du kan også svare på denne mail. Send varerne retur senest 14 dage efter, at du har givet besked. Du betaler selv returfragten og får hele beløbet tilbage inkl. den oprindelige fragt. Varer lavet efter dine egne mål, med din egen tekst eller dit eget design er undtaget.</p>
-                <p style="font-size: 13px; margin: 0 0 8px 0; color: #25292f;"><strong>Reklamation:</strong> Du har 2 års reklamationsret efter købeloven. Reklamerer du inden 2 måneder efter, at du har opdaget en fejl, er det altid rettidigt.</p>
-                <p style="font-size: 13px; margin: 0 0 8px 0; color: #25292f;"><strong>Klage:</strong> Kan vi ikke blive enige, kan du klage til Nævnenes Hus, Mæglingsteamet for Forbrugerklager, Toldboden 2, 8800 Viborg, <a href="https://naevneneshus.dk" style="color: #13181d;">naevneneshus.dk</a>.</p>
-                <p style="font-size: 13px; margin: 0; color: #25292f;">Læs de fulde <a href="https://www.techboks.dk/handelsbetingelser" style="color: #13181d;">handelsbetingelser</a> og <a href="https://www.techboks.dk/privatlivspolitik" style="color: #13181d;">privatlivspolitikken</a>.</p>
-                <div style="margin-top: 14px; padding: 14px 16px; border: 1px dashed #c9ccd0; border-radius: 14px; font-size: 12px; color: #25292f;">
-                  <p style="margin: 0 0 6px 0;"><strong>Standardfortrydelsesformular</strong><br>(denne formular udfyldes og returneres kun, hvis fortrydelsesretten gøres gældende)</p>
-                  <p style="margin: 0 0 6px 0;">Til: TechBoks v/ Eske Hagen Sinding${SELLER_ADDRESS ? ', ' + SELLER_ADDRESS : ''}, ${SHOP_EMAIL}</p>
-                  <p style="margin: 0 0 6px 0;">Jeg/vi (*) meddeler herved, at jeg/vi (*) ønsker at gøre fortrydelsesretten gældende i forbindelse med min/vores (*) købsaftale om følgende varer (*)/levering af følgende tjenesteydelser (*): ________</p>
-                  <p style="margin: 0 0 6px 0;">Bestilt den (*)/modtaget den (*): ________</p>
-                  <p style="margin: 0 0 6px 0;">Forbrugerens navn (Forbrugernes navne): ________</p>
-                  <p style="margin: 0 0 6px 0;">Forbrugerens adresse (Forbrugernes adresse): ________</p>
-                  <p style="margin: 0 0 6px 0;">Forbrugerens underskrift (Forbrugernes underskrifter) (kun hvis formularens indhold meddeles på papir): ________</p>
-                  <p style="margin: 0 0 6px 0;">Dato: ________</p>
-                  <p style="margin: 0; color: #676c73;">(*) Det ikke relevante udstreges</p>
-                </div>
               </div>
 
               <div class="callout callout-mint" style="border-bottom: none;">

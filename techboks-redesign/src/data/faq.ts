@@ -14,7 +14,6 @@
 
 import { products } from "@/data/products";
 import { ORDER_BUTTON_LABEL } from "@/lib/orders";
-import { WITHDRAWAL_LINK_LABEL } from "@/lib/withdrawal";
 import { TIERS } from "@/lib/shipping";
 import { SITE } from "@/seo/site";
 
@@ -110,7 +109,7 @@ export const FAQ: FaqCategory[] = [
     items: [
       {
         q: "Kan jeg fortryde mit køb?",
-        a: `Ja. Du har 14 dages fortrydelsesret fra den dag, du modtager eller henter varen. Brug »${WITHDRAWAL_LINK_LABEL}« nederst på siden, inden fristen udløber, så får du straks en kvittering på mail. Send varen retur senest 14 dage efter, at du har givet besked; du betaler selv returfragten og får hele købsbeløbet tilbage inkl. den oprindelige fragt. Varer lavet efter dine egne mål, med din egen tekst eller dit eget design er undtaget.`,
+        a: `Ja. Du har 14 dages fortrydelsesret fra den dag, du modtager eller henter varen. Skriv til TechBoks inden fristen udløber. Send varen retur senest 14 dage efter, at du har givet besked; du betaler selv returfragten og får hele købsbeløbet tilbage inkl. den oprindelige fragt. Varer lavet efter dine egne mål, med din egen tekst eller dit eget design er undtaget.`,
       },
       {
         q: "Hvad gør jeg, hvis et produkt er defekt?",

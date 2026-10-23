@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BestilRouteImport } from './routes/bestil'
 import { Route as FaqRouteImport } from './routes/faq'
-import { Route as FortrydRouteImport } from './routes/fortryd'
 import { Route as HandelsbetingelserRouteImport } from './routes/handelsbetingelser'
 import { Route as HjemmetRouteImport } from './routes/hjemmet'
 import { Route as KontaktRouteImport } from './routes/kontakt'
@@ -38,11 +37,6 @@ const BestilRoute = BestilRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FortrydRoute = FortrydRouteImport.update({
-  id: '/fortryd',
-  path: '/fortryd',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HandelsbetingelserRoute = HandelsbetingelserRouteImport.update({
@@ -105,7 +99,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
   '/faq': typeof FaqRoute
-  '/fortryd': typeof FortrydRoute
   '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/hjemmet': typeof HjemmetRoute
   '/kontakt': typeof KontaktRoute
@@ -122,7 +115,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
   '/faq': typeof FaqRoute
-  '/fortryd': typeof FortrydRoute
   '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/hjemmet': typeof HjemmetRoute
   '/kontakt': typeof KontaktRoute
@@ -140,7 +132,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/bestil': typeof BestilRoute
   '/faq': typeof FaqRoute
-  '/fortryd': typeof FortrydRoute
   '/handelsbetingelser': typeof HandelsbetingelserRoute
   '/hjemmet': typeof HjemmetRoute
   '/kontakt': typeof KontaktRoute
@@ -159,7 +150,6 @@ export interface FileRouteTypes {
     | '/'
     | '/bestil'
     | '/faq'
-    | '/fortryd'
     | '/handelsbetingelser'
     | '/hjemmet'
     | '/kontakt'
@@ -176,7 +166,6 @@ export interface FileRouteTypes {
     | '/'
     | '/bestil'
     | '/faq'
-    | '/fortryd'
     | '/handelsbetingelser'
     | '/hjemmet'
     | '/kontakt'
@@ -193,7 +182,6 @@ export interface FileRouteTypes {
     | '/'
     | '/bestil'
     | '/faq'
-    | '/fortryd'
     | '/handelsbetingelser'
     | '/hjemmet'
     | '/kontakt'
@@ -211,7 +199,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BestilRoute: typeof BestilRoute
   FaqRoute: typeof FaqRoute
-  FortrydRoute: typeof FortrydRoute
   HandelsbetingelserRoute: typeof HandelsbetingelserRoute
   HjemmetRoute: typeof HjemmetRoute
   KontaktRoute: typeof KontaktRoute
@@ -246,13 +233,6 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/fortryd': {
-      id: '/fortryd'
-      path: '/fortryd'
-      fullPath: '/fortryd'
-      preLoaderRoute: typeof FortrydRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/handelsbetingelser': {
@@ -339,7 +319,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BestilRoute: BestilRoute,
   FaqRoute: FaqRoute,
-  FortrydRoute: FortrydRoute,
   HandelsbetingelserRoute: HandelsbetingelserRoute,
   HjemmetRoute: HjemmetRoute,
   KontaktRoute: KontaktRoute,
