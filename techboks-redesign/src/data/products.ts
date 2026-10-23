@@ -299,6 +299,9 @@ export const products: Product[] = [
     slug: "vinter-cover",
     name: "Vinter Cover",
     shortDescription: "Beskyt ladeporten mod sne, is og skidt",
+    seoTitle: "Vinter Cover til ladeport, Mustang Mach-E | TechBoks",
+    seoDescription:
+      "Tætsluttende cover til ladeporten på din Mustang Mach-E. Beskytter mod sne, is og vejsalt om vinteren. 3D-printet i vejrbestandig PETG.",
     description:
       "Et tætsluttende cover der beskytter din Mustang Mach-E's ladeport mod sne, is og vejsalt i vintermånederne.",
     category: "mustang-mach-e",
