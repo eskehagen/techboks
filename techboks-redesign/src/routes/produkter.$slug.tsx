@@ -93,7 +93,7 @@ export const Route = createFileRoute("/produkter/$slug")({
   component: ProductDetailRoute,
   errorComponent: ({ error }) => (
     <div className="container-tb py-24" role="alert">
-      {error.message}
+      {error instanceof Error ? error.message : String(error)}
     </div>
   ),
   notFoundComponent: () => (
